@@ -1,8 +1,9 @@
 package tbc.checkers.components;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Piece {
+public class Piece implements Drawable {
 
     private int row;
     private int col;
@@ -28,5 +29,10 @@ public class Piece {
 
     public Color getColor() {
         return color;
+    }
+
+    @Override
+    public void draw(GraphicsContext gc) {
+
     }
 }

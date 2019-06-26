@@ -5,8 +5,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import tbc.socket.HostConnection;
+import tbc.socket.JoinConnection;
 
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Main extends Application {
 
@@ -26,5 +30,8 @@ public class Main extends Application {
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        ServerSocket s = HostConnection.getInstance();
+        Socket socket = JoinConnection.getInstance();
     }
 }

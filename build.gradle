@@ -2,15 +2,27 @@ plugins {
     id 'java'
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.7'
+    id 'org.ajoberstar.grgit' version '1.7.2'
+    id 'org.ajoberstar.release-opinion' version '1.7.2'
 }
 
 group 'tbc'
-version '1.0-SNAPSHOT'
+version '1.0.0'
 
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+}
+
+import org.ajoberstar.gradle.git.release.opinion.Strategies
+
+release {
+    versionStrategy Strategies.FINAL
+    defaultVersionStrategy Strategies.SNAPSHOT
+    tagStrategy {
+        generateMessage = { version -> "Version $project.version" }
+    }
 }
 
 dependencies {
