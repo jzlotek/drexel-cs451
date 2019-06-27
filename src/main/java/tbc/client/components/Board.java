@@ -1,4 +1,4 @@
-package tbc.checkers.components;
+package tbc.client.components;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
