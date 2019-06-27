@@ -3,7 +3,7 @@ version: 2.0
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:12-jdk-sid-node-browsers
+      - image: circleci/openjdk:11.0.3-jdk-stretch
     steps:
       - checkout
       - restore_cache:
