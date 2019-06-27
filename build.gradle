@@ -70,7 +70,7 @@ task client(type: Jar) {
     }
 }
 
-//mainClassName = 'tbc.Main'
+mainClassName = 'tbc.client.Main'
 
 apply plugin: 'jacoco'
 
