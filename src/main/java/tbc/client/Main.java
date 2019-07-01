@@ -1,16 +1,11 @@
 package tbc.client;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import tbc.socket.HostConnection;
-import tbc.socket.JoinConnection;
+import tbc.client.components.Piece;
+import tbc.client.scene.GameScene;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 
 public class Main extends Application {
 
@@ -19,19 +14,11 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
-        Parent root = null;
-        try {
-            root = FXMLLoader.load(getClass().getResource("Main.fxml"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-        Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+    public void start(Stage stage) {
+        GameScene gs = new GameScene(stage);
+        gs.addDrawableObject(new Piece(1,1, 10, 10, Color.BLACK));
+        gs.show();
+        gs.render();
 
-        ServerSocket s = HostConnection.getInstance();
-        Socket socket = JoinConnection.getInstance();
     }
 }

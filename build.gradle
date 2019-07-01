@@ -34,6 +34,8 @@ dependencies {
     compile "javax.ws.rs:jsr311-api:1.1.1"
     compile 'org.glassfish.jersey.core:jersey-server:2.26'
     compile 'org.glassfish.jersey.containers:jersey-container-grizzly2-http:2.26'
+    testImplementation("junit:junit:4.12")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.5.0")
 }
 
 javafx {
@@ -42,9 +44,6 @@ javafx {
 }
 
 task server(type: War) {
-    manifest {
-        attributes 'Main-Class': 'tbc.server.Main'
-    }
     sourceSets {
         main {
             java {
@@ -53,19 +52,26 @@ task server(type: War) {
             }
         }
     }
-
+    war {
+        manifest {
+            attributes 'Main-Class': 'tbc.server.Main'
+        }
+    }
 }
 
 task client(type: Jar) {
-    manifest {
-        attributes 'Main-Class': 'tbc.client.Main'
-    }
     sourceSets {
         main {
             java {
                 srcDir 'tbc'
                 exclude "server/**/*.*"
+
             }
+        }
+    }
+    jar {
+        manifest {
+            attributes 'Main-Class': 'tbc.client.Main'
         }
     }
 }
@@ -73,6 +79,10 @@ task client(type: Jar) {
 mainClassName = 'tbc.client.Main'
 
 apply plugin: 'jacoco'
+
+test {
+    useJUnitPlatform()
+}
 
 jacocoTestReport {
     reports {
@@ -82,3 +92,4 @@ jacocoTestReport {
 }
 
 check.dependsOn jacocoTestReport
+test.finalizedBy jacocoTestReport
