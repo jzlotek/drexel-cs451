@@ -2,7 +2,15 @@ package tbc.client.components;
 
 import javafx.scene.canvas.GraphicsContext;
 
-public interface Drawable {
+import java.util.UUID;
 
-    void draw(GraphicsContext gc);
+public abstract class Drawable {
+
+    protected UUID id;
+
+    public abstract void draw(GraphicsContext gc);
+
+    public String getID() {
+        return this.id.toString();
+    }
 }
