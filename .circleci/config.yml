@@ -22,5 +22,9 @@ jobs:
       - store_artifacts:
           path: build/libs
           destination: libs
-      - codecov/upload:
-          file: {{ coverage_report_filepath }}
+test:
+  post:
+    - mv $APP_HOME/build/reports/jacoco/jacocoTestReport $APP_HOME/build/reports/jacoco/test
+    - cp -r $APP_HOME/build/outputs $CIRCLE_ARTIFACTS
+    - cp -r $APP_HOME/build/reports $CIRCLE_ARTIFACTS
+    - cp -r $APP_HOME/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
