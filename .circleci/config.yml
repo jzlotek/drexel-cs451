@@ -32,3 +32,4 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
+      - run: curl -s https://codecov.io/bash | bash -s
