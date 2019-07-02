@@ -1,0 +1,95 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.7'
+    id 'org.ajoberstar.grgit' version '1.7.2'
+    id 'org.ajoberstar.release-opinion' version '1.7.2'
+}
+
+apply plugin: 'maven'
+apply plugin: 'war'
+
+
+group 'tbc'
+version '1.0.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+import org.ajoberstar.gradle.git.release.opinion.Strategies
+
+release {
+    versionStrategy Strategies.FINAL
+    defaultVersionStrategy Strategies.SNAPSHOT
+    tagStrategy {
+        generateMessage = { version -> "Version $project.version" }
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile "javax.ws.rs:jsr311-api:1.1.1"
+    compile 'org.glassfish.jersey.core:jersey-server:2.26'
+    compile 'org.glassfish.jersey.containers:jersey-container-grizzly2-http:2.26'
+    testImplementation("junit:junit:4.12")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.5.0")
+}
+
+javafx {
+    modules = ['javafx.controls', 'javafx.fxml']
+    version = '11.0.2'
+}
+
+task server(type: War) {
+    sourceSets {
+        main {
+            java {
+                srcDir 'tbc'
+                exclude "client/**/*.*"
+            }
+        }
+    }
+    war {
+        manifest {
+            attributes 'Main-Class': 'tbc.server.Main'
+        }
+    }
+}
+
+task client(type: Jar) {
+    sourceSets {
+        main {
+            java {
+                srcDir 'tbc'
+                exclude "server/**/*.*"
+
+            }
+        }
+    }
+    jar {
+        manifest {
+            attributes 'Main-Class': 'tbc.client.Main'
+        }
+    }
+}
+
+mainClassName = 'tbc.client.Main'
+
+apply plugin: 'jacoco'
+
+test {
+    useJUnitPlatform()
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+check.dependsOn jacocoTestReport
+test.finalizedBy jacocoTestReport
