@@ -7,8 +7,7 @@ plugins {
 }
 
 apply plugin: 'maven'
-apply plugin: 'war'
-
+apply plugin: 'java'
 
 group 'tbc'
 version '1.0.0'
@@ -43,33 +42,40 @@ javafx {
     version = '11.0.2'
 }
 
-task server(type: War) {
-    sourceSets {
-        main {
-            java {
-                srcDir 'tbc'
-                exclude "client/**/*.*"
-            }
-        }
-    }
-    war {
-        manifest {
-            attributes 'Main-Class': 'tbc.server.Main'
+sourceSets {
+    main {
+        java {
+            srcDir 'tbc'
         }
     }
 }
 
-task client(type: Jar) {
-    sourceSets {
-        main {
-            java {
-                srcDir 'tbc'
-                exclude "server/**/*.*"
+task server(type: Jar) {
+    dependsOn {
+        build
+    }
+    from(sourceSets.main.output) {
+        include "tbc/**"
+    }
+    baseName('server')
+    manifest {
+        attributes 'Main-Class': 'tbc.server.Server'
+    }
+}
 
-            }
-        }
+assembleDist {
+    dependsOn {
+        client
+        server
+    }
+}
+
+task client(type: Jar) {
+    dependsOn {
+        build
     }
     jar {
+        baseName('client')
         manifest {
             attributes 'Main-Class': 'tbc.client.Main'
         }
