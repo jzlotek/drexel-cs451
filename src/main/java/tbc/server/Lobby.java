@@ -48,7 +48,7 @@ public class Lobby extends Thread{
 				}
 				
 				// if the move is valid, we must output to player two
-				if(validate(received)) { 
+				if(this.isLegalMove(received)) { 
 					isMoveValid = true;
 				} else { // else we throw player one a warning and prompt for another move
 					try {
@@ -69,7 +69,7 @@ public class Lobby extends Thread{
 			}
 			
 			// check if player one's move caused a winner
-			if(checkWinner())this.lobbyStatus = false;
+			if(this.checkWinner())this.lobbyStatus = false;
 			
 			isMoveValid = false;
 			while(!isMoveValid) {
@@ -81,7 +81,7 @@ public class Lobby extends Thread{
 				}
 				
 				// if the move is valid, we must output to player one
-				if(validate(received)) { 
+				if(this.isLegalMove(received)) { 
 					isMoveValid = true;
 				} else { // else throw player two a warning and prompt another move
 					try {
@@ -101,7 +101,7 @@ public class Lobby extends Thread{
 			}	
 			
 			// check if player two's move caused a winner
-			if(checkWinner())this.lobbyStatus = false;
+			if(this.checkWinner())this.lobbyStatus = false;
 		}
 		
 		// after the game is over, send a closing message to the players and close the sockets
@@ -132,7 +132,7 @@ public class Lobby extends Thread{
 	/*
 	 * Function that validates if a move in the form of a message is valid
 	 */
-	private boolean validate(String message) {
+	private boolean isLegalMove(String message) {
 		return true;
 	}
 	
