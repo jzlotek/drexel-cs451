@@ -4,10 +4,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import tbc.util.UUIDUtil;
 
-import java.util.UUID;
-
 public class Board extends Drawable {
     private Piece[][] board;
+
+    public Board() {
+
+    }
 
     public Board(int size, int width, int height) {
         this.id = UUIDUtil.getUUID();
@@ -18,7 +20,7 @@ public class Board extends Drawable {
                 for (int c = 0; c < size; c++) {
 
                     if ((c + r) % 2 == 0) {
-                        Piece p = new Piece(r, c, 10,10, new Color(255, 0, 0, 1));
+                        Piece p = new Piece(r, c, 10, 10, Color.BLACK);
                         this.board[r][c] = p;
                     } else {
                         this.board[r][c] = null;

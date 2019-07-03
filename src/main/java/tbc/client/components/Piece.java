@@ -68,6 +68,6 @@ public class Piece extends Drawable {
         gc.setFill(this.getColor());
         gc.setStroke(this.getColor());
 
-        gc.fillRect(0,0,100,100);
+        gc.fillRect(0, 0, 100, 100);
     }
 }
