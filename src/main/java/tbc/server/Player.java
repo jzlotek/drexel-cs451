@@ -1,13 +1,14 @@
 package tbc.server;
 
+import tbc.util.Constants;
+
 import java.io.IOException;
 import java.net.Socket;
 
 public class Player extends Thread { // each player will be it's own thread
 
     protected static Socket socket;
-    public static final int PORT = 451; // Using CS 451 as the port number
-    public static final String HOST = "10.246.251.14";    // Using Tux4 to host this service. DNS Map has us connecting to 10.246.251.14
+
 
     /*
      * Default Constructor
@@ -38,7 +39,7 @@ public class Player extends Thread { // each player will be it's own thread
 
     public static void init() throws IOException {
         try {
-            socket = new Socket(HOST, PORT);
+            socket = new Socket(Constants.HOST, Constants.PORT);
             System.out.println("Connected: " + socket.toString());
         } catch (IOException e) {
             e.printStackTrace();

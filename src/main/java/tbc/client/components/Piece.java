@@ -1,7 +1,6 @@
 package tbc.client.components;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import tbc.util.UUIDUtil;
 
 public class Piece extends Drawable {
@@ -10,12 +9,10 @@ public class Piece extends Drawable {
     private int col;
     private int width;
     private int height;
-    private Color color;
 
-    public Piece(int row, int col, int width, int height, Color color) {
+    public Piece(int row, int col, int width, int height) {
         this.id = UUIDUtil.getUUID();
         this.move(row, col);
-        this.color = color;
     }
 
     public void move(int row, int col) {
@@ -29,10 +26,6 @@ public class Piece extends Drawable {
 
     public int getCol() {
         return col;
-    }
-
-    public Color getColor() {
-        return color;
     }
 
     public void setRow(int row) {
@@ -59,15 +52,8 @@ public class Piece extends Drawable {
         this.height = height;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
     @Override
     public void draw(GraphicsContext gc) {
-        gc.setFill(this.getColor());
-        gc.setStroke(this.getColor());
-
         gc.fillRect(0, 0, 100, 100);
     }
 }

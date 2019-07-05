@@ -1,7 +1,6 @@
 package tbc.client.components;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import tbc.util.UUIDUtil;
 
 public class Board extends Drawable {
@@ -20,7 +19,7 @@ public class Board extends Drawable {
                 for (int c = 0; c < size; c++) {
 
                     if ((c + r) % 2 == 0) {
-                        Piece p = new Piece(r, c, 10, 10, Color.BLACK);
+                        Piece p = new Piece(r, c, 10, 10);
                         this.board[r][c] = p;
                     } else {
                         this.board[r][c] = null;
