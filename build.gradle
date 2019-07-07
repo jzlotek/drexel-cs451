@@ -8,6 +8,8 @@ plugins {
 
 apply plugin: 'maven'
 apply plugin: 'java'
+apply plugin: 'org.ajoberstar.release-opinion'
+apply plugin: 'org.ajoberstar.release-base'
 
 group 'tbc'
 version '1.0.0'
