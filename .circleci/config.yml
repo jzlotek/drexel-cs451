@@ -17,11 +17,8 @@ jobs:
             - ~/.gradle
           key: gradle-{{ checksum "build.gradle" }}
       - store_artifacts:
-          path: build/distributions
-          destination: distributions
-      - store_artifacts:
           path: build/libs
-          destination: libs
+          destination: distributions
       - run:
           name: Save test results
           command: |
