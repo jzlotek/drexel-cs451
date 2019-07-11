@@ -1,0 +1,118 @@
+\documentclass{scrreprt}
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage[ddmmyyyy]{datetime}
+\renewcommand{\dateseparator}{--}
+\usepackage[bookmarks=true]{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\hypersetup{
+    bookmarks=false,    % show bookmarks bar?
+    pdftitle={Software Requirement Specification},    % title
+    pdfauthor={Jean-Philippe Eisenbarth},                     % author
+    pdfsubject={TeX and LaTeX},                        % subject of the document
+    pdfkeywords={TeX, LaTeX, graphics, images}, % list of keywords
+    colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=blue,       % color of internal links
+    citecolor=black,       % color of links to bibliography
+    filecolor=black,        % color of file links
+    urlcolor=purple,        % color of external links
+    linktoc=page            % only page is linked
+}%
+\def\myversion{1.0 }
+\date{}
+%\title{%
+
+%}
+\usepackage{hyperref}
+\begin{document}
+
+\begin{flushright}
+    \rule{16cm}{5pt}\vskip1cm
+    \begin{bfseries}
+        \Huge{SOFTWARE REQUIREMENTS\\ SPECIFICATION}\\
+        \vspace{1.0cm}
+        for\\
+        \vspace{1.0cm}
+        Checkers\\
+        \vspace{1.5cm}
+        \LARGE{Version \myversion approved}\\
+        \vspace{1.5cm}
+        Prepared by:\\
+	John Zlotek\\
+	Matt Horger\\
+	Jake Carfagno\\
+	Preet Patel\\
+        \vspace{1.9cm}
+        Team: \textbf{Big Chungus}\\
+        \vspace{1cm}
+        \today\\
+    \end{bfseries}
+\end{flushright}
+
+\tableofcontents
+
+
+\chapter*{Revision History}
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+	    Name & Date & Reason For Changes & Version\\
+        \hline
+	    1.0.0 & \formatdate{11}{7}{19} & Initial Structure & mhorger, jzlotek\\
+        \hline
+    \end{tabular}
+\end{center}
+
+\chapter{Introduction}
+
+\section{Background}
+
+\section{Project Scope}
+
+\section{Abstract}
+
+\chapter{Overall Description}
+
+\section{Product Functions}
+
+\section{Assumptions and Dependencies}
+
+\chapter{Functional  Requirements}
+
+\section{Client }
+
+\section{Server}
+
+\chapter{Other Requirements}
+
+\section{System Requirements}
+
+\section{Network Requirements}
+
+\chapter{User Interface}
+
+\section{Framework}
+
+\section{Menus}
+
+\section{Standard Componenets}
+
+\chapter{Program Usage}
+
+\section{Lobbies}
+
+\section{Gameplay}
+
+\section{Win Conditions}
+
+\chapter{Further Information}
+
+\section{Appendix A: Glossary}
+
+\section{Appendix B: References}
+
+\section{Appendix C: To Be Determined List}
+
+\end{document}
