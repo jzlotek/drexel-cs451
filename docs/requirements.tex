@@ -1,4 +1,5 @@
 \documentclass{scrreprt}
+\usepackage{enumitem}
 \usepackage{listings}
 \usepackage{underscore}
 \usepackage[ddmmyyyy]{datetime}
@@ -6,10 +7,15 @@
 \usepackage[bookmarks=true]{hyperref}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
+
+\newenvironment{enum}
+{\begin{enumerate}[label*=\arabic*.][resume]}
+{\end{enumerate}}
+
 \hypersetup{
     bookmarks=false,    % show bookmarks bar?
     pdftitle={Software Requirement Specification},    % title
-    pdfauthor={Jean-Philippe Eisenbarth},                     % author
+    pdfauthor={John Zlotek},                     % author
     pdfsubject={TeX and LaTeX},                        % subject of the document
     pdfkeywords={TeX, LaTeX, graphics, images}, % list of keywords
     colorlinks=true,       % false: boxed links; true: colored links
@@ -52,7 +58,6 @@
 
 \tableofcontents
 
-
 \chapter*{Revision History}
 
 \begin{center}
@@ -79,11 +84,32 @@
 
 \section{Assumptions and Dependencies}
 
-\chapter{Functional  Requirements}
+\chapter{Functional Requirements}
 
-\section{Client }
+\section{Client}
+
+\subsection{Board State}
+
+\begin{enumerate}[label*=R\arabic*.]
+	\item Board
+	\begin{enumerate}[label*=\arabic*.]
+  		\item The clients will keep a copy of the board state in order to render it
+  		\item The board will update upon receiving an input from either:
+  			\subitem User input
+			\subitem Server response
+	\end{enumerate}
+\end{enumerate}
 
 \section{Server}
+
+\begin{enumerate}[resume*]
+
+  \item Server - User Interaction
+  \begin{enumerate}[label*=\arabic*.]
+  	\item Server will keep track of users and game sessions
+  \end{enumerate}
+
+\end{enumerate}
 
 \chapter{Other Requirements}
 
