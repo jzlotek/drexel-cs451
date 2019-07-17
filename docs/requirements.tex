@@ -7,6 +7,7 @@
 \usepackage[bookmarks=true]{hyperref}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
+\usepackage{cite}
 
 \newenvironment{enum}
 {\begin{enumerate}[label*=\arabic*.][resume]}
@@ -45,10 +46,10 @@
         \LARGE{Version \myversion approved}\\
         \vspace{1.5cm}
         Prepared by:\\
-	John Zlotek\\
-	Matt Horger\\
-	Jake Carfagno\\
-	Preet Patel\\
+    John Zlotek\\
+    Matt Horger\\
+    Jake Carfagno\\
+    Preet Patel\\
         \vspace{1.9cm}
         Team: \textbf{Big Chungus}\\
         \vspace{1cm}
@@ -63,9 +64,11 @@
 \begin{center}
     \begin{tabular}{|c|c|c|c|}
         \hline
-	    Name & Date & Reason For Changes & Version\\
+        Name & Date & Reason For Changes & Version\\
         \hline
-	    1.0.0 & \formatdate{11}{7}{19} & Initial Structure & mhorger, jzlotek\\
+        1.0.0 & \formatdate{11}{7}{19} & Initial Structure & mhorger, jzlotek\\
+        \hline
+        1.0.1 & \formatdate{17}{7}{19} & More Structure and  & mhorger, jzlotek\\
         \hline
     \end{tabular}
 \end{center}
@@ -74,7 +77,33 @@
 
 \section{Background}
 
+\subsection{History}
+
+
+\subsection{Game Rules}
+
+\subsubsection{Moves}
+\begin{itemize}
+    \item A player may onlyeir own pieces.
+    \item Normal Piece
+        \subitem A normal piece may only move toward the other player's side of the board.
+        \subitem A normal piece may move diagnally to the left or right to a vacant square in front of it.
+        \subitem A normal piece may capture on the diagonal if there exists a vacant square one more diagonal position ahead.
+            \subsubitem A piece may move again if there exists another piece to capture after making a capture.
+    \item A King Piece moves the same as a normal piece but can move and capture backward.
+    \item A King Piece may capture forward or backward.
+    \item If a normal piece reaches the opposite edge of the board, it becomes a King Piece.
+\end{itemize}
+
+\subsubsection{Win Condition}
+\begin{itemize}
+    \item When one player has no more pieces to move, the other player is the winner.
+\end{itemize}
+
 \section{Project Scope}
+
+This document will contain all of the information regarding requirements for checkers.
+It will serve as a reference while developing, testing, and maintaining the different systems of this game.
 
 \section{Abstract}
 
@@ -82,62 +111,160 @@
 
 \section{Product Functions}
 
+\begin{enumerate}
+    \item Provide a userfacing application to play checkers with another user over the local network or internet.
+    \item Provide a centralized server that mediates gameplay, game sessions, and clients.
+\end{enumerate}
+
 \section{Assumptions and Dependencies}
+
+\begin{enumerate}
+    \item A connection to a local network where the server is hosted or internet connection.
+    \item A computer with a graphical windowing environment for the client and any *nix or Windows based server.
+\end{enumerate}
 
 \chapter{Functional Requirements}
 
 \section{Client}
 
+\begin{enumerate}[resume*]
+    \item Client - Server Interaction
+    \begin{enumerate}[label*=\arabic*.]
+        \item Client will automatically check to see if the game server is live given the set URL in the program.
+        \item Client will not be able to join a lobby if no response is sent from the requested server URL.
+        \item Client will be able to terminate itself from the server at any given moment.
+        \item Client will be able to reconnect back to the lobby within 30 seconds, else they will receive a notification saying that the lobby has been closed and they are unable to rejoin due to the timeout period.
+        \item Client will be able to see all available games to join on the server and be able to select a lobby.
+        \item Client should be able to distinguish themselves with a valid player name when they join a lobby.
+        \item Clients will be able to select which color they want to play, and receive the assigned color once the game begins.
+    \end{enumerate}
+\end{enumerate}
+
 \subsection{Board State}
 
 \begin{enumerate}[label*=R\arabic*.]
-	\item Board
-	\begin{enumerate}[label*=\arabic*.]
-  		\item The clients will keep a copy of the board state in order to render it
-  		\item The board will update upon receiving an input from either:
-  			\subitem User input
-			\subitem Server response
-	\end{enumerate}
+    \item Board
+    \begin{enumerate}[label*=\arabic*.]
+        \item The clients will keep a copy of the board state in order to render it
+        \item The board will update upon receiving an input from either:
+            \subitem Server response
+    \end{enumerate}
 \end{enumerate}
 
 \section{Server}
 
 \begin{enumerate}[resume*]
-
-  \item Server - User Interaction
-  \begin{enumerate}[label*=\arabic*.]
-  	\item Server will keep track of users and game sessions
-  \end{enumerate}
-
+    \item Server should be able to be run all the time without crashing.
+        \subitem Server will have a heartbeat function that will send an email to the developers if the server is down for some reason.
+    \item Server - Client Interaction
+    \begin{enumerate}[label*=\arabic*.]
+        \item Server will be able to process client connection information to create a lobby.
+        \item Server will keep track of users and game sessions.
+        \item On user timeout, wait a set amount of time.
+            \subitem If not connected within that time, signal other user game has ended due to disconnected player.
+        \item Server will validate moves before sending updated move to clients.
+            \subitem On invalid move, signal client that move was invalid and to try again.
+    \end{enumerate}
+    \item Server - Lobby Interaction
+    \begin{enumerate}[label*=\arabic*.]
+        \item Server has a fixed range of ports that it can assign a lobby upon creation. This range is to make sure we do not flood our network with ports ranging far away from each other.
+        \item Server will first check that a port is open before assigning it to a lobby upon creation.
+        \item Server will close the port assigned to a lobby when the game has been finished.
+        \item Server will be able to print out a list of lobbies for the clients to see.
+        \item Server will be able to send notice to any lobbies that the server is shutting down, whether expectedly or unexpectedly, in order to provide better experience for the clients playing.   
+    \end{enumerate}
 \end{enumerate}
 
 \chapter{Other Requirements}
 
 \section{System Requirements}
 
+\begin{enumerate}[label*=S\arabic*.]
+    \item Server and Client
+        \subitem JRE Version 12 or higher
+    \item Client
+        \subitem Windowing display environment:
+            \subsubitem Windows
+            \subsubitem MacOS
+            \subsubitem Xorg or Wayland
+\end{enumerate}
+
 \section{Network Requirements}
+
+\begin{enumerate}[label*=N\arabic*.]
+    \item Client and Server
+        \subitem An active internet connection is required for the client to connect to the server.
+        \subitem Client cannot download the server and run it locally, unless the client sets up port forwarding properly on their local network.
+        \subitem Client must be connected to Drexel's network in order to play. This requires credentials to sign-in. Client is responsible for their own Drexel credentials. 
+        \subitem Response time to the server must be less than 120ms. If it is greater, then the game quality may be decreased and we will alert the clients.
+                
+    \item Server
+        \subitem Server must be hosted on tux.cci.drexel.edu. We are at the mercy of tux.cci.drexel.edu's uptime.
+        \subitem Server will be running on one dedicated box, and will not have a load balancer assigned to it, meaning that there will be one direct access point for our clients to connect to.
+        \subitem There will be no snapshots saved of the server or gamestates. Server will have little to no storage to save information to load back onto the network.
+        \subitem If a client is taking too long to connect, the server will automatically ditch the requested connection.
+\end{enumerate}
 
 \chapter{User Interface}
 
 \section{Framework}
 
+\begin{enumerate}[label*=N\arabic*.]
+\end{enumerate}
+
 \section{Menus}
 
+\begin{enumerate}[label*=M\arabic*.]
+\end{enumerate}
+
 \section{Standard Componenets}
+
+\begin{enumerate}[label*=SC\arabic*.]
+\end{enumerate}
 
 \chapter{Program Usage}
 
 \section{Lobbies}
+\begin{enumerate}[label*=L\arabic*.]
+    \item Lobby Creation    
+        \begin{enumerate}[label*=\arabic*.]
+            \item Clients should be able to create a lobby (start a new game) or join a lobby (join another player to start a game).
+                \subitem When a client creates a lobby, this opens a port on the server.
+                \subitem When a client joins a lobby, the game then starts processing the pre-game information.
+                \subitem Information in the pre-game is the names of the players, who is selected to play which color, and which client goes first (the client assigned to the red color).
+        \end{enumerate}
+    \item Lobby Rules
+        \begin{enumerate}[label*=\arabic*.]
+            \item Lobbies consist of a number of players, whether or not the game is started or finished, and what port it is being hosted on the server.
+                \subitem A player can join a lobby via the port number, as this acts as our identity for each lobby.
+            \item There will be a maximum of 10 lobbies that the server will allow in order not to crash the server.
+            \item Lobbies will be locked down once two clients have connected.
+                \subitem If a third client tries to connect to a game-in-progress, an alert will be sent to that user saying "spectating is not allowed for a game-in-progress".
+            \item If the server were to crash, all lobbies will be terminated without any winners assigned.
+            \item A lobby can only be initialized when a player creates one. There will be no default lobbies maintained by the server.
+            \item A lobby will only be assigned to a given range of ports from the server. This is to make sure that the ports are available for creation.                         
+        \end{enumerate}
+\end{enumerate}
+
 
 \section{Gameplay}
 
 \section{Win Conditions}
+
+\begin{enumerate}
+    \item If player A has no more pieces, player B is the winner and vice versa.
+    \item If player A disconnects, player B is the winner and vice versa.
+\end{enumerate}
 
 \chapter{Further Information}
 
 \section{Appendix A: Glossary}
 
 \section{Appendix B: References}
+
+
+\bibliography{mybib}{}
+\bibliographystyle{plain}
 
 \section{Appendix C: To Be Determined List}
 
