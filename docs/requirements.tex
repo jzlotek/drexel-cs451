@@ -7,7 +7,6 @@
 \usepackage[bookmarks=true]{hyperref}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{cite}
 
 \newenvironment{enum}
 {\begin{enumerate}[label*=\arabic*.][resume]}
@@ -84,7 +83,7 @@
 
 \subsubsection{Moves}
 \begin{itemize}
-    \item A player may onlyeir own pieces.
+    \item A player may only move their own pieces.
     \item Normal Piece
         \subitem A normal piece may only move toward the other player's side of the board.
         \subitem A normal piece may move diagnally to the left or right to a vacant square in front of it.
@@ -112,7 +111,7 @@ It will serve as a reference while developing, testing, and maintaining the diff
 \section{Product Functions}
 
 \begin{enumerate}
-    \item Provide a userfacing application to play checkers with another user over the local network or internet.
+    \item Provide a user-facing application to play checkers with another user over the local network or internet.
     \item Provide a centralized server that mediates gameplay, game sessions, and clients.
 \end{enumerate}
 
@@ -127,7 +126,7 @@ It will serve as a reference while developing, testing, and maintaining the diff
 
 \section{Client}
 
-\begin{enumerate}[resume*]
+\begin{enumerate}[label*=R\arabic*.]
     \item Client - Server Interaction
     \begin{enumerate}[label*=\arabic*.]
         \item Client will automatically check to see if the game server is live given the set URL in the program.
@@ -142,7 +141,7 @@ It will serve as a reference while developing, testing, and maintaining the diff
 
 \subsection{Board State}
 
-\begin{enumerate}[label*=R\arabic*.]
+\begin{enumerate}[resume*]
     \item Board
     \begin{enumerate}[label*=\arabic*.]
         \item The clients will keep a copy of the board state in order to render it
@@ -209,18 +208,9 @@ It will serve as a reference while developing, testing, and maintaining the diff
 
 \section{Framework}
 
-\begin{enumerate}[label*=N\arabic*.]
-\end{enumerate}
-
 \section{Menus}
 
-\begin{enumerate}[label*=M\arabic*.]
-\end{enumerate}
-
-\section{Standard Componenets}
-
-\begin{enumerate}[label*=SC\arabic*.]
-\end{enumerate}
+\section{Standard Components}
 
 \chapter{Program Usage}
 
@@ -249,7 +239,7 @@ It will serve as a reference while developing, testing, and maintaining the diff
 
 \section{Gameplay}
 
-\section{Win Conditions}
+\subsection{Win Conditions}
 
 \begin{enumerate}
     \item If player A has no more pieces, player B is the winner and vice versa.
@@ -261,10 +251,6 @@ It will serve as a reference while developing, testing, and maintaining the diff
 \section{Appendix A: Glossary}
 
 \section{Appendix B: References}
-
-
-\bibliography{mybib}{}
-\bibliographystyle{plain}
 
 \section{Appendix C: To Be Determined List}
 
