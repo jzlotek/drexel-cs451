@@ -8,6 +8,7 @@ import tbc.client.components.Drawable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class GameScene {
 
@@ -37,6 +38,12 @@ public class GameScene {
     public void removeDrawableObj(String uuid) {
         if (uuid != null) {
             this.objects.removeIf(drawable -> drawable.getID().equals(uuid));
+        }
+    }
+
+    public void removeDrawableObj(UUID uuid) {
+        if (uuid != null) {
+            this.objects.removeIf(drawable -> drawable.getID().equals(uuid.toString()));
         }
     }
 
