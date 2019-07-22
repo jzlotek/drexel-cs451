@@ -1,4 +1,4 @@
-package tbc.server;
+package tbc.util;
 
 import java.util.Scanner;
 
