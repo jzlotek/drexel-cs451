@@ -4,12 +4,13 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import tbc.Constants;
 import tbc.util.*;
 
 public class Server {
 
-    public static final int PORT = 4510; // Using 4510
-    public static final String HOST = "tux2.cs.drexel.edu";    // Using Tux2 to host this service.
+    public static final int PORT = Constants.PORT; // Using 4510
+    public static final String HOST = Constants.HOST;    // Using Tux2 to host this service.
     protected static ServerSocket serverSocket = null;
     protected static Socket socket = null;
     protected static ArrayList<Socket> activePlayers = new ArrayList<Socket>();
