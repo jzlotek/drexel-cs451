@@ -38,7 +38,7 @@ jobs:
           path: ~/test-results/junit
       - run: curl -s https://codecov.io/bash | bash -s
       - persist_to_workspace:
-          root: /home/circleci
+          root: .
           paths:
             - gradle_conf
             - distributions
