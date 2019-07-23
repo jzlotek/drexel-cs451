@@ -1,0 +1,117 @@
+\documentclass{scrreprt}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage[ddmmyyyy]{datetime}
+\renewcommand{\dateseparator}{--}
+\usepackage[bookmarks=true]{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{url}
+\usepackage{graphicx}
+
+\newenvironment{enum}
+{\begin{enumerate}[label*=\arabic*.][resume]}
+{\end{enumerate}}
+
+\hypersetup{
+    bookmarks=false,    % show bookmarks bar?
+    pdftitle={Software Design Document},    % title
+    pdfauthor={John Zlotek},                     % author
+    pdfsubject={TeX and LaTeX},                        % subject of the document
+    pdfkeywords={TeX, LaTeX, graphics, images}, % list of keywords
+    colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=blue,       % color of internal links
+    citecolor=black,       % color of links to bibliography
+    filecolor=black,        % color of file links
+    urlcolor=purple,        % color of external links
+    linktoc=page            % only page is linked
+}%
+\def\myversion{1.0.0 }
+\date{}
+%\title{%
+
+%}
+\usepackage{hyperref}
+\begin{document}
+
+\begin{flushright}
+    \rule{16cm}{5pt}\vskip1cm
+    \begin{bfseries}
+        \Huge{SOFTWARE DESIGN\\ DOCUMENT}\\
+        \vspace{1.0cm}
+        for\\
+        \vspace{1.0cm}
+        Checkers\\
+        \vspace{1.5cm}
+        \LARGE{Version \myversion approved}\\
+        \vspace{1.5cm}
+        Prepared by:\\
+    John Zlotek\\
+    Matt Horger\\
+    Jake Carfagno\\
+    Preet Patel\\
+        \vspace{1.9cm}
+        Team: \textbf{Big Chungus}\\
+        \vspace{1cm}
+        \today\\
+    \end{bfseries}
+\end{flushright}
+
+\tableofcontents
+
+\chapter*{Revision History}
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        Name & Date & Reason For Changes & Version\\
+        \hline
+        1.0.0 & \formatdate{11}{7}{23} & Initial Structure & mhorger\\
+        \hline
+    \end{tabular}
+\end{center}
+
+\chapter{Introduction}
+	\section{Purpose of Document}
+	\section{Scope of Document}
+	\section{Overview of Document}
+
+\chapter{System Overview}
+	\section{Description of Software}
+	\section{Technologies Used}
+
+\chapter{System Architecture}
+	\section{Architecture Design Components}
+	\section{Rationale}
+
+\chapter{Component Design}
+	\section{Overview}
+	\section{Lobby / Game State Object}
+	\section{Game Data Design}
+	\section{Board Design}
+	\section{Player Move Design}
+
+\chapter{UI Design}
+	\section{Overview}
+	\section{Screens}
+	\section{Menus}
+
+\begin{thebibliography}{9}
+
+\bibitem{checkersFoundation}
+  The American Checker Foundation,
+  \textit{USA Checkers},
+  https://www.usacheckers.com/,
+  2019.
+
+\bibitem{historyCheckers}
+W.J. Rayment,
+\textit{History of Checkers or Draughts},
+http://www.indepthinfo.com/checkers/history.shtml,
+2004.
+
+\end{thebibliography}
+
+
+\end{document}
