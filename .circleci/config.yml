@@ -5,6 +5,7 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:11.0.3-jdk-stretch
+    working_directory: ~/checkers
     steps:
       - checkout
       - restore_cache:
@@ -31,7 +32,7 @@ jobs:
           path: ~/test-results/junit
       - run: curl -s https://codecov.io/bash | bash -s
       - persist_to_workspace:
-          root: /home/circleci
+          root: ~/checkers
           paths:
             - .
   publish-github-release:
@@ -39,11 +40,10 @@ jobs:
       - image: cibuilds/github:0.10
     steps:
       - attach_workspace:
-          at: /home/circleci
+          at: ~/checkers
       - run:
           name: "Publish Release on GitHub"
           command: |
-            ls -l
             VERSION=$(grep '^version ' build.gradle | cut -d' ' -f2 | sed "s/'//g")
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./build/libs
 workflows:
