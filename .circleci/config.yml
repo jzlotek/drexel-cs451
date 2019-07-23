@@ -35,12 +35,12 @@ jobs:
       - image: cibuilds/github:0.10
     steps:
       - attach_workspace:
-          at: ./build/libs
+          at: .
       - run:
           name: "Publish Release on GitHub"
           command: |
             VERSION=$(grep '^version ' build.gradle | cut -d' ' -f2 | sed "s/'//g")
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./build/libs
 workflows:
   version: 2
   main:
