@@ -20,6 +20,9 @@ jobs:
       - store_artifacts:
           path: build/libs
           destination: distributions
+      - store_artifacts:
+          path: ./build.gradle
+          destination: gradle_conf
       - run:
           name: Save test results
           command: |
@@ -32,10 +35,10 @@ jobs:
           path: ~/test-results/junit
       - run: curl -s https://codecov.io/bash | bash -s
       - persist_to_workspace:
-          root: /home/circleci
+          root: .
           paths:
-            - build/libs
-            - ./gradle.build
+            - gradle_conf
+            - distributions
   publish-github-release:
     docker:
       - image: cibuilds/github:0.10
@@ -45,7 +48,7 @@ jobs:
       - run:
           name: "Publish Release on GitHub"
           command:
-              VERSION=$(grep "^version " build.gradle | cut -f 2 | sed "s/'//g")
+              VERSION=$(grep "^version " gradle_conf/build.gradle | cut -f 2 | sed "s/'//g")
               ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./build/libs
 workflows:
   version: 2
