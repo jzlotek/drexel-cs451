@@ -52,7 +52,7 @@ jobs:
           name: "Publish Release on GitHub"
           command:
               VERSION=$(grep "^version " gradle_conf/build.gradle | cut -f 2 | sed "s/'//g")
-              ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./build/libs
+              ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./build/libs/
 workflows:
   version: 2
   main:
