@@ -22,7 +22,7 @@ jobs:
       - run:
           command: |
             mkdir -p gradle_conf
-            cp gradle.build gradle_conf/.
+            cp build.gradle gradle_conf/.
       - run:
           name: Save test results
           command: |
