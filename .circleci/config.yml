@@ -19,9 +19,10 @@ jobs:
       - store_artifacts:
           path: build/libs
           destination: distributions
-      - store_artifacts:
-          path: ./build.gradle
-          destination: gradle_conf
+      - run:
+          command: |
+            mkdir -p gradle_conf
+            cp gradle.build gradle_conf/.
       - run:
           name: Save test results
           command: |
@@ -34,7 +35,7 @@ jobs:
           path: ~/test-results/junit
       - run: curl -s https://codecov.io/bash | bash -s
       - persist_to_workspace:
-          root: .
+          root: /home/circleci
           paths:
             - gradle_conf
             - distributions
