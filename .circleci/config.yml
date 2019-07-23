@@ -30,6 +30,10 @@ jobs:
       - store_artifacts:
           path: ~/test-results/junit
       - run: curl -s https://codecov.io/bash | bash -s
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - .
   publish-github-release:
     docker:
       - image: cibuilds/github:0.10
