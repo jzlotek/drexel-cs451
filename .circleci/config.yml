@@ -46,7 +46,6 @@ jobs:
           name: "Publish Release on GitHub"
           command:
               VERSION=$(grep "^version " build.gradle | cut -f 2 | sed "s/'//g")
-#              VERSION=1.1.0
               ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./build/libs
 workflows:
   version: 2
