@@ -18,14 +18,14 @@ jobs:
           key: gradle-{{ checksum "build.gradle" }}
       - store_artifacts:
           path: build/libs
-          destination: distributions
+          destination: ~/distributions
       - run:
           command: |
             mkdir -p gradle_conf
             cp build.gradle gradle_conf/.
       - store_artifacts:
           path: gradle_conf
-          destination: gradle_conf
+          destination: ~/gradle_conf
       - run:
           name: Save test results
           command: |
@@ -38,7 +38,7 @@ jobs:
           path: ~/test-results/junit
       - run: curl -s https://codecov.io/bash | bash -s
       - persist_to_workspace:
-          root: /
+          root: /home/circleci
           paths:
             - gradle_conf
             - distributions
