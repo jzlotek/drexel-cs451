@@ -67,7 +67,9 @@
         \hline
         Name & Date & Reason For Changes & Version\\
         \hline
-        1.0.0 & \formatdate{11}{7}{23} & Initial Structure & mhorger\\
+        1.0.0 & \formatdate{19}{7}{23} & Initial Structure & mhorger\\
+        \hline
+        1.0.1 & \formatdate{19}{7}{24} & Added content to Introduction, System Overview, Architecture & mhorger\\
         \hline
     \end{tabular}
 \end{center}
@@ -111,7 +113,7 @@
 
 	\section{Technologies Used}
 	Checkers will be exclusively a desktop application, requiring a keyboard and mouse in order to properly input moves and play the game. Our target operating system will be Windows desktop machines, but this program will be able to run on any other operating systems  with Java Runtime Environment 12+ installed as long as they have enough storage space and memory to store and run the program on the machine. 
-	Our technological stack consists of Java 12 as our programming language with Eclipse Java Neon 3 as our primary IDE. We implement libraries inside of Java in order to provide capabilities that aren't necessarily easy to access using Java. We utilize UNIX servers provided to us by the College of Computing and Informatics in order to serve content from our server application. 
+	Our technological stack consists of Java 12 as our programming language with Eclipse Java Neon 3 as our primary IDE. We implement libraries inside of Java in order to provide capabilities that aren't necessarily easy to access using Java. We utilize UNIX servers provided to us by the College of Computing and Informatics in order to serve content from our server application over a secure network. 
 
 \chapter{System Architecture}
 	\section{Architecture Design Components}
@@ -125,13 +127,28 @@
 			\item Lobbies
 			\item Deployment
 			\end{enumerate}
+
 		\subsection Gameplay
 
 	\section{Rationale}
 
 		\subsection Networking
+			\begin{enumerate}
+
+				\item Why host on Drexel's network? Why not use a dedicated EC2 @ AWS instance?
+
+				\item Why assign ports from a specific range?
+
+				\item Why limit the amount of lobbies to be created / joined for clients?
+
+				\item Why implement a heartbeat for the server when you could just run other internal checks?
+
+			\end{enumerate}
 
 		\subsection Gameplay
+			\begin{enumerate}
+
+			\end{enumerate}
 
 \chapter{Component Design}
 	\section{Overview}
