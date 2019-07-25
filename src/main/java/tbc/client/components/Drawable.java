@@ -8,7 +8,7 @@ public abstract class Drawable {
 
     protected UUID id;
 
-    public abstract void draw(GraphicsContext gc);
+    public abstract void draw();
 
     public String getID() {
         return this.id.toString();
