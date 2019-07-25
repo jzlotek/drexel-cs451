@@ -58,4 +58,5 @@ public class Main {
             }
 //            boardState = serializer.deserialize(serverBoard, Board.class);
         }
+    }
 }
