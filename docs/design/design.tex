@@ -71,6 +71,8 @@
         \hline
         1.0.1 & \formatdate{19}{7}{24} & Added content to Introduction, System Overview, Architecture & mhorger\\
         \hline
+        1.0.2 & \formatdate{19}{7}{25} & Added assignments for group distribution & mhorger \\
+        \hline
     \end{tabular}
 \end{center}
 
@@ -85,7 +87,7 @@
 		\subsection Programming Specifics
 			\begin{enumerate}
 			\item UI / UX - An acronym for \textit{User Interface} and \textit{User Experience}, respectfully.
-			\item JavaFx - A term for the library used for composition of graphical components in Java
+			\item Swing - A term for the library used for composition of graphical components in Java, built-in.
 			\item IDE - An acronym for \textit{Integrated Development Environment}, which is a piece of software used to easily format, compile, run code
 			\item Tux - An acronym for the server provided by the College of Computing and Informatics with an address of \textit{tux.cs.drexel.edu} 
 			\item Async - An acronym used for Asynchronous execution of processes in our program.
@@ -118,7 +120,7 @@
 \chapter{System Architecture}
 	\section{Architecture Design Components}
 
-		\subsection Networking
+		\subsection Networking - Matt by tonight
 			\begin{enumerate}
 			\item Protocols
 			\item Port Ranges
@@ -132,7 +134,7 @@
 
 	\section{Rationale}
 
-		\subsection Networking
+		\subsection Networking - Matt by tonight
 			\begin{enumerate}
 
 				\item Why host on Drexel's network? Why not use a dedicated EC2 @ AWS instance?
@@ -147,20 +149,44 @@
 
 		\subsection Gameplay
 			\begin{enumerate}
-
+			Is there any design or architecture choices (aka how we handle moves) that needs explaining?
 			\end{enumerate}
 
 \chapter{Component Design}
 	\section{Overview}
+	Talk about what this section entails in terms of game pieces, how it relates to our requirements, and how it achieves playing the game via reusable pieces
+
 	\section{Lobby / Game State Object}
+		\item Matt / John split this by Tuesday
 	\section{Game Data Design}
+		\item engine that checks if a move is valid, checks win conditions
 	\section{Board Design}
+		\item 8 by 8 matrix - Jake - by Monday 
+		UML, table with descriptions of methods / attributes, implementation if possible 
 	\section{Player Move Design}
+		\item  sending list of moves of a piece object from matrix positions over server socket - Jake by Monday
 
 \chapter{UI Design}
 	\section{Overview}
-	\section{Screens}
-	\section{Menus}
+	Talk about what this section entails in terms of content, how it relates to our requirements, how it achieves the game purpose in terms of functional detail	
+
+	\section{Screens} - Jake by Tuesday - images
+		\begin{enumerate}
+		\item Game Screen
+		\item End of Game Screen
+			\subitem Victory Screen
+			\subitem Defeat Screen
+		\begin{enumerate}
+	\section{Menus} - Matt / John by Tuesday - images
+		UML insert for menu logic
+
+		\begin{enumerate}
+		\item Start Menu
+		\item Lobby Menu
+			\subitem Create Lobby Menu
+			\subitem Join Lobby Menu
+		\item Pause Menu
+		\end{enumerate}
 
 \begin{thebibliography}{9}
 
