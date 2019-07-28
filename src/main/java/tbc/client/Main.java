@@ -2,29 +2,63 @@ package tbc.client;
 
 import tbc.Constants;
 import tbc.client.components.Board;
+import tbc.client.components.GameScene;
 import tbc.util.ConsoleWrapper;
 import tbc.util.SerializationUtilJSON;
 import tbc.util.SocketUtil;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.Socket;
 
 
 public class Main {
-    public static void main(String[] args) {
-        JFrame window = new JFrame();
-        JButton b = new JButton("click");
-        b.setBounds(130, 100, 100, 40);
+    static Socket s = null;
 
-        window.add(b);
-        window.setSize(600, 600);
-        window.setLayout(null);
-        window.setVisible(true);
+    public static void main(String[] args) {
+        GameScene scene = new GameScene();
+        JTextArea debug = new JTextArea();
+        debug.setBounds(400, 0, 200, 100);
+        JButton b = new JButton("click");
+        JButton joinButton = new JButton("Join a Game");
+        joinButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getActionCommand().equals("click")) {
+                    if (s != null) {
+                        try {
+                            s.close();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    try {
+                        s = new Socket("localhost", Constants.PORT);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    if (s == null) {
+                        debug.setText("Failed to Join");
+                    } else {
+                        debug.setText(debug.getText()+"\nConnected to: " + s.getInetAddress().getHostAddress());
+                    }
+                }
+                ConsoleWrapper.WriteLn(e.toString());
+            }
+        });
+        joinButton.setBounds(0, 0, 100, 100);
+        b.setBounds(130, 100, 100, 40);
+        scene.add(b);
+        scene.add(joinButton);
+        scene.add(debug);
+        scene.show();
     }
 
-    public void gameLoop() {
+    public void gameLoop() throws InterruptedException {
         Socket s = null;
         SerializationUtilJSON serializer = new SerializationUtilJSON();
         try {
@@ -39,19 +73,15 @@ public class Main {
         // Game Loop
         Board boardState = null;
         BufferedReader socketReader = null;
-        try {
-            socketReader = SocketUtil.getReaderFromSocket(s);
-        } catch (Exception e) {
-            // throw exception and notify main javafx
-            ConsoleWrapper.WriteLn("Failed to get reader from socket");
-        }
         while (true) {
             String serverBoard = null;
             while (serverBoard == null) {
                 try {
-                    serverBoard = socketReader.readLine();
+                    serverBoard = SocketUtil.readFromSocket(s);
                 } catch (IOException e) {
                     serverBoard = null;
+                    Thread.sleep(500);
+                    ConsoleWrapper.WriteLn("Waiting 500 ms");
                     continue;
                 }
                 ConsoleWrapper.WriteLn(serverBoard);

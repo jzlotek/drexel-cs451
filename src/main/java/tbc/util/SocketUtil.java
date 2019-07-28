@@ -5,9 +5,9 @@ import java.net.Socket;
 
 public class SocketUtil {
 
-    public static BufferedReader getReaderFromSocket(Socket s) throws IOException {
+    public static String readFromSocket(Socket s) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        return reader;
+        return reader.readLine();
     }
     public static void sendToSocket(String string, Socket socket) throws IOException {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
