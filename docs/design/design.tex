@@ -163,8 +163,25 @@
 	\section{Board Design}
 		\item 8 by 8 matrix - Jake - by Monday 
 		UML, table with descriptions of methods / attributes, implementation if possible 
+		The server will store the board, which contains all of the spaces and player pieces.
 	\section{Player Move Design}
 		\item  sending list of moves of a piece object from matrix positions over server socket - Jake by Monday
+		For a player to move, the below steps are taken:
+		\begin{enumerate}
+		\item The player selects a space on the client-side
+			\subitem If the space selected does not contain one of their own pieces, then nothing happens
+		\item The client sends the server the x and y coordinate of the space selected on the board
+		\item The server uses the Board to create a list of all valid moves from that location
+		\item This list of possible moves, created as an ArrayList<Vector> is then converted to a Vector[] for sending back to the client over the network
+			\subitem The Vector class is simply a structure containing an x and y coordinate
+			\subitem The conversion ensures minimal data transfer for greatest reliability and least waiting time between actions
+		\item The client's display highlights all possible moves the player can make from that selected space
+		\item The player may click on a highlighted space to finalize that move
+			\subitem If the player instead clicks on a non-highlighted space, the new space is selected, repeating the process
+		\item Once the move is confirmed, the client sends the server the x and y coordinates of the source and destination space
+		\item The server once again validates the move, checks if any additional moves can be made (in the case of a completed jump), and returns to the moving player the two Vectors and a boolean of whether an additional move can be made
+		\end{enumerate}
+		
 
 \chapter{UI Design}
 	\section{Overview}
