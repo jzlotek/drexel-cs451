@@ -38,5 +38,4 @@ public class ComponentStoreTest {
         assertSame(component2, store2.get("test"));
         assertNotSame(component, store2.get("test"));
     }
-
 }
