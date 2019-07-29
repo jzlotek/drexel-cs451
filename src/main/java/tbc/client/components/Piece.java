@@ -1,8 +1,8 @@
 package tbc.client.components;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import tbc.util.UUIDUtil;
+
+import java.awt.*;
 
 public class Piece extends Drawable {
 
@@ -64,10 +64,6 @@ public class Piece extends Drawable {
     }
 
     @Override
-    public void draw(GraphicsContext gc) {
-        gc.setFill(this.getColor());
-        gc.setStroke(this.getColor());
-
-        gc.fillRect(0, 0, 100, 100);
+    public void draw() {
     }
 }
