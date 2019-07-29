@@ -1,8 +1,8 @@
 package tbc.client.components;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import tbc.util.UUIDUtil;
+
+import java.awt.*;
 
 public class Board extends Drawable {
     private Piece[][] board;
@@ -32,6 +32,6 @@ public class Board extends Drawable {
     }
 
     @Override
-    public void draw(GraphicsContext gc) {
+    public void draw() {
     }
 }
