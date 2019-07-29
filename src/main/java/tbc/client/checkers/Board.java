@@ -112,9 +112,31 @@ public class Board
 			return false;
 		}
 		
-		
-		
-		return true;
+		// Now check to make sure the destination is a valid move for this piece
+		ArrayList<Vector> validMoves = getValidMoves(_piece, _xOld, _yOld);
+
+		Vector attemptedMove = new Vector(_xNew, _yNew);
+
+		boolean isFound = false;
+
+		// Compare the attempted move location to all the valid moves
+		for(Vector validMove : validMoves)
+		{
+			if(validMove.equals(attemptedMove))
+			{
+				isFound = true;
+			}
+		}
+
+		// If the new location was found, the move is valid, so move the piece
+		if(isFound)
+		{
+			getSpace(_xOld, _yOld).setPiece(null);
+
+			getSpace(attemptedMove).setPiece(_piece);
+		}
+
+		return isFound;
 	}
 	
 	public ArrayList<Vector> getValidMoves(Piece _piece, Vector _pos)
