@@ -15,12 +15,7 @@ public class SerializationUtilJSON extends SerializationUtil {
     public String serialize(Object obj) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        try {
-            return mapper.writeValueAsString(obj);
-        } catch (Exception e) {
-            ConsoleWrapper.WriteLn(e.getMessage());
-            return "";
-        }
+        return mapper.writeValueAsString(obj);
     }
 
     @Override
