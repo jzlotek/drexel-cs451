@@ -10,7 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="09ae53fc-0002-4ba7-a76a-6458c88b5089" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.circleci/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.circleci/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tbc/client/components/GameScene.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tbc/client/components/GameScene.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -85,12 +87,6 @@
       </set>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="287" />
-    <option name="y" value="53" />
-    <option name="width" value="1400" />
-    <option name="height" value="1000" />
-  </component>
   <component name="ProjectId" id="1NBezkkGCIlQrSKvXLtQJTcEeZR" />
   <component name="PropertiesComponent">
     <property name="ADD_EXTERNAL_FILES" value="true" />
@@ -149,7 +145,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="Gradle.drexel-cs451 [assembleDist]">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="tbc.client.Main" />
       <module name="checkers.main" />
