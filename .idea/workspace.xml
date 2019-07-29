@@ -10,7 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="09ae53fc-0002-4ba7-a76a-6458c88b5089" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/tbc/util/SerializationUtilJSON.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tbc/util/SerializationUtilJSON.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.circleci/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.circleci/config.yml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
