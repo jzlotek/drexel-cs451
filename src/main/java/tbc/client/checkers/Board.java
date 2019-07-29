@@ -1,8 +1,9 @@
 package tbc.client.checkers;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Board
+public class Board implements Serializable
 {
 	private Vector boardSize = new Vector(8, 8);
 	private Space[][] board;
@@ -35,6 +36,16 @@ public class Board
 			for(int col = 0; col < boardSize.getX(); ++col)
 			{
 				board[row][col] = new Space(col, row, color);
+				// create a piece on that space
+				if (color == Color.BLACK) {
+					if (row < 3) {
+						Piece p = new Piece(this, Color.BLACK);
+						board[row][col].setPiece(p);
+					} else if (row >= this.boardSize.getY() - 3) {
+						Piece p = new Piece(this, Color.RED);
+						board[row][col].setPiece(p);
+					}
+				}
 				
 				// Alternate colors for spaces
 				if(col < boardSize.getX() - 1)

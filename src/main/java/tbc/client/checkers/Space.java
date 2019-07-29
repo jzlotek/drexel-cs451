@@ -1,6 +1,8 @@
 package tbc.client.checkers;
 
-public class Space
+import java.io.Serializable;
+
+public class Space implements Serializable
 {
 	private Vector pos;
 	private Piece piece;

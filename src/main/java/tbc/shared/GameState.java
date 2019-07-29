@@ -1,6 +1,7 @@
 package tbc.shared;
 
-import tbc.client.components.Board;
+
+import tbc.client.checkers.Board;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,6 +20,12 @@ public class GameState implements Serializable {
     public GameState(String message) {
         this.message = message;
         this.board = null;
+        this.moves = new ArrayList<>();
+    }
+
+    public GameState(String message, Board board) {
+        this.message = message;
+        this.board = board;
         this.moves = new ArrayList<>();
     }
 }
