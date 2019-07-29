@@ -1,7 +1,6 @@
 package tbc.client.checkers;
 
 import org.junit.Test;
-import org.junit.runners.JUnit4;
 
 import static org.junit.Assert.*;
 
@@ -16,6 +15,8 @@ public class SpaceTest {
         s.setPiece(p);
         assertSame(p, s.getPiece());
         assertTrue(s.isOccupied());
+        Space s1 = new Space(new Vector(1, 1), Color.RED);
+        assertTrue(s1.getPos().equals(new Vector(1, 1)));
     }
 
     @Test
