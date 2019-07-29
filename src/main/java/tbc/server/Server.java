@@ -5,14 +5,15 @@ import java.net.*;
 import java.util.*;
 
 import tbc.Constants;
+import tbc.shared.GameState;
 import tbc.util.*;
 
 public class Server {
 
     public static final int PORT = Constants.PORT; // Using 4510
     public static final String HOST = Constants.HOST;    // Using Tux2 to host this service.
+	private static SerializationUtilJSON serializer = new SerializationUtilJSON();
     protected static ServerSocket serverSocket = null;
-    protected static Socket socket = null;
     protected static ArrayList<Socket> activePlayers = new ArrayList<Socket>();
     protected final static int allowedClients = 2;
 
@@ -26,6 +27,8 @@ public class Server {
             ConsoleWrapper.WriteLn("Unable to start service on port: " + ex.getMessage());
             throw ex;
         }
+
+        Socket socket;
         
         while(true) {
 	        while (activePlayers.size() < allowedClients) {
@@ -33,8 +36,11 @@ public class Server {
 	                ConsoleWrapper.WriteLn("Ready to accept new connection...");
 	                socket = serverSocket.accept(); // take in the new connection
 	                activePlayers.add(socket); // add it to the list of active players
-	                DataOutputStream initial_message = new DataOutputStream(socket.getOutputStream());
-	                initial_message.writeUTF("Connected! Waiting for " + (allowedClients - activePlayers.size()) + " players to join");
+					GameState gs = new GameState("Connected! Waiting for " + (allowedClients - activePlayers.size()) + " players to join");
+					SocketUtil.sendToSocket(
+							serializer.serialize(gs),
+							socket
+					);
 	            } catch (IOException ex) {
 	                ConsoleWrapper.WriteLn("Unable to accept new connection: " + ex.getMessage());
 	                throw ex;

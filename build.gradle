@@ -58,6 +58,9 @@ task server(type: Jar) {
     manifest {
         attributes 'Main-Class': 'tbc.server.Server'
     }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 assembleDist {
@@ -76,6 +79,9 @@ task client(type: Jar) {
         manifest {
             attributes 'Main-Class': 'tbc.client.Main'
         }
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
