@@ -17,10 +17,24 @@ public class GameScene {
         window.setVisible(true);
     }
 
+    /*
+    Adds the component to the window
+     */
     public void add(JComponent component) {
         window.add(component);
     }
 
+    /*
+    Adds to the window and registers the component with the key to the global object store
+     */
+    public void register(JComponent component, String key) {
+        this.add(component);
+        ComponentStore.getInstance().put(key, component);
+    }
+
+    /*
+    Returns window instance
+     */
     public static JFrame getWindow() {
         return window;
     }
