@@ -13,14 +13,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
 
 
 public class Main {
     static Socket s = null;
     static GameScene window = null;
     static SerializationUtilJSON serializer = new SerializationUtilJSON();
-
 
     public static void main(String[] args) throws InterruptedException {
         window = new GameScene();
@@ -30,7 +28,7 @@ public class Main {
             try {
                 String string = SocketUtil.readFromSocket(s);
                 GameState gs = (GameState) serializer.deserialize(string, GameState.class);
-                JTextArea debug = (JTextArea)ComponentStore.getInstance().get("debug");
+                JTextArea debug = (JTextArea) ComponentStore.getInstance().get("debug");
                 debug.append("\n" + gs.message);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -50,6 +48,27 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 connectToServer(e);
+                if (e.getActionCommand().equals("click")) {
+                    if (s != null) {
+                        try {
+                            s.close();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    try {
+                        s = new Socket("localhost", Constants.PORT);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    if (s == null) {
+                        debug.setText("Failed to Join");
+                    } else {
+                        debug.setText(debug.getText() + "\nConnected to: " + s.getInetAddress().getHostAddress());
+                    }
+                }
+                ConsoleWrapper.WriteLn(e.toString());
             }
         });
         joinButton.setBounds(0, 0, 100, 100);
