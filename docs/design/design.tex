@@ -27,7 +27,7 @@
     urlcolor=purple,        % color of external links
     linktoc=page            % only page is linked
 }%
-\def\myversion{1.0.0 }
+\def\myversion{2.0.0 }
 \date{}
 %\title{%
 
@@ -73,6 +73,8 @@
         \hline
         1.0.2 & \formatdate{19}{7}{25} & Added assignments for group distribution & mhorger \\
         \hline
+        2.0.0 & \formatdate{19}{7}{29} & Finished Document & mhorger, jcarfagno \\
+	\hline
     \end{tabular}
 \end{center}
 
@@ -84,7 +86,7 @@
 	In this document, we split our design implementations into separate categories that are each unique parts in our overall program. We cannot have a program without an underlying architecture or tools defined. We abstract our components into a separate category in order to distinguish them for reuse throughout other parts of our program. We also abstract out our UI design to make the distinction between menus and components in regards to our program and data flows. This document will try to justify that our design choices will satisfy the requirements laid out for our program. We will not prove in this document that these choices are tested and correct.
 
 	\section{Definitions, Acronyms, and Overview of Document-Specific Language}
-		\subsection Programming Specifics
+		\subsection {Programming Specifics}
 			\begin{enumerate}
 			\item UI / UX - An acronym for \textit{User Interface} and \textit{User Experience}, respectfully.
 			\item Swing - A term for the library used for composition of graphical components in Java, built-in.
@@ -94,7 +96,7 @@
 			\item Process - A term used interchangeably with a thread in Java.
 			\end{enumerate}
 
-		\subsection Game Specifics
+		\subsection {Game Specifics}
 			\begin{enumerate}
 			\item Player - A term used interchangeably with a Client (connection), who plays the game.
 			\item Lobby - A term used for the data structure used to store client connection and game information.
@@ -102,7 +104,7 @@
 			\item Piece - A term used loosely to define a checker and any association with it.
 			\end{enumerate}
 
-		\subsection Architecture Specifics
+		\subsection {Architecture Specifics}
 			\begin{enumerate}
 			\item Client - A term used interchangeably for the port connection a player opens when interfacing with our server. Can also mean the executable program that end-users will run to play our game.
 			\item Server - A term used for the executable program that consistently handles all client interactions, information, and connections.
@@ -120,87 +122,226 @@
 \chapter{System Architecture}
 	\section{Architecture Design Components}
 
-		\subsection Networking - Matt by tonight
-			\begin{enumerate}
-			\item Protocols
-			\item Port Ranges
-			\item Client
-			\item Server
-			\item Lobbies
-			\item Deployment
+		\subsection {Networking}
+			\begin{enumerate} [label*=\arabic*.]
+			\item \textbf{Protocols}
+				There will be a couple of protocols being used in our application. In order for clients to connect to the server, they must first provide credentials in order to pass the WPA2-Enterprise security of the Drexel network. There are no trusted CAs on this network. 
+				Most network traffic transported between the server and client will be over TCP/IP. We will not be implementing SSL for game data because the data is not necessarily critical to secure for the scope of this project.
+
+			\item \textbf{Port Ranges}
+				We will be limiting the port ranges that the server can assign lobbies to within a range of 30 ports. The port range will be from 25566 - 25596. Any ports assigned outside this range can only be attached via a client connection.
+
+			\item \textbf{Client}
+				Clients will be able to connect to a server with any given port. The client themselves are tied to one player object in terms of game purposes, so they will have control over game pieces, game logic, etc. The bare bones client will only send and receive messages from the server rather than processing heavy amounts of data. 
+
+			\item \textbf{Server}
+				The server will have the priority game engine and processing unit. Clients will send a specific object serialized for the server to validate, and send an appropriate message back to the client. This data flow is appropriate for this project because we shouldn't let clients maliciously edit their code and have them implement exploits. The server will be responsible for maintaining the validity of the game manager / data. 
+
+			\item \textbf{Lobbies}
+				Lobbies will be limited to 5 randomized ports from the given ranges. Lobbies are responsible for maintaining client connections and sending / receiving data from the game manager hosted on the server. Lobbies can be terminated when a game ends, the server will not terminate when a game ends. 
+
+			\item \textbf{Deployment}
+				We will deploy two servers: one DEV and one PROD instance. The PROD instance will be hosted on Drexel's network at tux.cs.drexel.edu, while the DEV instance will be hosted locally for testing on a private AWS reservation, which we will not be sharing the details here. The reason for this is because we don't want clients connecting to DEV and breaking mechanics while we are developing them. 
 			\end{enumerate}
 
-		\subsection Gameplay
+			 \includegraphics[width=15cm, height=11cm]{"img/Network Architecture".png}
+
+		\subsection {Gameplay}
+			\begin{enumerate} [label*=\arabic*.]
+			\item \textbf{Game Piece}
+				A game piece is the color assignment for a client. A client cannot have more than 12 pieces assigned to them or more than 1 color. A board cannot have more than 24 game pieces active. A game piece is either a standard piece or a king piece, since we simply place a designation on the token that is a king.
+	
+			\item \textbf{Move}
+				A move is a valid operation which a game piece can perform. A game piece cannot have a move, it can only perform a move and have the server check if it is a valid move. Moves are the operational logic to progress the game just as we progress through a state machine in a deterministic automaton; there's always an ending state for a move that determines a winning or losing move.
+
+			\item \textbf{Board}
+				A board can have up to 24 game pieces, but only stores the information about the color and position they are in. The board is also there for graphical input and output, as a user interacts with a game piece to move it to another position on the board. 
+
+			\end{enumerate}
+
+		 \includegraphics[width=15cm, height=5cm]{img/"Gameplay Architecture".png}
+		
 
 	\section{Rationale}
 
-		\subsection Networking - Matt by tonight
-			\begin{enumerate}
+		\subsection {Networking}
+			\begin{enumerate} [label*=\arabic*.]
 
-				\item Why host on Drexel's network? Why not use a dedicated EC2 @ AWS instance?
+				\item\textbf{Why host on Drexel's network? Why not use a dedicated EC2 @ AWS instance?}
+								
+				We need to host our server on Drexel's network in order to promote security for our users. Clients will have to connect to dragonfly3 or another similar network in order for tux.cs.drexel.edu to validate your Drexel credentials. We chose to implement our server side on Drexel's network instead of AWS for two reasons. The first being cost. Drexel CCI provides these servers for students to use free of charge for classwork. Amazon charges roughly 10 dollars a month USD in order just to reserve an instance, let alone all the requests and run-time usage we would incur charges on. The second reason is security. We could have implemented SSO in AWS or a similar encryption method to validate users, but that is outside the scope of this project. Since we are hosting on Drexel's network, we are given security "free of charge", meaning that we don't have to take extra time out of our project to implement it ourselves.
+ 
+				\item\textbf{Why assign ports from a specific range?}
 
-				\item Why assign ports from a specific range?
+				We need to assign ports from a specific range to not overflow tux.cs.drexel.edu with random ports across a huge range. By limiting our server to only assign lobbies a specific port within a respectable range, this helps us as developers quickly check ports that are open in that specific range, rather than ping the entire ports to see which ones we are using. We won't be necessarily storing active port connections, so by defining a specific range, we will guarantee that we can deduct where a port could be open, and how many theoretically could be open. This design choice of not having a spread of ports is also good for other Drexel users because we will select a port range that is obscure and shouldn't affect other applications.
 
-				\item Why limit the amount of lobbies to be created / joined for clients?
+				\item\textbf{Why limit the amount of lobbies to be created / joined for clients?}
 
-				\item Why implement a heartbeat for the server when you could just run other internal checks?
+				This one is pretty straightforward: we don't want to crash Drexel's network. By limiting the amount of open ports, in this definition lobbies, we are ensuring that we don't flood our server with too much data to cause interruptions in the network. Therefore, we are going to limit a client to either create a lobby, or join one of the 5 maximum lobbies that can be available at any given moment. If there are more than 5 lobbies attempting to control resources from Drexel's network, the server will automatically shutdown in order to prevent extreme resource allocation in terms of network traffic.
+
+				\item \textbf{Why implement a heartbeat for the server when you could just run other internal checks?}
+
+				This design piece was hard to agree upon among our team members. Some team members suggested using the screen command in order to run our server 24/7. Others suggested we implement a heartbeat function that checks to make sure that server is still operating. We decided on the second feature for two reason. The first being alerting purposes. When we have a heartbeat that doesn't make a connection, we can use that time to send a warning email to developers instructing them to restart the server. With the screen command, the server might died and we will not know about it until we target it again. The second reason being network resources. By having a heartbeat built into the server, we can easily have a direct access point to check if the network is still communicating with the server. Instead of having a separate client try to ping the server, we have the server handle itself and not use more network resources than needed.
 
 			\end{enumerate}
 
-		\subsection Gameplay
+		\subsection {Gameplay}
 			\begin{enumerate}
-			Is there any design or architecture choices (aka how we handle moves) that needs explaining?
+
+			\item \textbf{Why create a unique object when simple coordinates can be used?}
+			We do in fact use coordinates in our design of handling moves, but we simply did not want to solely rely on them. By encapsulating these coordinates only if the move is valid, we would be able to first check if a move is valid first before actually utilizing the coordinates. 90\% of the time, moves will be valid, but if a user enters an invalid move, we want to process it first before we even need the coordinate to update the board. 
+
+			\item \textbf{Why use an ArrayList$<$Vector$>$ when you have to convert it to a Vector[]?}
+			For serialization, it is easier to construct an ArrayList of the vector type for our server to process the information. Then, we can always send it back in whatever format the client needs for ease of processing. However, for the sake of server calculations, an ArrayList of valid moves, considering that a move is an object, is a great design choice for serialization and proper handling of data.
+
+			\item \textbf{Why use a smaller 8 by 8 board?}
+			The more popular versions of checkers have bigger boards to accommodate for bigger pieces, and therefore more in-depth strategies. However, we wanted to stick with the classic design for simplicity.
 			\end{enumerate}
 
 \chapter{Component Design}
 	\section{Overview}
-	Talk about what this section entails in terms of game pieces, how it relates to our requirements, and how it achieves playing the game via reusable pieces
+	This section details the underlying implementation of our game components, which will be reused throughout our application. This section will detail how we we implement the requirements of the game logic as well as board reconciliation and player moves using a UML diagram. We will also display some mock-ups of game pieces and the board using different styles. 
 
-	\section{Lobby / Game State Object}
-		\item Matt / John split this by Tuesday
-	\section{Game Data Design}
-		\item engine that checks if a move is valid, checks win conditions
+	\section{Lobby / Game Manager Object}
+		\begin{enumerate} [label*=\arabic*.]
+		\item Contains
+			\subitem ArrayList playerPieces
+			\subitem EventHandler checking if the game has been won
+			\subitem Active player color playing during the turn
+		\item Important Functions
+			\subitem Adds an event listener to check for a game win
+			\subitem Gets all the piece locations for a given color
+			\subitem Removes a piece from the board
+			\subitem Can hard check for a winner
+		\end{enumerate}
+
+		\includegraphics{"img/gameManager".png}
+	
 	\section{Board Design}
-		\item 8 by 8 matrix - Jake - by Monday 
-		UML, table with descriptions of methods / attributes, implementation if possible 
+	Below are some style choices for our board. One image is a darker variation, and this could be implemented in further releases for users to customize their board styles.
+
+	\includegraphics{"img/board".png}
+	\includegraphics{"img/board dark".png}
+
+	\begin{enumerate} [label*=\arabic*.]
+	\item Contains
+		\subitem Board size
+		\subitem Matrix of spaces
+	\item Important Functions
+		\subitem Checks if a space has a piece
+		\subitem Moves a piece
+		\subitem Gets valid moves
+		\subitem Checks valid spaces for moves
+	\end{enumerate}
+
+	\includegraphics{"img/boardManager".png}
+	
+
+	\section{Piece Design}
+		Color choices for our pieces
+	
+		\includegraphics{"img/checkersPiece black".png}
+		\includegraphics{"img/checkersPiece black crowned".png}
+		\includegraphics{"img/checkersPiece red".png}
+		\includegraphics{"img/checkersPiece red crowned".png}
+	
+		\begin{enumerate} [label*=\arabic*.]
+		\item Contains
+			\subitem Color
+			\subitem Crown Status
+			\subitem Two event handlers for crowning / destruction
+		\item Important Functions
+			\subitem Gets active status
+			\subitem Gets crown status
+			\subitem Gets color status
+		\end{enumerate}
+	
+		\includegraphics{"img/pieceManager".png}
+
 	\section{Player Move Design}
-		\item  sending list of moves of a piece object from matrix positions over server socket - Jake by Monday
+		\begin{enumerate}[label*=\arabic*.]
+		\item Contains
+			\subitem Source Position
+			\subitem Destination Position
+			\subitem Jump Ability
+		\item Important Functions
+			\subitem Gets / Sets Source and Destination Position
+			\subitem Gets / Sets Jump abilities
+			\subitem Checks if piece can move again		
+		\end{enumerate}
+
+		\includegraphics{"img/moveManager".png}
+
+	\section{Player Move Logic}
+		For a player to move, the below steps are taken:
+		\begin{enumerate} [label*=\arabic*.]
+		\item The player selects a space on the client-side
+			\subitem If the space selected does not contain one of their own pieces, then nothing happens
+		\item The client sends the server the x and y coordinate of the space selected on the board
+		\item The server uses the Board to create a list of all valid moves from that location
+		\item This list of possible moves, created as an ArrayList$<$Vector$>$ is then converted to a Vector[] for sending back to the client over the network
+			\subitem The Vector class is simply a structure containing an x and y coordinate
+			\subitem The conversion ensures minimal data transfer for greatest reliability and least waiting time between actions
+		\item The client's display highlights all possible moves the player can make from that selected space
+		\item The player may click on a highlighted space to finalize that move
+			\subitem If the player instead clicks on a non-highlighted space, the new space is selected, repeating the process
+		\item Once the move is confirmed, the client sends the server the x and y coordinates of the source and destination space
+		\item The server once again validates the move, checks if any additional moves can be made (in the case of a completed jump), and returns to the moving player the two Vectors and a boolean of whether an additional move can be made
+		\end{enumerate}
+	
+		\includegraphics[height=18cm]{"img/CS 451 Checkers Flowchart".png}	
+
+		Graphic detailing the logic behind player moves
+
+		\includegraphics[angle=90, height=20cm]{"img/snippedUML".png}
+
+		Complete Design UML for Components
 
 \chapter{UI Design}
 	\section{Overview}
-	Talk about what this section entails in terms of content, how it relates to our requirements, how it achieves the game purpose in terms of functional detail	
+	This section details the design flow between screens and menus. We also include screen mockups using the tool \textit{Paint 3D}. These mock-ups are not necessarily final, because the implementation in Swing might differ due to styling and functionality. Nonetheless, we would like to implement the same color schemes and menu design logic to provide a seamless user experience when using our application. This section covers the requirements of game logic and application flow.
 
-	\section{Screens} - Jake by Tuesday - images
-		\begin{enumerate}
-		\item Game Screen
-		\item End of Game Screen
-			\subitem Victory Screen
-			\subitem Defeat Screen
-		\begin{enumerate}
-	\section{Menus} - Matt / John by Tuesday - images
-		UML insert for menu logic
+	\section{Screens}
+		\begin{enumerate} [label*=\arabic*.]
+		\item \textbf{Game Screen}
+				The game screen will just simply consist of the board object, with a side menu detailing how many pieces are active on the board. The pieces will be broken down into categories: your pieces and your opponent's pieces.
+				
+\includegraphics[height=10cm]{"img/mockup ingame".png}
+		\item \textbf{End of Game Screen}
+			There will be only two popup screens at the end of the game: either a player won the game or lost the game. 
+			\subitem \textbf{Victory Screen}
+				The victory screen will prompt the client if they want to rematch the current lobby participant, or to bring them back to the main lobby menu.
+				
+				\includegraphics[height=8cm]{"img/mockup victory".png}
+			\subitem \textbf{Defeat Screen}
+				The defeat screen is very similar to the victory screen in that it prompts a rematch or return back to the main lobby menu.
 
-		\begin{enumerate}
-		\item Start Menu
-		\item Lobby Menu
-			\subitem Create Lobby Menu
-			\subitem Join Lobby Menu
-		\item Pause Menu
+				\includegraphics[height=8cm]{"img/mockup loss".png}
 		\end{enumerate}
+
+	\section{Menus}
+		\begin{enumerate} [label*=\arabic*.]
+		\item \textbf{Start Menu}
+			This menu will only have two options; a play button and an exit button. The play button will launch the lobby menu if and only if the player can connect to the server. The exit button will close out of the program entirely. 
+
+		\item \textbf{Lobby Menu}
+			This menu will have the list lobbies available for the client to join. If there are 5 active lobbies, the user will be unable to click on Create Lobby. If a user does click on Create Lobby, they will be prompted with a waiting screen for more players to join. If a player joins a lobby without any players, they will see the same screen.
+
+\includegraphics{"img/mockup serverlist".png}
+
+		\item \textbf{Pause Menu}
+			This menu will have two options; either to exit out of the current game back to the lobby menu or to quit out of the program entirely. This menu option can only be activated when a client is in a created lobby playing the game.
+		\end{enumerate}
+
+		\includegraphics[angle=90]{"img/Menu Logic".png}
 
 \begin{thebibliography}{9}
 
 \bibitem{checkersFoundation}
-  The American Checker Foundation,
-  \textit{USA Checkers},
-  https://www.usacheckers.com/,
+  Software Requirements Specifications,
+  \textit{Team Big Chungus},
+  CS 451-002 Submission 1,
   2019.
-
-\bibitem{historyCheckers}
-W.J. Rayment,
-\textit{History of Checkers or Draughts},
-http://www.indepthinfo.com/checkers/history.shtml,
-2004.
 
 \end{thebibliography}
 
