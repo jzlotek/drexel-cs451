@@ -191,7 +191,7 @@
 			\item \textbf{Why create a unique object when simple coordinates can be used?}
 			We do in fact use coordinates in our design of handling moves, but we simply did not want to solely rely on them. By encapsulating these coordinates only if the move is valid, we would be able to first check if a move is valid first before actually utilizing the coordinates. 90\% of the time, moves will be valid, but if a user enters an invalid move, we want to process it first before we even need the coordinate to update the board. 
 
-			\item \textbf{Why use an ArrayList<Vector> when you have to convert it to a Vector[]?}
+			\item \textbf{Why use an ArrayList$<$Vector$>$ when you have to convert it to a Vector[]?}
 			For serialization, it is easier to construct an ArrayList of the vector type for our server to process the information. Then, we can always send it back in whatever format the client needs for ease of processing. However, for the sake of server calculations, an ArrayList of valid moves, considering that a move is an object, is a great design choice for serialization and proper handling of data.
 
 			\item \textbf{Why use a smaller 8 by 8 board?}
@@ -279,7 +279,7 @@
 			\subitem If the space selected does not contain one of their own pieces, then nothing happens
 		\item The client sends the server the x and y coordinate of the space selected on the board
 		\item The server uses the Board to create a list of all valid moves from that location
-		\item This list of possible moves, created as an ArrayList<Vector> is then converted to a Vector[] for sending back to the client over the network
+		\item This list of possible moves, created as an ArrayList$<$Vector$>$ is then converted to a Vector[] for sending back to the client over the network
 			\subitem The Vector class is simply a structure containing an x and y coordinate
 			\subitem The conversion ensures minimal data transfer for greatest reliability and least waiting time between actions
 		\item The client's display highlights all possible moves the player can make from that selected space
