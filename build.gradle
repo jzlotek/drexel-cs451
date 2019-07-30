@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.7'
     id 'org.ajoberstar.grgit' version '1.7.2'
     id 'org.ajoberstar.release-opinion' version '1.7.2'
 }
@@ -40,11 +39,6 @@ dependencies {
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.5.0")
 }
 
-javafx {
-    modules = ['javafx.controls', 'javafx.fxml']
-    version = '11.0.2'
-}
-
 sourceSets {
     main {
         java {
@@ -64,6 +58,9 @@ task server(type: Jar) {
     manifest {
         attributes 'Main-Class': 'tbc.server.Server'
     }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 assembleDist {
@@ -81,6 +78,9 @@ task client(type: Jar) {
         baseName('client')
         manifest {
             attributes 'Main-Class': 'tbc.client.Main'
+        }
+        from {
+            configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
         }
     }
 }

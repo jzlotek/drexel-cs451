@@ -1,9 +1,11 @@
 package tbc.server;
 
 import java.io.*;
+import java.net.Socket;
 import java.util.*;
 
 import tbc.util.ConsoleWrapper;
+import tbc.util.SocketUtil;
 
 public class Lobby extends Thread{
 	protected static ArrayList<Player> players = new ArrayList<Player>();
@@ -24,15 +26,11 @@ public class Lobby extends Thread{
 		this.lobbyStatus = true;
 		String received = "";
 		String response = "";
-		DataInputStream p1_input = null;
-		DataInputStream p2_input = null;
-		DataOutputStream p1_output = null;
-		DataOutputStream p2_output = null;
+		Socket p1_socket = null;
+		Socket p2_socket = null;
 		try {
-			p1_input = new DataInputStream(players.get(0).getSocket().getInputStream());
-			p2_input = new DataInputStream(players.get(1).getSocket().getInputStream());
-			p1_output = new DataOutputStream(players.get(0).getSocket().getOutputStream());
-			p2_output = new DataOutputStream(players.get(1).getSocket().getOutputStream());
+			p1_socket = players.get(0).getSocket();
+			p2_socket = players.get(1).getSocket();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -41,8 +39,8 @@ public class Lobby extends Thread{
 			boolean isMoveValid = false;
 			while(!isMoveValid) {
 				// read the move in from player one
-				try { 
-					received = p1_input.readUTF();
+				try {
+					received = SocketUtil.readFromSocket(p1_socket);
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
@@ -53,7 +51,7 @@ public class Lobby extends Thread{
 				} else { // else we throw player one a warning and prompt for another move
 					try {
 						response = "Move Invalid! Please make a valid move.";
-						p1_output.writeUTF(response);
+						SocketUtil.sendToSocket(response, p1_socket);
 					} catch (IOException ex) {
 						ex.printStackTrace();
 					}
@@ -63,7 +61,7 @@ public class Lobby extends Thread{
 			
 			try { // output the move to player two
 				response = received;
-				p2_output.writeUTF(response);
+				SocketUtil.sendToSocket(response, p2_socket);
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
@@ -74,8 +72,8 @@ public class Lobby extends Thread{
 			isMoveValid = false;
 			while(!isMoveValid) {
 				// read the move in from player two
-				try { 
-					received = p2_input.readUTF();
+				try {
+					received = SocketUtil.readFromSocket(p2_socket);
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
@@ -86,7 +84,7 @@ public class Lobby extends Thread{
 				} else { // else throw player two a warning and prompt another move
 					try {
 						response = "Move Invalid! Please make a valid move.";
-						p2_output.writeUTF(response);
+						SocketUtil.sendToSocket(response, p2_socket);
 					} catch (IOException ex) {
 						ex.printStackTrace();
 					}
@@ -95,7 +93,7 @@ public class Lobby extends Thread{
 			}		
 			try { // output the move to player one
 				response = received;
-				p1_output.writeUTF(response);
+				SocketUtil.sendToSocket(response, p1_socket);
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}	
@@ -106,8 +104,8 @@ public class Lobby extends Thread{
 		
 		// after the game is over, send a closing message to the players and close the sockets
 		try {
-			p1_output.writeUTF("Game Over! Thanks for playing.");
-			p2_output.writeUTF("Game Over! Thanks for playing.");
+			SocketUtil.sendToSocket("Game Over! Thanks for playing.", p1_socket);
+			SocketUtil.sendToSocket("Game Over! Thanks for playing.", p2_socket);
 			players.get(0).getSocket().close();
 			players.get(1).getSocket().close();
 		} catch (IOException ex) {
