@@ -27,7 +27,7 @@
     urlcolor=purple,        % color of external links
     linktoc=page            % only page is linked
 }%
-\def\myversion{1.0.0 }
+\def\myversion{2.0.0 }
 \date{}
 %\title{%
 
@@ -73,7 +73,7 @@
         \hline
         1.0.2 & \formatdate{19}{7}{25} & Added assignments for group distribution & mhorger \\
         \hline
-        1.0.3 & \formatdate{19}{7}{29} & Finished System Architecture, Component Design Section & mhorger, jcarfagno \\
+        2.0.0 & \formatdate{19}{7}{29} & Finished Document & mhorger, jcarfagno \\
 	\hline
     \end{tabular}
 \end{center}
@@ -144,7 +144,7 @@
 				We will deploy two servers: one DEV and one PROD instance. The PROD instance will be hosted on Drexel's network at tux.cs.drexel.edu, while the DEV instance will be hosted locally for testing on a private AWS reservation, which we will not be sharing the details here. The reason for this is because we don't want clients connecting to DEV and breaking mechanics while we are developing them. 
 			\end{enumerate}
 
-			 \includegraphics[width=15cm, height=11cm]{"Network Architecture".png}
+			 \includegraphics[width=15cm, height=11cm]{"img/Network Architecture".png}
 
 		\subsection {Gameplay}
 			\begin{enumerate} [label*=\arabic*.]
@@ -155,11 +155,11 @@
 				A move is a valid operation which a game piece can perform. A game piece cannot have a move, it can only perform a move and have the server check if it is a valid move. Moves are the operational logic to progress the game just as we progress through a state machine in a deterministic automaton; there's always an ending state for a move that determines a winning or losing move.
 
 			\item \textbf{Board}
-				A board can have up to 24 game pieces, but only stores the information about the color and position they are in. A board does not validate moves, nor does it perform any logic behind game pieces. The board is simply there for graphical input and output, as a user interacts with a game piece to move it to another position on the board. 
+				A board can have up to 24 game pieces, but only stores the information about the color and position they are in. The board is also there for graphical input and output, as a user interacts with a game piece to move it to another position on the board. 
 
 			\end{enumerate}
 
-		 \includegraphics[width=15cm, height=5cm]{"Gameplay Architecture".png}
+		 \includegraphics[width=15cm, height=5cm]{img/"Gameplay Architecture".png}
 		
 
 	\section{Rationale}
@@ -200,23 +200,79 @@
 
 \chapter{Component Design}
 	\section{Overview}
-	Talk about what this section entails in terms of game pieces, how it relates to our requirements, and how it achieves playing the game via reusable pieces
+	This section details the underlying implementation of our game components, which will be reused throughout our application. This section will detail how we we implement the requirements of the game logic as well as board reconciliation and player moves using a UML diagram. We will also display some mock-ups of game pieces and the board using different styles. 
 
-	\section{Lobby / Game State Object}
+	\section{Lobby / Game Manager Object}
 		\begin{enumerate} [label*=\arabic*.]
-		\item Matt / John split this by Tuesday
+		\item Contains
+			\subitem ArrayList playerPieces
+			\subitem EventHandler checking if the game has been won
+			\subitem Active player color playing during the turn
+		\item Important Functions
+			\subitem Adds an event listener to check for a game win
+			\subitem Gets all the piece locations for a given color
+			\subitem Removes a piece from the board
+			\subitem Can hard check for a winner
 		\end{enumerate}
-	\section{Game Data Design}
-\begin{enumerate} [label*=\arabic*.]
-		\item engine that checks if a move is valid, checks win conditions
-\end{enumerate}
+
+		\includegraphics{"img/gameManager".png}
+	
 	\section{Board Design}
-\begin{enumerate} [label*=\arabic*.]
-		\item 8 by 8 matrix - Jake - by Monday 
-		UML, table with descriptions of methods / attributes, implementation if possible 
-		The server will store the board, which contains all of the spaces and player pieces.
-\end{enumerate}
+	Below are some style choices for our board. One image is a darker variation, and this could be implemented in further releases for users to customize their board styles.
+
+	\includegraphics{"img/board".png}
+	\includegraphics{"img/board dark".png}
+
+	\begin{enumerate} [label*=\arabic*.]
+	\item Contains
+		\subitem Board size
+		\subitem Matrix of spaces
+	\item Important Functions
+		\subitem Checks if a space has a piece
+		\subitem Moves a piece
+		\subitem Gets valid moves
+		\subitem Checks valid spaces for moves
+	\end{enumerate}
+
+	\includegraphics{"img/boardManager".png}
+	
+
+	\section{Piece Design}
+		Color choices for our pieces
+	
+		\includegraphics{"img/checkersPiece black".png}
+		\includegraphics{"img/checkersPiece black crowned".png}
+		\includegraphics{"img/checkersPiece red".png}
+		\includegraphics{"img/checkersPiece red crowned".png}
+	
+		\begin{enumerate} [label*=\arabic*.]
+		\item Contains
+			\subitem Color
+			\subitem Crown Status
+			\subitem Two event handlers for crowning / destruction
+		\item Important Functions
+			\subitem Gets active status
+			\subitem Gets crown status
+			\subitem Gets color status
+		\end{enumerate}
+	
+		\includegraphics{"img/pieceManager".png}
+
 	\section{Player Move Design}
+		\begin{enumerate}[label*=\arabic*.]
+		\item Contains
+			\subitem Source Position
+			\subitem Destination Position
+			\subitem Jump Ability
+		\item Important Functions
+			\subitem Gets / Sets Source and Destination Position
+			\subitem Gets / Sets Jump abilities
+			\subitem Checks if piece can move again		
+		\end{enumerate}
+
+		\includegraphics{"img/moveManager".png}
+
+	\section{Player Move Logic}
 		For a player to move, the below steps are taken:
 		\begin{enumerate} [label*=\arabic*.]
 		\item The player selects a space on the client-side
@@ -232,28 +288,35 @@
 		\item Once the move is confirmed, the client sends the server the x and y coordinates of the source and destination space
 		\item The server once again validates the move, checks if any additional moves can be made (in the case of a completed jump), and returns to the moving player the two Vectors and a boolean of whether an additional move can be made
 		\end{enumerate}
-		
+	
+		\includegraphics[height=18cm]{"img/CS 451 Checkers Flowchart".png}	
+
+		Graphic detailing the logic behind player moves
+
+		\includegraphics[angle=90, height=20cm]{"img/snippedUML".png}
+
+		Complete Design UML for Components
 
 \chapter{UI Design}
 	\section{Overview}
-	This section details the design flow between screens and menus. We also include screen mockups using the tool \textit{Paint 3D}. These mockups are not necessarily final, because the implementation in Swing might differ due to styling and functionality. Nonetheless, we would like to implement the same color schemes and menu design logic to provide a seamless user experience when using our application. 	
+	This section details the design flow between screens and menus. We also include screen mockups using the tool \textit{Paint 3D}. These mock-ups are not necessarily final, because the implementation in Swing might differ due to styling and functionality. Nonetheless, we would like to implement the same color schemes and menu design logic to provide a seamless user experience when using our application. This section covers the requirements of game logic and application flow.
 
 	\section{Screens}
 		\begin{enumerate} [label*=\arabic*.]
 		\item \textbf{Game Screen}
 				The game screen will just simply consist of the board object, with a side menu detailing how many pieces are active on the board. The pieces will be broken down into categories: your pieces and your opponent's pieces.
 				
-\includegraphics{"mockup ingame".png}
+\includegraphics[height=10cm]{"img/mockup ingame".png}
 		\item \textbf{End of Game Screen}
 			There will be only two popup screens at the end of the game: either a player won the game or lost the game. 
 			\subitem \textbf{Victory Screen}
 				The victory screen will prompt the client if they want to rematch the current lobby participant, or to bring them back to the main lobby menu.
 				
-				\includegraphics[height=8cm]{"mockup victory".png}
+				\includegraphics[height=8cm]{"img/mockup victory".png}
 			\subitem \textbf{Defeat Screen}
 				The defeat screen is very similar to the victory screen in that it prompts a rematch or return back to the main lobby menu.
 
-				\includegraphics[height=8cm]{"mockup loss".png}
+				\includegraphics[height=8cm]{"img/mockup loss".png}
 		\end{enumerate}
 
 	\section{Menus}
@@ -264,13 +327,13 @@
 		\item \textbf{Lobby Menu}
 			This menu will have the list lobbies available for the client to join. If there are 5 active lobbies, the user will be unable to click on Create Lobby. If a user does click on Create Lobby, they will be prompted with a waiting screen for more players to join. If a player joins a lobby without any players, they will see the same screen.
 
-\includegraphics{"mockup serverlist".png}
+\includegraphics{"img/mockup serverlist".png}
 
 		\item \textbf{Pause Menu}
 			This menu will have two options; either to exit out of the current game back to the lobby menu or to quit out of the program entirely. This menu option can only be activated when a client is in a created lobby playing the game.
 		\end{enumerate}
 
-		\includegraphics[angle=90]{"Menu Logic".png}
+		\includegraphics[angle=90]{"img/Menu Logic".png}
 
 \begin{thebibliography}{9}
 
