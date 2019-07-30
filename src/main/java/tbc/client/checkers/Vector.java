@@ -5,6 +5,8 @@ public class Vector
         private int x;
         private int y;
 
+        private Vector(){}
+
         public Vector(int _x, int _y)
         {
             setX(_x);
@@ -44,5 +46,9 @@ public class Vector
         public static Vector multiply(Vector _base, int _mult)
         {
         	return new Vector(_base.getX() * _mult, _base.getY() * _mult);
+        }
+
+        public boolean equals(Vector v) {
+                return v.getX() == this.getX() && v.getY() == this.getY();
         }
 }
