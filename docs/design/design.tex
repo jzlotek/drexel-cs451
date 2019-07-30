@@ -67,35 +67,126 @@
         \hline
         Name & Date & Reason For Changes & Version\\
         \hline
-        1.0.0 & \formatdate{11}{7}{23} & Initial Structure & mhorger\\
+        1.0.0 & \formatdate{19}{7}{23} & Initial Structure & mhorger\\
+        \hline
+        1.0.1 & \formatdate{19}{7}{24} & Added content to Introduction, System Overview, Architecture & mhorger\\
+        \hline
+        1.0.2 & \formatdate{19}{7}{25} & Added assignments for group distribution & mhorger \\
         \hline
     \end{tabular}
 \end{center}
 
 \chapter{Introduction}
 	\section{Purpose of Document}
-	\section{Scope of Document}
-	\section{Overview of Document}
+	This document's purpose is to detail the design implementations of our Checkers program as described on the higher-level by the requirements specification document. This includes all data flows and a lower-level explanation of programming constructs and language mechanics used. We will include diagrams and other sample images that will be used as guidelines for our design process as well.
 
+	\section{Scope of Document}
+	In this document, we split our design implementations into separate categories that are each unique parts in our overall program. We cannot have a program without an underlying architecture or tools defined. We abstract our components into a separate category in order to distinguish them for reuse throughout other parts of our program. We also abstract out our UI design to make the distinction between menus and components in regards to our program and data flows. This document will try to justify that our design choices will satisfy the requirements laid out for our program. We will not prove in this document that these choices are tested and correct.
+
+	\section{Definitions, Acronyms, and Overview of Document-Specific Language}
+		\subsection Programming Specifics
+			\begin{enumerate}
+			\item UI / UX - An acronym for \textit{User Interface} and \textit{User Experience}, respectfully.
+			\item Swing - A term for the library used for composition of graphical components in Java, built-in.
+			\item IDE - An acronym for \textit{Integrated Development Environment}, which is a piece of software used to easily format, compile, run code
+			\item Tux - An acronym for the server provided by the College of Computing and Informatics with an address of \textit{tux.cs.drexel.edu} 
+			\item Async - An acronym used for Asynchronous execution of processes in our program.
+			\item Process - A term used interchangeably with a thread in Java.
+			\end{enumerate}
+
+		\subsection Game Specifics
+			\begin{enumerate}
+			\item Player - A term used interchangeably with a Client (connection), who plays the game.
+			\item Lobby - A term used for the data structure used to store client connection and game information.
+			\item Board - A term used for the 8 by 8 matrix area that players interact with.
+			\item Piece - A term used loosely to define a checker and any association with it.
+			\end{enumerate}
+
+		\subsection Architecture Specifics
+			\begin{enumerate}
+			\item Client - A term used interchangeably for the port connection a player opens when interfacing with our server. Can also mean the executable program that end-users will run to play our game.
+			\item Server - A term used for the executable program that consistently handles all client interactions, information, and connections.
+			\item Heartbeat - A term used for the process that checks to make sure the server executable program is still running.
+			\end{enumerate}
+		
 \chapter{System Overview}
 	\section{Description of Software}
+	Checkers is designed to be a simple checkers game that can be only played between two players, with a fixed amount of games that a certain number of clients can play concurrently. Each player will have a list of games to join or create and will only be able to interact with the other player via game moves. There will be no spectating games, there will be no chat functionality between clients, and there will be no saved statistics for clients determining their win / lost ratio, games played, etc.
+
 	\section{Technologies Used}
+	Checkers will be exclusively a desktop application, requiring a keyboard and mouse in order to properly input moves and play the game. Our target operating system will be Windows desktop machines, but this program will be able to run on any other operating systems  with Java Runtime Environment 12+ installed as long as they have enough storage space and memory to store and run the program on the machine. 
+	Our technological stack consists of Java 12 as our programming language with Eclipse Java Neon 3 as our primary IDE. We implement libraries inside of Java in order to provide capabilities that aren't necessarily easy to access using Java. We utilize UNIX servers provided to us by the College of Computing and Informatics in order to serve content from our server application over a secure network. 
 
 \chapter{System Architecture}
 	\section{Architecture Design Components}
+
+		\subsection Networking - Matt by tonight
+			\begin{enumerate}
+			\item Protocols
+			\item Port Ranges
+			\item Client
+			\item Server
+			\item Lobbies
+			\item Deployment
+			\end{enumerate}
+
+		\subsection Gameplay
+
 	\section{Rationale}
+
+		\subsection Networking - Matt by tonight
+			\begin{enumerate}
+
+				\item Why host on Drexel's network? Why not use a dedicated EC2 @ AWS instance?
+
+				\item Why assign ports from a specific range?
+
+				\item Why limit the amount of lobbies to be created / joined for clients?
+
+				\item Why implement a heartbeat for the server when you could just run other internal checks?
+
+			\end{enumerate}
+
+		\subsection Gameplay
+			\begin{enumerate}
+			Is there any design or architecture choices (aka how we handle moves) that needs explaining?
+			\end{enumerate}
 
 \chapter{Component Design}
 	\section{Overview}
+	Talk about what this section entails in terms of game pieces, how it relates to our requirements, and how it achieves playing the game via reusable pieces
+
 	\section{Lobby / Game State Object}
+		\item Matt / John split this by Tuesday
 	\section{Game Data Design}
+		\item engine that checks if a move is valid, checks win conditions
 	\section{Board Design}
+		\item 8 by 8 matrix - Jake - by Monday 
+		UML, table with descriptions of methods / attributes, implementation if possible 
 	\section{Player Move Design}
+		\item  sending list of moves of a piece object from matrix positions over server socket - Jake by Monday
 
 \chapter{UI Design}
 	\section{Overview}
-	\section{Screens}
-	\section{Menus}
+	Talk about what this section entails in terms of content, how it relates to our requirements, how it achieves the game purpose in terms of functional detail	
+
+	\section{Screens} - Jake by Tuesday - images
+		\begin{enumerate}
+		\item Game Screen
+		\item End of Game Screen
+			\subitem Victory Screen
+			\subitem Defeat Screen
+		\begin{enumerate}
+	\section{Menus} - Matt / John by Tuesday - images
+		UML insert for menu logic
+
+		\begin{enumerate}
+		\item Start Menu
+		\item Lobby Menu
+			\subitem Create Lobby Menu
+			\subitem Join Lobby Menu
+		\item Pause Menu
+		\end{enumerate}
 
 \begin{thebibliography}{9}
 

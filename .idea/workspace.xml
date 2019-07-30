@@ -10,8 +10,51 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="09ae53fc-0002-4ba7-a76a-6458c88b5089" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/modules/drexel-cs451.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/design/CS 451 Checkers Flowchart.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/design/Project_Game_UML.mdj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tbc/client/checkers/Board.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tbc/client/checkers/Color.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tbc/client/checkers/GameManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tbc/client/checkers/Piece.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tbc/client/checkers/Space.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tbc/client/checkers/Vector.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tbc/client/checkers/events/EventHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/tbc/client/checkers/events/EventListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.circleci/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.circleci/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_fasterxml_jackson_core_jackson_annotations_2_9_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_fasterxml_jackson_core_jackson_core_2_9_8.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_fasterxml_jackson_core_jackson_databind_2_9_8.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__javax_annotation_javax_annotation_api_1_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__javax_validation_validation_api_1_1_0_Final.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__javax_ws_rs_javax_ws_rs_api_2_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__javax_ws_rs_jsr311_api_1_1_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__junit_junit_4_12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_apiguardian_apiguardian_api_1_1_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_glassfish_grizzly_grizzly_framework_2_4_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_glassfish_grizzly_grizzly_http_2_4_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_glassfish_grizzly_grizzly_http_server_2_4_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_glassfish_hk2_external_javax_inject_2_5_0_b42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_glassfish_hk2_osgi_resource_locator_1_0_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_glassfish_jersey_containers_jersey_container_grizzly2_http_2_26.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_glassfish_jersey_core_jersey_client_2_26.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_glassfish_jersey_core_jersey_common_2_26.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_glassfish_jersey_core_jersey_server_2_26.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_glassfish_jersey_media_jersey_media_jaxb_2_26.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_hamcrest_hamcrest_core_1_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_junit_platform_junit_platform_commons_1_5_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_junit_platform_junit_platform_engine_1_5_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_junit_vintage_junit_vintage_engine_5_5_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_opentest4j_opentest4j_1_2_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/checkers.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/checkers.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/checkers.test.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tbc/client/checkers/GameManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tbc/client/checkers/GameManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/checkers_main.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/design/design.tex" beforeDir="false" afterPath="$PROJECT_DIR$/docs/design/design.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tbc/client/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tbc/client/Main.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -45,11 +88,11 @@
             <expand>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="checkers" type="f1a62948:ProjectNode" />
+                <item name="drexel-cs451" type="f1a62948:ProjectNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="checkers" type="f1a62948:ProjectNode" />
+                <item name="drexel-cs451" type="f1a62948:ProjectNode" />
                 <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
               </path>
             </expand>
