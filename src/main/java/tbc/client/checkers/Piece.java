@@ -2,72 +2,65 @@ package tbc.client.checkers;
 
 import tbc.client.checkers.events.EventHandler;
 
-public class Piece
-{
-	private Board board;
+import java.io.Serializable;
+
+public class Piece implements Serializable {
+    private Board board;
     private Color color = Color.BLACK;
     private boolean isAlive = true;
     private boolean hasCrown = false;
-    
+
     private EventHandler onPieceKilledHandler;
     private EventHandler onPieceCrownedHandler;
-    
-    public Piece(Board _board, Color _color)
-    {
-    	board = _board;
-    	color = _color;
-    	
-    	onPieceKilledHandler = new EventHandler();
-    	onPieceCrownedHandler = new EventHandler();
+
+    private Piece() {
     }
-    
-    public Board getBoard()
-    {
-    	return board;
+
+    public Piece(Board _board, Color _color) {
+        board = _board;
+        color = _color;
+
+        onPieceKilledHandler = new EventHandler();
+        onPieceCrownedHandler = new EventHandler();
     }
-    
-    public Color getColor()
-    {
-    	return color;
+
+    public Board getBoard() {
+        return board;
     }
-    
-    public boolean getIsAlive()
-    {
-    	return isAlive;
+
+    public Color getColor() {
+        return color;
     }
-    
-    public void setIsAlive(boolean _isAlive)
-    {
-    	isAlive = _isAlive;
-    	
-    	if(!isAlive)
-    	{
-    		onPieceKilledHandler.InvokeEvent(new Object[] {this});
-    	}
+
+    public boolean getIsAlive() {
+        return isAlive;
     }
-    
-    public boolean getHasCrown()
-    {
-    	return hasCrown;
+
+    public void setIsAlive(boolean _isAlive) {
+        isAlive = _isAlive;
+
+        if (!isAlive) {
+            onPieceKilledHandler.InvokeEvent(new Object[]{this});
+        }
     }
-    
-    public void setHasCrown(boolean _hasCrown)
-    {
-    	hasCrown = _hasCrown;
-    	
-    	if(hasCrown)
-    	{
-    		onPieceCrownedHandler.InvokeEvent(new Object[] {this});
-    	}
+
+    public boolean getHasCrown() {
+        return hasCrown;
     }
-    
-    public EventHandler getOnPieceKilledHandler()
-    {
-    	return onPieceKilledHandler;
+
+    public void setHasCrown(boolean _hasCrown) {
+        hasCrown = _hasCrown;
+
+        if (hasCrown) {
+            onPieceCrownedHandler.InvokeEvent(new Object[]{this});
+        }
     }
-    
-    public EventHandler getOnPieceCrownedHandler()
-    {
-    	return onPieceCrownedHandler;
+
+    public EventHandler getOnPieceKilledHandler() {
+        return onPieceKilledHandler;
+    }
+
+    public EventHandler getOnPieceCrownedHandler() {
+        return onPieceCrownedHandler;
     }
 }

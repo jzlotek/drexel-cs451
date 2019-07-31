@@ -4,7 +4,8 @@ import javax.swing.*;
 import java.util.HashMap;
 
 public class ComponentStore {
-    private static HashMap<String, JComponent> components;
+
+    private static HashMap<String, Object> components;
     private static ComponentStore instance = null;
 
     private ComponentStore() {
@@ -23,13 +24,13 @@ public class ComponentStore {
         return instance;
     }
 
-    public void put(String key, JComponent value) {
-        synchronized (ComponentStore.class) {
+    public void put(String key, Object value) {
+        synchronized (Object.class) {
             components.put(key, value);
         }
     }
 
-    public JComponent get(String key) {
+    public Object get(String key) {
         return components.get(key);
     }
 }
