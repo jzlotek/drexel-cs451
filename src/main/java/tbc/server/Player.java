@@ -10,6 +10,7 @@ import tbc.util.ConsoleWrapper;
 public class Player extends Thread { // each player will be it's own thread
 
     protected Socket socket;
+    private String address;
     public static final int PORT = Constants.PORT; // Using CS 451 as the port number
     public static final String HOST = Constants.HOST;
     
@@ -18,6 +19,7 @@ public class Player extends Thread { // each player will be it's own thread
      */
     public Player(Socket clientSocket) {
         this.socket = clientSocket;
+        this.address = socket.getInetAddress().toString();
     }
 
     /*
@@ -25,6 +27,10 @@ public class Player extends Thread { // each player will be it's own thread
      */
     public Socket getSocket() {
         return this.socket;
+    }
+
+    public String getAddress() {
+        return this.address;
     }
 
     /*

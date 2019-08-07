@@ -10,8 +10,8 @@ public class Piece implements Serializable {
     private boolean isAlive = true;
     private boolean hasCrown = false;
 
-    private EventHandler onPieceKilledHandler;
-    private EventHandler onPieceCrownedHandler;
+    private transient EventHandler onPieceKilledHandler;
+    private transient EventHandler onPieceCrownedHandler;
 
     private Piece() {
     }

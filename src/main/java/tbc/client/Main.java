@@ -41,9 +41,8 @@ public class Main {
 
             if (json != null && !json.equals("")) {
 
-                ConsoleWrapper.WriteLn(json);
                 try {
-                    gs = (GameState) SerializationUtilJSON.deserialize(json, GameState.class);
+                    gs = (GameState) SerializationUtilJSON.deserialize(json);
                 } catch (Exception e) {
                     gs = null;
                     e.printStackTrace();
@@ -55,6 +54,7 @@ public class Main {
                     if (gs.board != null && board == null) {
                         board = gs.board;
                         debug.append("\n" + board);
+                        ConsoleWrapper.WriteLn(board.getPiece(0,0).getColor());
                         gameRunning = true;
                     } else if (gameRunning) {
                         debug.append("\nGame is Running");

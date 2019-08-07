@@ -12,7 +12,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Lobby extends Thread {
-    protected static ArrayList<Player> players = new ArrayList<Player>();
+    protected ArrayList<Player> players = new ArrayList<Player>();
     protected boolean lobbyStatus;
     protected final int maxPlayers = 2;
 
@@ -32,11 +32,12 @@ public class Lobby extends Thread {
         String response = "";
         Socket p1_socket = players.get(0).getSocket();
         Socket p2_socket = players.get(1).getSocket();
+        ConsoleWrapper.WriteLn(gameBoard.getPiece(0,0).getColor());
 
         GameState gs = new GameState("Initial Game State", gameBoard);
 
-        SocketUtil.sendGameState(new GameState("test"), p1_socket);
-        SocketUtil.sendGameState(gs, p1_socket);
+        new Thread(() -> SocketUtil.sendGameState(new GameState("test"), p1_socket)).run();
+        new Thread(() -> SocketUtil.sendGameState(gs, p1_socket)).run();
         ConsoleWrapper.WriteLn("Sent p1 board state" + p1_socket.toString());
 
         try {
@@ -51,6 +52,11 @@ public class Lobby extends Thread {
 
         GameState userGameState;
         while (this.lobbyStatus == true) { // while we have a game going on
+            for (Player p : this.players) {
+                if (p.getSocket().isClosed()) {
+                    this.lobbyStatus = false;
+                }
+            }
             userGameState = null;
 
             boolean isMoveValid = false;
@@ -58,8 +64,8 @@ public class Lobby extends Thread {
                 // read the move in from player one
                 try {
                     received = SocketUtil.readFromSocket(p1_socket);
-                    userGameState = (GameState) SerializationUtilJSON.deserialize(received, GameState.class);
-                } catch (IOException ex) {
+                    userGameState = (GameState) SerializationUtilJSON.deserialize(received);
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
 
@@ -88,8 +94,8 @@ public class Lobby extends Thread {
                 // read the move in from player two
                 try {
                     received = SocketUtil.readFromSocket(p2_socket);
-                    userGameState = (GameState) SerializationUtilJSON.deserialize(received, GameState.class);
-                } catch (IOException ex) {
+                    userGameState = (GameState) SerializationUtilJSON.deserialize(received);
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
 
@@ -97,21 +103,13 @@ public class Lobby extends Thread {
                 if (this.isLegalMove(userGameState)) {
                     isMoveValid = true;
                 } else { // else throw player two a warning and prompt another move
-                    try {
-                        response = "Move Invalid! Please make a valid move.";
-                        SocketUtil.sendToSocket(response, p2_socket);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+                    response = "Move Invalid! Please make a valid move.";
+                    SocketUtil.sendGameState(new GameState(response), p2_socket);
                     isMoveValid = false;
                 }
             }
-            try { // output the move to player one
-                response = received;
-                SocketUtil.sendToSocket(response, p1_socket);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            response = received;
+            SocketUtil.sendGameState(new GameState(response), p1_socket);
 
             // check if player two's move caused a winner
             if (this.checkWinner()) this.lobbyStatus = false;
