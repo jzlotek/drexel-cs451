@@ -6,7 +6,6 @@ import java.io.*;
 import java.net.Socket;
 
 public class SocketUtil {
-    private static SerializationUtilJSON serializer = new SerializationUtilJSON();
 
     public static String readFromSocket(Socket s) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
@@ -20,8 +19,12 @@ public class SocketUtil {
         writer.flush();
     }
 
-    public static void sendGameState(GameState gs, Socket socket) throws IOException {
-        String string = serializer.serialize(gs);
-        sendToSocket(string, socket);
+    public static void sendGameState(GameState gs, Socket socket) {
+        try {
+            String string = SerializationUtilJSON.serialize(gs);
+            sendToSocket(string, socket);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

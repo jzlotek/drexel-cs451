@@ -3,7 +3,6 @@ package tbc.server;
 import tbc.Constants;
 import tbc.shared.GameState;
 import tbc.util.ConsoleWrapper;
-import tbc.util.SerializationUtilJSON;
 import tbc.util.SocketUtil;
 
 import java.io.DataOutputStream;
@@ -16,9 +15,7 @@ public class Server {
 
     public static final int PORT = Constants.PORT; // Using 4510
     public static final String HOST = Constants.HOST;    // Using Tux2 to host this service.
-    private static SerializationUtilJSON serializer = new SerializationUtilJSON();
     protected static ServerSocket serverSocket = null;
-    //    protected static ArrayList<Socket> activePlayers = new ArrayList<Socket>();
     private static ArrayList<Player> activePlayers = new ArrayList<>();
     protected final static int allowedClients = 2;
 
@@ -40,17 +37,12 @@ public class Server {
                 socket = serverSocket.accept(); // take in the new connection
                 socket.setKeepAlive(true);
                 ConsoleWrapper.WriteLn(socket.toString());
-                try {
-                    ConsoleWrapper.WriteLn("Ready to accept new connection...");
-                    synchronized (Server.class) {
-                        activePlayers.add(new Player(socket)); // add it to the list of active players
-                    }
-                    GameState gs = new GameState("Connected! Waiting for " + (allowedClients - activePlayers.size()) + " players to join");
-                    SocketUtil.sendGameState(gs, socket);
-                } catch (IOException ex) {
-                    ConsoleWrapper.WriteLn("Unable to accept new connection: " + ex.getMessage());
-                    throw ex;
+                ConsoleWrapper.WriteLn("Ready to accept new connection...");
+                synchronized (Server.class) {
+                    activePlayers.add(new Player(socket)); // add it to the list of active players
                 }
+                GameState gs = new GameState("Connected! Waiting for " + (allowedClients - activePlayers.size()) + " players to join");
+                SocketUtil.sendGameState(gs, socket);
                 ConsoleWrapper.WriteLn("New connection established: " + socket);
                 socket = null;
             }

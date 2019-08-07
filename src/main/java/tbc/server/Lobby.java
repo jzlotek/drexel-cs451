@@ -3,6 +3,7 @@ package tbc.server;
 import tbc.client.checkers.Board;
 import tbc.shared.GameState;
 import tbc.util.ConsoleWrapper;
+import tbc.util.SerializationUtilJSON;
 import tbc.util.SocketUtil;
 
 import java.io.DataOutputStream;
@@ -34,45 +35,40 @@ public class Lobby extends Thread {
 
         GameState gs = new GameState("Initial Game State", gameBoard);
 
-        synchronized (this) {
-            try {
-                SocketUtil.sendGameState(new GameState("test"), p1_socket);
-                SocketUtil.sendGameState(gs, p1_socket);
-                ConsoleWrapper.WriteLn("Sent p1 board state" + p1_socket.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        SocketUtil.sendGameState(new GameState("test"), p1_socket);
+        SocketUtil.sendGameState(gs, p1_socket);
+        ConsoleWrapper.WriteLn("Sent p1 board state" + p1_socket.toString());
 
-            try {
-                SocketUtil.sendGameState(new GameState("test"), p2_socket);
-                SocketUtil.sendGameState(gs, p2_socket);
-                ConsoleWrapper.WriteLn("Sent p2 board state " + p2_socket.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
+        new Thread(() -> SocketUtil.sendGameState(new GameState("test"), p2_socket)).run();
+        new Thread(() -> SocketUtil.sendGameState(gs, p2_socket)).run();
+        ConsoleWrapper.WriteLn("Sent p2 board state " + p2_socket.toString());
+
+        GameState userGameState;
         while (this.lobbyStatus == true) { // while we have a game going on
+            userGameState = null;
 
             boolean isMoveValid = false;
             while (!isMoveValid) {
                 // read the move in from player one
                 try {
                     received = SocketUtil.readFromSocket(p1_socket);
+                    userGameState = (GameState) SerializationUtilJSON.deserialize(received, GameState.class);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
 
                 // if the move is valid, we must output to player two
-                if (this.isLegalMove(received)) {
+                if (this.isLegalMove(userGameState)) {
                     isMoveValid = true;
                 } else { // else we throw player one a warning and prompt for another move
-                    try {
-                        response = "Move Invalid! Please make a valid move.";
-                        SocketUtil.sendToSocket(response, p1_socket);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+                    response = "Move Invalid! Please make a valid move.";
+                    SocketUtil.sendGameState(new GameState(response), p1_socket);
                     isMoveValid = false;
                 }
             }
@@ -92,12 +88,13 @@ public class Lobby extends Thread {
                 // read the move in from player two
                 try {
                     received = SocketUtil.readFromSocket(p2_socket);
+                    userGameState = (GameState) SerializationUtilJSON.deserialize(received, GameState.class);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
 
                 // if the move is valid, we must output to player one
-                if (this.isLegalMove(received)) {
+                if (this.isLegalMove(userGameState)) {
                     isMoveValid = true;
                 } else { // else throw player two a warning and prompt another move
                     try {
@@ -121,14 +118,10 @@ public class Lobby extends Thread {
         }
 
         // after the game is over, send a closing message to the players and close the sockets
-        try {
-            SocketUtil.sendGameState(new GameState("Game Over! Thanks for playing."), p1_socket);
-            SocketUtil.sendGameState(new GameState("Game Over! Thanks for playing."), p2_socket);
-            players.get(0).closeSocket();
-            players.get(1).closeSocket();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        SocketUtil.sendGameState(new GameState("Game Over! Thanks for playing."), p1_socket);
+        SocketUtil.sendGameState(new GameState("Game Over! Thanks for playing."), p2_socket);
+        players.get(0).closeSocket();
+        players.get(1).closeSocket();
     }
 
     /*
@@ -148,7 +141,10 @@ public class Lobby extends Thread {
     /*
      * Function that validates if a move in the form of a message is valid
      */
-    private boolean isLegalMove(String message) {
+    private boolean isLegalMove(GameState state) {
+        if (state == null) {
+            return false;
+        }
         return true;
     }
 

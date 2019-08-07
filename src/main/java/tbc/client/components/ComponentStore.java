@@ -1,6 +1,5 @@
 package tbc.client.components;
 
-import javax.swing.*;
 import java.util.HashMap;
 
 public class ComponentStore {
@@ -24,12 +23,14 @@ public class ComponentStore {
         return instance;
     }
 
+    // syncronize put function across threads
     public void put(String key, Object value) {
         synchronized (Object.class) {
             components.put(key, value);
         }
     }
 
+    // returns the Object stored at the key value
     public Object get(String key) {
         return components.get(key);
     }

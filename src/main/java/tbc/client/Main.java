@@ -19,7 +19,6 @@ import java.net.Socket;
 public class Main {
     static Socket s = null;
     static GameScene window = null;
-    static SerializationUtilJSON serializer = new SerializationUtilJSON();
 
     public static void main(String[] args) {
         window = new GameScene();
@@ -35,34 +34,37 @@ public class Main {
                 json = SocketUtil.readFromSocket(s);
             } catch (Exception e) {
                 gs = null;
+                json = "";
                 e.printStackTrace();
                 continue;
             }
 
-            ConsoleWrapper.WriteLn(json);
-            try {
-                gs = (GameState) serializer.deserialize(json, GameState.class);
-            } catch (Exception e) {
-                gs = null;
-                e.printStackTrace();
-                continue;
-            }
-            json = "";
-            if (gs != null) {
-                debug.append("\n" + gs.message);
-                if (gs.board != null && board == null) {
-                    board = gs.board;
-                    debug.append("\n" + board);
-                    gameRunning = true;
-                } else if (gameRunning) {
-                    debug.append("\nGame is Running");
+            if (json != null && !json.equals("")) {
+
+                ConsoleWrapper.WriteLn(json);
+                try {
+                    gs = (GameState) SerializationUtilJSON.deserialize(json, GameState.class);
+                } catch (Exception e) {
+                    gs = null;
+                    e.printStackTrace();
+                    continue;
+                }
+                json = "";
+                if (gs != null) {
+                    debug.append("\n" + gs.message);
+                    if (gs.board != null && board == null) {
+                        board = gs.board;
+                        debug.append("\n" + board);
+                        gameRunning = true;
+                    } else if (gameRunning) {
+                        debug.append("\nGame is Running");
+                    }
                 }
             }
         }
     }
 
     public static void init(GameScene scene) {
-        SerializationUtilJSON serializer = new SerializationUtilJSON();
         JTextArea debug = new JTextArea();
         ComponentStore.getInstance().put("debug", debug);
         debug.setBounds(400, 0, 400, 100);

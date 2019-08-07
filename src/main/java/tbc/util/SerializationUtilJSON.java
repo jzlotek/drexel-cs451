@@ -8,16 +8,13 @@ import java.io.IOException;
 
 public class SerializationUtilJSON {
 
-    public SerializationUtilJSON() {
-    }
-
-    public String serialize(Object obj) throws JsonProcessingException {
+    public static String serialize(Object obj) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return mapper.writeValueAsString(obj);
     }
 
-    public Object deserialize(String json, Class clazz) throws IOException {
+    public static Object deserialize(String json, Class clazz) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return mapper.readValue(json, clazz);
