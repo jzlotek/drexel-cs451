@@ -19,12 +19,14 @@ public class SocketUtil {
         writer.flush();
     }
 
-    public static void sendGameState(GameState gs, Socket socket) {
+    public static boolean sendGameState(GameState gs, Socket socket) {
         try {
             String string = SerializationUtilJSON.serialize(gs);
             sendToSocket(string, socket);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 }

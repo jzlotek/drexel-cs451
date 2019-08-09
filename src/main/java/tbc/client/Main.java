@@ -2,9 +2,11 @@ package tbc.client;
 
 import tbc.Constants;
 import tbc.client.checkers.Board;
+import tbc.client.components.BoardDisplayComponent;
 import tbc.client.components.ComponentStore;
 import tbc.client.components.GameScene;
 import tbc.shared.GameState;
+import tbc.shared.Move;
 import tbc.util.ConsoleWrapper;
 import tbc.util.SerializationUtilJSON;
 import tbc.util.SocketUtil;
@@ -20,44 +22,85 @@ public class Main {
     static Socket s = null;
     static GameScene window = null;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        // set initial environment up including window and board state
         window = new GameScene();
         init(window);
         window.show();
-        Board board = null;
+        Board currentBoard = null;
+        Board lastBoard = null;
         JTextArea debug = (JTextArea) ComponentStore.getInstance().get("debug");
         boolean gameRunning = false;
         String json;
-        GameState gs = null;
+        GameState gs;
+
+        ComponentStore.getInstance().put("board", new Board());
+        BoardDisplayComponent boardDisplayComponent = new BoardDisplayComponent(window);
+
+        // begin game loop
         while (true) {
+            boardDisplayComponent.renderBoard();
+
+            // get serialized string from the server
+//            boardDisplayComponent.renderBoard();
+            try {
+                Thread.sleep(5000);
+            } catch (Exception e) {
+
+            }
             try {
                 json = SocketUtil.readFromSocket(s);
+                gs = (GameState) SerializationUtilJSON.deserialize(json);
             } catch (Exception e) {
                 gs = null;
-                json = "";
                 e.printStackTrace();
                 continue;
             }
 
-            if (json != null && !json.equals("")) {
+            if (gs != null) {
+                debug.append("\n" + gs.message);
+                // if we do not have a board, set the board with UUID's to the current and last board state
+                if (gs.board != null && currentBoard == null) {
+                    currentBoard = gs.board;
+                    lastBoard = gs.board;
+                    ComponentStore.getInstance().put("board", currentBoard);
+                    debug.append("\n" + currentBoard);
+                    gameRunning = true;
+                } else if (gameRunning) {
+//                    BoardDisplayComponent boardDisplayComponent = new BoardDisplayComponent(window);
+                    debug.append("\nGame is Running");
+                    if (gs.yourTurn) {
 
-                try {
-                    gs = (GameState) SerializationUtilJSON.deserialize(json);
-                } catch (Exception e) {
-                    gs = null;
-                    e.printStackTrace();
-                    continue;
-                }
-                json = "";
-                if (gs != null) {
-                    debug.append("\n" + gs.message);
-                    if (gs.board != null && board == null) {
-                        board = gs.board;
-                        debug.append("\n" + board);
-                        ConsoleWrapper.WriteLn(board.getPiece(0,0).getColor());
-                        gameRunning = true;
-                    } else if (gameRunning) {
-                        debug.append("\nGame is Running");
+                        // wait for board to update locally before continuing
+                        while (lastBoard.equals(currentBoard)) {
+                            currentBoard = (Board) ComponentStore.getInstance().get("board");
+                            Thread.sleep(500);
+                        }
+
+                        // TODO: jcarfagno - calculate new move
+
+                        Move move = new Move(null, null);
+                        gs = new GameState("New Move");
+                        gs.moves.add(move);
+                        SocketUtil.sendGameState(gs, s);
+                        gs = null;
+                        while (gs == null) {
+                            try {
+                                json = SocketUtil.readFromSocket(s);
+                                gs = (GameState) SerializationUtilJSON.deserialize(json);
+                            } catch (Exception e) {
+                                gs = null;
+                            }
+                        }
+
+                        if (gs.message.equals("success")) {
+                            ConsoleWrapper.WriteLn("move accepted");
+                            lastBoard = currentBoard;
+                            ComponentStore.getInstance().put("board", currentBoard);
+                        } else {
+                            ConsoleWrapper.WriteLn("move denied");
+                            currentBoard = lastBoard;
+                        }
                     }
                 }
             }
@@ -68,16 +111,16 @@ public class Main {
         JTextArea debug = new JTextArea();
         ComponentStore.getInstance().put("debug", debug);
         debug.setBounds(400, 0, 400, 100);
-        JButton joinButton = new JButton("Join a Game");
-        ComponentStore.getInstance().put("join_button", joinButton);
-        joinButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                connectToServer(e);
-            }
-        });
-        joinButton.setBounds(0, 0, 100, 100);
-        scene.add(joinButton);
+//        JButton joinButton = new JButton("Join a Game");
+//        ComponentStore.getInstance().put("join_button", joinButton);
+//        joinButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                connectToServer(e);
+//            }
+//        });
+//        joinButton.setBounds(0, 0, 100, 100);
+//        scene.add(joinButton);
         scene.add(debug);
     }
 

@@ -43,6 +43,6 @@ public class SerializationUtilJSONTest {
     public void test_serializeFail() throws Exception {
         Board b = new Board();
         String s = SerializationUtilJSON.serialize(b);
-        Board c = (Board) SerializationUtilJSON.deserialize(s.substring(0, s.length() - 2));
+        Board c = (Board) SerializationUtilJSON.deserialize(s.substring(0, s.length() - 100));
     }
 }
