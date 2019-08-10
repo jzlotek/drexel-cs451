@@ -1,13 +1,11 @@
 package tbc.client.checkers;
 
 import tbc.client.checkers.events.EventHandler;
-import tbc.shared.Move;
+import tbc.client.components.SpriteLabel;
 import tbc.util.UUIDUtil;
 
 import javax.swing.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class Piece implements Serializable, Renderable {
@@ -16,6 +14,11 @@ public class Piece implements Serializable, Renderable {
     private boolean isAlive = true;
     private boolean hasCrown = false;
     private UUID uuid;
+
+    private static final String blackPawnPath = "resources/img/checkersPiece black.png";
+    private static final String blackKingPath = "resources/img/checkersPiece black crowned.png";
+    private static final String redPawnPath = "resources/img/checkersPiece red.png";
+    private static final String redKingPath = "resources/img/checkersPiece red crowned.png";
 
     private transient EventHandler onPieceKilledHandler;
     private transient EventHandler onPieceCrownedHandler;
@@ -78,14 +81,29 @@ public class Piece implements Serializable, Renderable {
 
     @Override
     public JComponent getRenderObject() {
-        JPanel box = new JPanel();
-        java.awt.Color c = java.awt.Color.RED;
-        if (this.color == Color.BLACK) {
-            c = java.awt.Color.black;
+        String path = blackPawnPath;
+
+        if(color == Color.BLACK)
+        {
+            if(hasCrown)
+            {
+                path = blackKingPath;
+            }
         }
-        box.setBackground(c);
-        // TODO: get position
-//        box.setBounds(this.getPos().getX() * 50, this.getPos().getY() * 50, 50, 50);
-        return box;
+        else
+        {
+            if(hasCrown)
+            {
+                path = redKingPath;
+            }
+            else
+            {
+                path = redPawnPath;
+            }
+        }
+
+        ImageIcon icon = new ImageIcon(path);
+
+        return new SpriteLabel(new ImageIcon(path));
     }
 }

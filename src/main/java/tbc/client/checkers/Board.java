@@ -33,10 +33,10 @@ public class Board implements Serializable {
                 this.board[col][row] = new Space(col, row, color);
                 // create a piece on that space
                 if (color == Color.BLACK) {
-                    if (row < 2) {
+                    if (row < 3) {
                         Piece p = new Piece(this, Color.BLACK);
                         this.board[col][row].setPiece(p);
-                    } else if (row >= this.boardSize.getY() - 2) {
+                    } else if (row >= this.boardSize.getY() - 3) {
                         Piece p = new Piece(this, Color.RED);
                         this.board[col][row].setPiece(p);
                     }
@@ -138,7 +138,6 @@ public class Board implements Serializable {
             return peacefulMoves;
         }
 
-        // TODO: Add logic to check for all valid moves here
         if (_piece.getHasCrown()) {
             for (int row = _y - 1; row <= _y + 1; ++row) {
                 for (int col = _x - 1; col <= _x + 1; ++col) {

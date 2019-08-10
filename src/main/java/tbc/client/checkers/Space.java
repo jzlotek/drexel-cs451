@@ -1,15 +1,20 @@
 package tbc.client.checkers;
 
+import tbc.client.components.SpritePanel;
 import tbc.util.ConsoleWrapper;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.Serializable;
 
 public class Space implements Serializable, Renderable {
     private Vector pos;
     private Piece piece;
     private Color color;
+
+    private static final String blackPath = "resources/img/space black.png";
+    private static final String redPath = "resources/img/space red.png";
 
     private Space() {
     }
@@ -45,14 +50,26 @@ public class Space implements Serializable, Renderable {
     }
 
     @Override
-    public JComponent getRenderObject() {
-        JPanel box = new JPanel();
-        java.awt.Color c = java.awt.Color.RED;
-        if (this.color == Color.BLACK) {
-            c = java.awt.Color.black;
+    public JComponent getRenderObject()
+    {
+        String path = blackPath;
+
+        if(color == Color.RED)
+        {
+            path = redPath;
         }
-        box.setBackground(c);
-        box.setBounds(this.getPos().getX() * 50, this.getPos().getY() * 50, 50, 50);
-        return box;
+
+        ImageIcon icon = new ImageIcon(path);
+
+        SpritePanel panel = new SpritePanel(icon);
+
+        panel.setLayout(new BorderLayout(2, 2));
+
+        if(isOccupied())
+        {
+            panel.add(piece.getRenderObject());
+        }
+
+        return panel;
     }
 }
