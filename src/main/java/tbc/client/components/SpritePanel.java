@@ -8,17 +8,26 @@ public class SpritePanel extends JPanel
 {
     ImageIcon image;
 
+    /*
+     * Constructor for a panel displaying the given image
+     */
     public SpritePanel(ImageIcon _image)
     {
         super();
         setImage(_image);
     }
 
+    /*
+     * Get the image displayed on this panel
+     */
     public ImageIcon getImage()
     {
         return image;
     }
 
+    /*
+     * Set the image to display
+     */
     public void setImage(ImageIcon _image)
     {
         image = _image;

@@ -2,6 +2,7 @@ package tbc.client;
 
 import tbc.Constants;
 import tbc.client.checkers.Board;
+import tbc.client.checkers.PlayerUI;
 import tbc.client.components.BoardDisplayComponent;
 import tbc.client.components.ComponentStore;
 import tbc.client.components.GameScene;
@@ -77,11 +78,19 @@ public class Main {
                             Thread.sleep(500);
                         }
 
-                        // TODO: jcarfagno - calculate new move
+                        PlayerUI.getInstance().setActive(true);
 
-                        Move move = new Move(null, null);
+                        // TODO: jcarfagno - calculate new move
+                        while(PlayerUI.getInstance().getNextMove() == null)
+                        {
+                            Thread.sleep(500);
+                        }
+
                         gs = new GameState("New Move");
-                        gs.moves.add(move);
+                        gs.moves.add(PlayerUI.getInstance().getNextMove());
+
+                        PlayerUI.getInstance().setActive(false);
+
                         SocketUtil.sendGameState(gs, s);
                         gs = null;
                         while (gs == null) {
@@ -101,6 +110,10 @@ public class Main {
                             ConsoleWrapper.WriteLn("move denied");
                             currentBoard = lastBoard;
                         }
+                    }
+                    else
+                    {
+                        PlayerUI.getInstance().setActive(false);
                     }
                 }
             }

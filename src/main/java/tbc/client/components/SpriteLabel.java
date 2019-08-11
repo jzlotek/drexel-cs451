@@ -5,18 +5,27 @@ import java.awt.*;
 
 public class SpriteLabel extends JLabel
 {
+    /*
+     * Constructor for a SpriteLabel displaying a specific ImageIcon
+     */
     public SpriteLabel(ImageIcon _image)
     {
         super(_image);
         setImage(_image);
     }
 
+    /*
+     * Constructor for a SpriteLabel displaying a specific ImageIcon and with the given alignment
+     */
     public SpriteLabel(ImageIcon _image, int _align)
     {
         super(_image, _align);
         setImage(_image);
     }
 
+    /*
+     * Set the image to display
+     */
     public void setImage(ImageIcon _image)
     {
         setIcon(_image);
@@ -26,6 +35,9 @@ public class SpriteLabel extends JLabel
         setMaximumSize(new Dimension(_image.getIconWidth(), _image.getIconHeight()));
     }
 
+    /*
+     * Check whether the bounds of this label contain a given point
+     */
     public boolean containsPoint(Point _point)
     {
         Rectangle rect = new Rectangle();
