@@ -38,6 +38,11 @@ public class Lobby extends Thread {
         GameState gs = new GameState("Initial Game State", gameBoard);
 
         new Thread(() -> SocketUtil.sendGameState(new GameState("test"), p1_socket)).run();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         new Thread(() -> SocketUtil.sendGameState(gs, p1_socket)).run();
         ConsoleWrapper.WriteLn("Sent p1 board state" + p1_socket.toString());
 
@@ -48,6 +53,11 @@ public class Lobby extends Thread {
         }
 
         new Thread(() -> SocketUtil.sendGameState(new GameState("test"), p2_socket)).run();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         new Thread(() -> SocketUtil.sendGameState(gs, p2_socket)).run();
         ConsoleWrapper.WriteLn("Sent p2 board state " + p2_socket.toString());
 

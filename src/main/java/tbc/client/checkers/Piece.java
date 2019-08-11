@@ -6,7 +6,6 @@ import tbc.util.UUIDUtil;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.Serializable;
 import java.util.UUID;
 

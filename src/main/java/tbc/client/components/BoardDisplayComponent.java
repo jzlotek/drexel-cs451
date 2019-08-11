@@ -19,9 +19,13 @@ public class BoardDisplayComponent {
     }
 
     public void renderBoard() {
+        this.board = (Board) ComponentStore.getInstance().get("board");
+        ConsoleWrapper.WriteLn(this.board);
         JPanel parent = new JPanel();
         parent.setBounds(0, 0, 400, 400);
-        this.board = (Board) ComponentStore.getInstance().get("board");
+        if (this.board == null) {
+            return;
+        }
         window.add(parent);
         parent.setLayout(null);
 
