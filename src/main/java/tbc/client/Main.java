@@ -35,20 +35,18 @@ public class Main {
         String json;
         GameState gs;
 
-        ComponentStore.getInstance().put("board", new Board());
+        //ComponentStore.getInstance().put("board", new Board());
         BoardDisplayComponent boardDisplayComponent = new BoardDisplayComponent(window);
 
         // begin game loop
         while (true) {
-            boardDisplayComponent.renderBoard();
-
             // get serialized string from the server
 //            boardDisplayComponent.renderBoard();
-            try {
-                Thread.sleep(5000);
-            } catch (Exception e) {
-
-            }
+//            try {
+//                Thread.sleep(5000);
+//            } catch (Exception e) {
+//
+//            }
             try {
                 json = SocketUtil.readFromSocket(s);
                 gs = (GameState) SerializationUtilJSON.deserialize(json);
@@ -60,6 +58,8 @@ public class Main {
 
             if (gs != null) {
                 debug.append("\n" + gs.message);
+                debug.append("\nBoard: " + gs.board);
+                ConsoleWrapper.WriteLn("\nBoard: " + gs.board);
                 // if we do not have a board, set the board with UUID's to the current and last board state
                 if (gs.board != null && currentBoard == null) {
                     currentBoard = gs.board;
@@ -67,6 +67,7 @@ public class Main {
                     ComponentStore.getInstance().put("board", currentBoard);
                     debug.append("\n" + currentBoard);
                     gameRunning = true;
+                    boardDisplayComponent.renderBoard();
                 } else if (gameRunning) {
 //                    BoardDisplayComponent boardDisplayComponent = new BoardDisplayComponent(window);
                     debug.append("\nGame is Running");
@@ -123,7 +124,7 @@ public class Main {
     public static void init(GameScene scene) {
         JTextArea debug = new JTextArea();
         ComponentStore.getInstance().put("debug", debug);
-        debug.setBounds(400, 0, 400, 100);
+        debug.setBounds(400, 0, 400, 400);
         JButton joinButton = new JButton("Join a Game");
         ComponentStore.getInstance().put("join_button", joinButton);
         joinButton.addActionListener(new ActionListener() {
@@ -132,8 +133,8 @@ public class Main {
                 connectToServer(e);
             }
         });
-        joinButton.setBounds(400, 400, 400, 100);
         scene.add(joinButton);
+        joinButton.setBounds(400, 400, 400, 100);
         scene.add(debug);
     }
 

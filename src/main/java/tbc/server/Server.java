@@ -51,7 +51,7 @@ public class Server {
             Player p1 = activePlayers.get(0);
             Player p2 = activePlayers.get(1);
             Lobby newGame = new Lobby(p1, p2);
-            newGame.start(); // start the new game
+            newGame.run(); // start the new game
             ConsoleWrapper.WriteLn("Lobby created. Starting health check process..");
             while (newGame.lobbyStatus) {
                 try {

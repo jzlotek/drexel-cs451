@@ -2,6 +2,7 @@ package tbc.client.checkers;
 
 import tbc.client.components.ComponentStore;
 import tbc.shared.Move;
+import tbc.util.ConsoleWrapper;
 
 import java.util.ArrayList;
 
@@ -68,7 +69,7 @@ public class PlayerUI
      */
     public void setSelectedSpace(Space _selectedSpace)
     {
-        System.out.println("Clicked on a space at position " + _selectedSpace.getPos());
+        ConsoleWrapper.WriteLn("Clicked on a space at position " + _selectedSpace.getPos());
 
         if(active) {
             selectedSpace = _selectedSpace;
@@ -103,7 +104,7 @@ public class PlayerUI
      */
     public void setSelectedPiece(Piece _selectedPiece)
     {
-        System.out.println("Clicked on piece at position " + _selectedPiece.getPos());
+        ConsoleWrapper.WriteLn("Clicked on piece at position " + _selectedPiece.getPos());
         if(active) {
             selectedPiece = _selectedPiece;
         }

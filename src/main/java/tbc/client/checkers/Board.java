@@ -3,11 +3,8 @@ package tbc.client.checkers;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.UUID;
 
-import tbc.client.checkers.Vector;
-import tbc.client.components.ComponentStore;
 import tbc.shared.Move;
 
 public class Board implements Serializable {
@@ -196,14 +193,14 @@ public class Board implements Serializable {
         }
 
         // Double-check that the piece is actually at the space where it thinks it is at
-        if(getSpace(targetPiece.getPos()).getPiece().getUUID() == _id)
+        if(this.getSpace(targetPiece.getPos()).getPiece().getUUID() == _id)
         {
             // Remove the piece from the position
-            getSpace(targetPiece.getPos()).setPiece(null);
+            this.getSpace(targetPiece.getPos()).setPiece(null);
 
             // Should remove the piece, but need to double-check
-            if(playerPieces.get(targetPiece.getColor()).contains(targetPiece)) {
-                playerPieces.get(targetPiece.getColor()).remove(targetPiece);
+            if(this.playerPieces.get(targetPiece.getColor()).contains(targetPiece)) {
+                this.playerPieces.get(targetPiece.getColor()).remove(targetPiece);
                 return true;
             }
         }
