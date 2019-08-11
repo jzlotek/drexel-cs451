@@ -28,10 +28,10 @@ public class BoardDisplayComponent {
         window.add(parent);
         parent.setLayout(null);
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                JPanel comp = (JPanel) board.getSpace(i, j).getRenderObject();
-                comp.setBounds(i * comp.getWidth(), j * comp.getHeight(), comp.getWidth(), comp.getHeight());
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                JPanel comp = (JPanel) board.getSpace(x, y).getRenderObject();
+                comp.setBounds(x * comp.getWidth(), y * comp.getHeight(), comp.getWidth(), comp.getHeight());
                 parent.add(comp);
                 comp.validate();
                 comp.repaint();

@@ -79,7 +79,7 @@ public class PlayerUI
             {
                 Board board = (Board)ComponentStore.getInstance().get("board");
 
-                ArrayList<Move> validMoves = board.getValidMoves(selectedPiece, selectedPiece.getPos());
+                ArrayList<Move> validMoves = board.getValidMoves(selectedPiece);
 
                 for(Move move : validMoves)
                 {
@@ -106,7 +106,7 @@ public class PlayerUI
     public void setSelectedPiece(Piece _selectedPiece)
     {
         ConsoleWrapper.WriteLn("Clicked on piece at position " + _selectedPiece.getPos());
-        ConsoleWrapper.WriteLn("Valid Moves: " + Arrays.asList(_selectedPiece.getBoard().getValidMoves(_selectedPiece, _selectedPiece.getPos())).toString());
+        ConsoleWrapper.WriteLn("Valid Moves: " + Arrays.asList(_selectedPiece.getBoard().getValidMoves(_selectedPiece)).toString());
         if(active) {
             selectedPiece = _selectedPiece;
         }
