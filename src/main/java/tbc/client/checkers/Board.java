@@ -2,43 +2,50 @@ package tbc.client.checkers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.UUID;
+
 import tbc.client.checkers.Vector;
+import tbc.client.components.ComponentStore;
+import tbc.shared.Move;
 
 public class Board implements Serializable {
     private Vector boardSize;
     private Space[][] board;
 
+    HashMap<Color, ArrayList<Piece>> playerPieces = new HashMap<Color, ArrayList<Piece>>();
+
+    /*
+     * Constructor that creates the board at default size of 8x8
+     */
     public Board() {
         this.boardSize = new Vector(8, 8);
         this.createBoard();
     }
 
-    public Board(Vector _size) {
-        this.boardSize = _size;
-        this.createBoard();
-    }
-
-    public Board(int _width, int _height) {
-        this.boardSize = new Vector(_width, _height);
-        this.createBoard();
-    }
-
+    /*
+     * Create a board full of spaces of alternating color and populate with 12 checkers pieces
+     */
     private void createBoard() {
         this.board = new Space[boardSize.getY()][boardSize.getX()];
 
+        // Start by creating a black space
         Color color = Color.BLACK;
 
         for (int row = 0; row < this.boardSize.getY(); ++row) {
             for (int col = 0; col < this.boardSize.getX(); ++col) {
                 this.board[col][row] = new Space(col, row, color);
-                // create a piece on that space
+                // create a piece on that space if on the first or last 3 rows (where player pieces always start)
                 if (color == Color.BLACK) {
-                    if (row < 2) {
-                        Piece p = new Piece(this, Color.BLACK);
+                    if (row < 3) {
+                        Piece p = new Piece(this, Color.BLACK, new Vector(col, row));
                         this.board[col][row].setPiece(p);
-                    } else if (row >= this.boardSize.getY() - 2) {
-                        Piece p = new Piece(this, Color.RED);
+                        registerPiece(p);
+                    } else if (row >= this.boardSize.getY() - 3) {
+                        Piece p = new Piece(this, Color.RED, new Vector(col, row));
                         this.board[col][row].setPiece(p);
+                        registerPiece(p);
                     }
                 }
 
@@ -54,14 +61,23 @@ public class Board implements Serializable {
         }
     }
 
+    /*
+     * Get the dimensions of the board
+     */
     public Vector getBoardSize() {
         return this.boardSize;
     }
 
+    /*
+     * Get the Space object with a given position as a Vector
+     */
     public Space getSpace(Vector _pos) {
         return this.getSpace(_pos.getX(), _pos.getY());
     }
 
+    /*
+     * Get the Space object with a given position as x and y coordinates
+     */
     public Space getSpace(int _x, int _y) {
         if (!this.isValidSpace(_x, _y)) {
             return null;
@@ -70,18 +86,30 @@ public class Board implements Serializable {
         return this.board[_y][_x];
     }
 
+    /*
+     * Get whether there is a piece at a specific Vector position
+     */
     public boolean hasPiece(Vector _pos) {
         return this.hasPiece(_pos.getX(), _pos.getY());
     }
 
+    /*
+     * Get whether there is a piece at a specific x and y coordinate position
+     */
     public boolean hasPiece(int _x, int _y) {
         return this.board[_y][_x].isOccupied();
     }
 
+    /*
+     * Get the Piece at a specific Vector position (null if no piece is present)
+     */
     public Piece getPiece(Vector _pos) {
         return this.getPiece(_pos.getX(), _pos.getY());
     }
 
+    /*
+     * Get the Piece at a specific x and y coordinate position (null if no piece is present)
+     */
     public Piece getPiece(int _x, int _y) {
         Space space = this.getSpace(_x, _y);
 
@@ -92,53 +120,164 @@ public class Board implements Serializable {
         return space.getPiece();
     }
 
-    public boolean movePiece(Piece _piece, Vector _oldPos, Vector _newPos) {
-        return this.movePiece(_piece, _oldPos.getX(), _oldPos.getY(), _newPos.getX(), _newPos.getY());
-    }
-
-    public boolean movePiece(Piece _piece, int _xOld, int _yOld, int _xNew, int _yNew) {
-        // First check if the wrong origin point or next space is occupied
-        if (this.getPiece(_xOld, _yOld) != _piece || this.hasPiece(_xNew, _yNew)) {
-            return false;
+    /*
+     * Get all the active pieces on the board for a given color
+     */
+    public ArrayList<Piece> getPiecesForColor(Color _color)
+    {
+        // First ensure that the playerPieces HashMap contains the _color key
+        if(playerPieces.containsKey(_color))
+        {
+            return playerPieces.get(_color);
         }
 
-        // Now check to make sure the destination is a valid move for this piece
-        ArrayList<Vector> validMoves = this.getValidMoves(_piece, _xOld, _yOld);
+        return null;
+    }
 
-        Vector attemptedMove = new Vector(_xNew, _yNew);
-
-        boolean isFound = false;
-
-        // Compare the attempted move location to all the valid moves
-        for (Vector validMove : validMoves) {
-            if (validMove.equals(attemptedMove)) {
-                isFound = true;
+    /*
+     * Check whether there is a winner to the match (occurs when one color no longer has any active pieces)
+     */
+    public boolean hasWinner()
+    {
+        for(Color color : playerPieces.keySet())
+        {
+            if(playerPieces.get(color).size() == 0)
+            {
+                return true;
             }
         }
 
-        // If the new location was found, the move is valid, so move the piece
-        if (isFound) {
-            this.getSpace(_xOld, _yOld).setPiece(null);
-
-            this.getSpace(attemptedMove).setPiece(_piece);
-        }
-
-        return isFound;
+        return false;
     }
 
-    public ArrayList<Vector> getValidMoves(Piece _piece, Vector _pos) {
+    /*
+     * Get the piece on the board with a given UUID (or null if no piece with the UUID can be found)
+     */
+    public Piece getPiece(UUID _id)
+    {
+        for(Color color : playerPieces.keySet())
+        {
+            for(Piece piece : playerPieces.get(color))
+            {
+                if(piece.getUUID().equals(_id))
+                {
+                    return piece;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /*
+     * Register a piece within the playerPieces HashMap
+     */
+    private void registerPiece(Piece _piece)
+    {
+        if(!playerPieces.containsKey(_piece.getColor()))
+        {
+            playerPieces.put(_piece.getColor(), new ArrayList<Piece>());
+        }
+
+        playerPieces.get(_piece.getColor()).add(_piece);
+    }
+
+    /*
+     * Remove a piece from the playerPieces HashMap
+     */
+    private boolean removePiece(UUID _id)
+    {
+        // First get the piece with the UUID given and make sure it is not null
+        Piece targetPiece = getPiece(_id);
+
+        if(targetPiece == null)
+        {
+            return false;
+        }
+
+        // Double-check that the piece is actually at the space where it thinks it is at
+        if(getSpace(targetPiece.getPos()).getPiece().getUUID() == _id)
+        {
+            // Remove the piece from the position
+            getSpace(targetPiece.getPos()).setPiece(null);
+
+            // Should remove the piece, but need to double-check
+            if(playerPieces.get(targetPiece.getColor()).contains(targetPiece)) {
+                playerPieces.get(targetPiece.getColor()).remove(targetPiece);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /*
+     * Move a piece from one Vector position to another Vector position
+     */
+    public Move movePiece(Piece _piece, Vector _oldPos, Vector _newPos) {
+        return this.movePiece(_piece, _oldPos.getX(), _oldPos.getY(), _newPos.getX(), _newPos.getY());
+    }
+
+    /*
+     * Move a piece from one x y coordinate position to another x y coordinate position
+     */
+    public Move movePiece(Piece _piece, int _xOld, int _yOld, int _xNew, int _yNew) {
+        // First check if the wrong origin point or next space is occupied
+        if (this.getPiece(_xOld, _yOld) != _piece || this.hasPiece(_xNew, _yNew)) {
+            return null;
+        }
+
+        // Now check to make sure the destination is a valid move for this piece
+        ArrayList<Move> validMoves = this.getValidMoves(_piece, _xOld, _yOld);
+
+        Vector attemptedMove = new Vector(_xNew, _yNew);
+
+        // Compare the attempted move location to all the valid moves
+        for (Move validMove : validMoves) {
+            // The desired move was valid, so make the move
+            if (validMove.getNewLocation().equals(attemptedMove)) {
+                this.getSpace(_xOld, _yOld).setPiece(null);
+
+                this.getSpace(attemptedMove).setPiece(_piece);
+
+                _piece.setPos(attemptedMove);
+
+                // TODO: Crown the piece if in the enemy home row
+
+                for(UUID id : validMove.getRemoved())
+                {
+                    // Remove each piece with matching UUID
+                    removePiece(id);
+                }
+
+                return validMove;
+            }
+        }
+
+        return null;
+    }
+
+    /*
+     * Get an ArrayList of all moves a piece can make from a given Vector position
+     */
+    public ArrayList<Move> getValidMoves(Piece _piece, Vector _pos) {
         return this.getValidMoves(_piece, _pos.getX(), _pos.getY());
     }
 
-    public ArrayList<Vector> getValidMoves(Piece _piece, int _x, int _y) {
-        ArrayList<Vector> peacefulMoves = new ArrayList<Vector>();
-        ArrayList<Vector> jumpMoves = new ArrayList<Vector>();
+    /*
+     * Get an ArrayList of all moves a piece can make from a given x y position
+     */
+    public ArrayList<Move> getValidMoves(Piece _piece, int _x, int _y) {
+        // Create an ArrayList for all possible peaceful moves and another for all moves that would entail a jump over an opponent piece
+        // At the end, will only return the peaceful moves if there are no jump moves available
+        ArrayList<Move> peacefulMoves = new ArrayList<Move>();
+        ArrayList<Move> jumpMoves = new ArrayList<Move>();
 
         if (!this.isValidSpace(_x, _y)) {
             return peacefulMoves;
         }
 
-        // TODO: Add logic to check for all valid moves here
+        // If the piece has a crown, then it can move diagonally in any direction
         if (_piece.getHasCrown()) {
             for (int row = _y - 1; row <= _y + 1; ++row) {
                 for (int col = _x - 1; col <= _x + 1; ++col) {
@@ -147,7 +286,9 @@ public class Board implements Serializable {
                     if (this.isValidSpace(col, row) && (_x != col || _y != row) && this.getSpace(col, row).getColor() == Color.BLACK) {
                         // Next check that the space is unoccupied
                         if (!this.hasPiece(col, row)) {
-                            peacefulMoves.add(new Vector(col, row));
+                            Move newMove = new Move(_piece.getUUID(), _piece.getPos(), new Vector(col, row));
+
+                            peacefulMoves.add(newMove);
                         }
                         // There is a piece, so check if that piece is jumpable
                         // Piece is jumpable if not the same color as this piece and the space past it is not occupied
@@ -162,7 +303,9 @@ public class Board implements Serializable {
                                 Vector newPos = Vector.add(new Vector(_x, _y), diff);
 
                                 if (this.isValidSpace(newPos) && !this.hasPiece(newPos)) {
-                                    jumpMoves.add(newPos);
+                                    Move newMove = new Move(_piece.getUUID(), _piece.getPos(), new Vector(col, row));
+                                    newMove.addRemoved(otherPiece.getUUID());
+                                    jumpMoves.add(newMove);
                                 }
                             }
                         }
@@ -188,7 +331,8 @@ public class Board implements Serializable {
                 if (this.isValidSpace(col, row) && (_x != col || _y != row) && this.getSpace(col, row).getColor() == Color.BLACK) {
                     // Next check that the space is unoccupied
                     if (!this.hasPiece(col, row)) {
-                        peacefulMoves.add(new Vector(col, row));
+                        Move newMove = new Move(_piece.getUUID(), _piece.getPos(), new Vector(col, row));
+                        peacefulMoves.add(newMove);
                     }
                     // There is a piece, so check if that piece is jumpable
                     // Piece is jumpable if not the same color as this piece and the space past it is not occupied
@@ -203,7 +347,9 @@ public class Board implements Serializable {
                             Vector newPos = Vector.add(new Vector(_x, _y), diff);
 
                             if (this.isValidSpace(newPos) && !this.hasPiece(newPos)) {
-                                jumpMoves.add(newPos);
+                                Move newMove = new Move(_piece.getUUID(), _piece.getPos(), new Vector(col, row));
+                                newMove.addRemoved(otherPiece.getUUID());
+                                jumpMoves.add(newMove);
                             }
                         }
                     }
@@ -218,10 +364,16 @@ public class Board implements Serializable {
         }
     }
 
+    /*
+     * Check that a given Vector position is valid on the board
+     */
     public boolean isValidSpace(Vector _pos) {
         return this.isValidSpace(_pos.getX(), _pos.getY());
     }
 
+    /*
+     * Check that a given x y coordinate position is valid on the board
+     */
     public boolean isValidSpace(int _x, int _y) {
         return _x > -1 && _x < this.boardSize.getX()
                 && _y > -1 && _y < this.boardSize.getY();

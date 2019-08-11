@@ -10,26 +10,31 @@ import java.util.UUID;
 public class Move implements Serializable {
     private List<UUID> removed;
     private UUID pieceID;
+    private Vector oldLocation;
     private Vector newLocation;
 
-    private Move() {
+    public Move() {
     }
 
-    public Move(UUID pieceID, Vector newLocation) {
+    public Move(UUID pieceID, Vector oldLocation, Vector newLocation) {
         this.removed = new ArrayList<UUID>();
         this.pieceID = pieceID;
+        this.oldLocation = oldLocation;
         this.newLocation = newLocation;
     }
 
-    public Move(UUID pieceID, Vector newLocation, List<UUID> removed) {
+    public Move(UUID pieceID, Vector oldLocation, Vector newLocation, List<UUID> removed) {
         this.removed = removed;
         this.pieceID = pieceID;
+        this.oldLocation = oldLocation;
         this.newLocation = newLocation;
     }
 
     public List<UUID> getRemoved() {
         return this.removed;
     }
+
+    public Vector getOldLocation() { return this.oldLocation; }
 
     public Vector getNewLocation() {
         return this.newLocation;

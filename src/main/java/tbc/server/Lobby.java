@@ -1,6 +1,7 @@
 package tbc.server;
 
 import tbc.client.checkers.Board;
+import tbc.client.components.ComponentStore;
 import tbc.shared.GameState;
 import tbc.util.ConsoleWrapper;
 import tbc.util.SerializationUtilJSON;
@@ -146,10 +147,18 @@ public class Lobby extends Thread {
         return true;
     }
 
+    // TODO: jzlotek need to ensure gameBoard is kept up to date with each valid move so this function works
     /*
      * Function that checks if we have a winner after a specific move has been made
      */
     private boolean checkWinner() {
+        Board board = (Board) ComponentStore.getInstance().get("board");
+
+        if(board != null)
+        {
+            return board.hasWinner();
+        }
+
         return false;
     }
 

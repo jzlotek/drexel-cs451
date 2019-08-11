@@ -28,6 +28,7 @@ public class BoardDisplayComponent {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 JPanel comp = (JPanel) board.getSpace(i, j).getRenderObject();
+                comp.setBounds(j * comp.getWidth(), i * comp.getHeight(), comp.getWidth(), comp.getHeight());
                 parent.add(comp);
                 comp.validate();
                 comp.repaint();
