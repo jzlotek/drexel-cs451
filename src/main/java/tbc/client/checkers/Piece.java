@@ -2,6 +2,7 @@ package tbc.client.checkers;
 
 import tbc.client.checkers.events.EventHandler;
 import tbc.client.components.SpriteLabel;
+import tbc.util.ConsoleWrapper;
 import tbc.util.UUIDUtil;
 
 import javax.swing.*;
@@ -19,10 +20,10 @@ public class Piece extends Clickable implements Serializable, Renderable {
     private Vector position;
 
     // The file paths to the images of pieces of different colors, with and without a crown
-    private static final String blackPawnPath = "resources/img/checkersPiece black.png";
-    private static final String blackKingPath = "resources/img/checkersPiece black crowned.png";
-    private static final String redPawnPath = "resources/img/checkersPiece red.png";
-    private static final String redKingPath = "resources/img/checkersPiece red crowned.png";
+    private static final String blackPawnPath = "img/checkersPiece black.png";
+    private static final String blackKingPath = "img/checkersPiece black crowned.png";
+    private static final String redPawnPath = "img/checkersPiece red.png";
+    private static final String redKingPath = "img/checkersPiece red crowned.png";
 
     private transient EventHandler onPieceKilledHandler;
     private transient EventHandler onPieceCrownedHandler;
@@ -149,9 +150,11 @@ public class Piece extends Clickable implements Serializable, Renderable {
             }
         }
 
-        ImageIcon icon = new ImageIcon(path);
+        ImageIcon icon = new ImageIcon(Piece.class.getClassLoader().getResource(path));
 
-        return new SpriteLabel(new ImageIcon(path), JLabel.CENTER);
+        SpriteLabel label = new SpriteLabel(icon, JLabel.CENTER);
+        label.addMouseListener(this);
+        return label;
     }
 
     @Override

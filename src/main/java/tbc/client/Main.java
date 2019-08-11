@@ -35,18 +35,11 @@ public class Main {
         String json;
         GameState gs;
 
-        //ComponentStore.getInstance().put("board", new Board());
         BoardDisplayComponent boardDisplayComponent = new BoardDisplayComponent(window);
 
         // begin game loop
         while (true) {
             // get serialized string from the server
-//            boardDisplayComponent.renderBoard();
-//            try {
-//                Thread.sleep(5000);
-//            } catch (Exception e) {
-//
-//            }
             try {
                 json = SocketUtil.readFromSocket(s);
                 gs = (GameState) SerializationUtilJSON.deserialize(json);
@@ -69,7 +62,7 @@ public class Main {
                     gameRunning = true;
                     boardDisplayComponent.renderBoard();
                 } else if (gameRunning) {
-//                    BoardDisplayComponent boardDisplayComponent = new BoardDisplayComponent(window);
+                    boardDisplayComponent.renderBoard();
                     debug.append("\nGame is Running");
                     if (gs.yourTurn) {
 

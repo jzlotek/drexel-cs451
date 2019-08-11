@@ -87,11 +87,13 @@ public class Space extends Clickable implements Serializable, Renderable {
             path = redPath;
         }
 
-        ImageIcon icon = new ImageIcon(path);
+        ImageIcon icon = new ImageIcon(Space.class.getClassLoader().getResource(path));
 
         SpritePanel panel = new SpritePanel(icon);
 
         panel.setLayout(new BorderLayout(2, 2));
+
+        panel.addMouseListener(this);
 
         if(isOccupied())
         {

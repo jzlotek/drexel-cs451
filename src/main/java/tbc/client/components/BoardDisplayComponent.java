@@ -20,19 +20,18 @@ public class BoardDisplayComponent {
 
     public void renderBoard() {
         this.board = (Board) ComponentStore.getInstance().get("board");
-        ConsoleWrapper.WriteLn(this.board);
-        JPanel parent = new JPanel();
-        parent.setBounds(0, 0, 400, 400);
         if (this.board == null) {
             return;
         }
+        JPanel parent = new JPanel();
+        parent.setBounds(0, 0, 400, 400);
         window.add(parent);
         parent.setLayout(null);
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 JPanel comp = (JPanel) board.getSpace(i, j).getRenderObject();
-                comp.setBounds(j * comp.getWidth(), i * comp.getHeight(), comp.getWidth(), comp.getHeight());
+                comp.setBounds(i * comp.getWidth(), j * comp.getHeight(), comp.getWidth(), comp.getHeight());
                 parent.add(comp);
                 comp.validate();
                 comp.repaint();
