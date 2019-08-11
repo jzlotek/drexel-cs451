@@ -111,16 +111,16 @@ public class Main {
         JTextArea debug = new JTextArea();
         ComponentStore.getInstance().put("debug", debug);
         debug.setBounds(400, 0, 400, 100);
-//        JButton joinButton = new JButton("Join a Game");
-//        ComponentStore.getInstance().put("join_button", joinButton);
-//        joinButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                connectToServer(e);
-//            }
-//        });
-//        joinButton.setBounds(0, 0, 100, 100);
-//        scene.add(joinButton);
+        JButton joinButton = new JButton("Join a Game");
+        ComponentStore.getInstance().put("join_button", joinButton);
+        joinButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                connectToServer(e);
+            }
+        });
+        joinButton.setBounds(400, 400, 400, 100);
+        scene.add(joinButton);
         scene.add(debug);
     }
 
