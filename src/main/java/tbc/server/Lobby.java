@@ -37,7 +37,7 @@ public class Lobby extends Thread {
         Socket p1_socket = players.get(0).getSocket();
         Socket p2_socket = players.get(1).getSocket();
         ConsoleWrapper.WriteLn(gameBoard.getPiece(0, 0).getColor());
-        Color[] randomize = new Color[]{Color.BLACK, Color.RED};
+        Color[] randomize = new Color[]{Color.WHITE, Color.RED};
         Collections.shuffle(Arrays.asList(randomize));
 
         GameState gs = new GameState("Initial Game State", gameBoard);
@@ -51,7 +51,7 @@ public class Lobby extends Thread {
             e.printStackTrace();
         }
         gs.yourColor = randomize[0];
-        if (randomize[0] == Color.BLACK) {
+        if (randomize[0] == Color.WHITE) {
             gs.yourTurn = true;
         }
         new Thread(() -> SocketUtil.sendGameState(gs, finalP1_socket)).run();
@@ -71,7 +71,7 @@ public class Lobby extends Thread {
             e.printStackTrace();
         }
         gs.yourColor = randomize[1];
-        if (randomize[1] == Color.BLACK) {
+        if (randomize[1] == Color.WHITE) {
             gs.yourTurn = true;
         }
         new Thread(() -> SocketUtil.sendGameState(gs, finalP2_socket)).run();

@@ -5,6 +5,7 @@ import tbc.shared.Move;
 import tbc.util.ConsoleWrapper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class PlayerUI {
     private static PlayerUI instance = null;
@@ -126,7 +127,7 @@ public class PlayerUI {
         }
         if(active) {
             // Only allow the player to select a piece of their own color
-            if(_selectedPiece.getColor() == this.color) {
+            if(_selectedPiece == null || _selectedPiece.getColor() == this.color) {
                 selectedPiece = _selectedPiece;
             }
         }
