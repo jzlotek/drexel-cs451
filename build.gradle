@@ -11,7 +11,7 @@ apply plugin: 'org.ajoberstar.release-opinion'
 apply plugin: 'org.ajoberstar.release-base'
 
 group 'tbc'
-version '1.2.0'
+version '1.3.0'
 
 sourceCompatibility = 1.8
 
