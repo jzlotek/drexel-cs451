@@ -1,6 +1,7 @@
 package tbc.server;
 
 import tbc.client.checkers.Board;
+import tbc.client.checkers.Color;
 import tbc.client.components.ComponentStore;
 import tbc.shared.GameState;
 import tbc.util.ConsoleWrapper;
@@ -11,6 +12,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Lobby extends Thread {
     protected ArrayList<Player> players = new ArrayList<Player>();
@@ -33,17 +36,25 @@ public class Lobby extends Thread {
         String response = "";
         Socket p1_socket = players.get(0).getSocket();
         Socket p2_socket = players.get(1).getSocket();
-        ConsoleWrapper.WriteLn(gameBoard.getPiece(0,0).getColor());
+        ConsoleWrapper.WriteLn(gameBoard.getPiece(0, 0).getColor());
+        Color[] randomize = new Color[]{Color.BLACK, Color.RED};
+        Collections.shuffle(Arrays.asList(randomize));
 
         GameState gs = new GameState("Initial Game State", gameBoard);
+        gs.yourTurn = false;
 
-        new Thread(() -> SocketUtil.sendGameState(new GameState("test"), p1_socket)).run();
+        Socket finalP1_socket = p1_socket;
+        new Thread(() -> SocketUtil.sendGameState(new GameState("test"), finalP1_socket)).run();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        new Thread(() -> SocketUtil.sendGameState(gs, p1_socket)).run();
+        gs.yourColor = randomize[0];
+        if (randomize[0] == Color.BLACK) {
+            gs.yourTurn = true;
+        }
+        new Thread(() -> SocketUtil.sendGameState(gs, finalP1_socket)).run();
         ConsoleWrapper.WriteLn("Sent p1 board state" + p1_socket.toString());
 
         try {
@@ -52,16 +63,30 @@ public class Lobby extends Thread {
             e.printStackTrace();
         }
 
-        new Thread(() -> SocketUtil.sendGameState(new GameState("test"), p2_socket)).run();
+        Socket finalP2_socket = p2_socket;
+        new Thread(() -> SocketUtil.sendGameState(new GameState("test"), finalP2_socket)).run();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        new Thread(() -> SocketUtil.sendGameState(gs, p2_socket)).run();
+        gs.yourColor = randomize[1];
+        if (randomize[1] == Color.BLACK) {
+            gs.yourTurn = true;
+        }
+        new Thread(() -> SocketUtil.sendGameState(gs, finalP2_socket)).run();
         ConsoleWrapper.WriteLn("Sent p2 board state " + p2_socket.toString());
 
         GameState userGameState;
+        if (randomize[0] == Color.RED) {
+            Player tmp = this.players.get(0);
+            this.players.set(0, this.players.get(1));
+            this.players.set(1, tmp);
+            Socket tmpSocket = p1_socket;
+            p1_socket = p2_socket;
+            p2_socket = tmpSocket;
+        }
+
         while (this.lobbyStatus == true) { // while we have a game going on
             for (Player p : this.players) {
                 if (p.getSocket().isClosed()) {
@@ -164,8 +189,7 @@ public class Lobby extends Thread {
     private boolean checkWinner() {
         Board board = (Board) ComponentStore.getInstance().get("board");
 
-        if(board != null)
-        {
+        if (board != null) {
             return board.hasWinner();
         }
 

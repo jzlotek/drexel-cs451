@@ -4,6 +4,7 @@ import tbc.client.checkers.Vector;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,4 +45,11 @@ public class Move implements Serializable {
         this.removed.add(removed);
     }
 
+    @Override
+    public String toString() {
+        return  "ID: " + this.pieceID.toString() +
+                " Old Location: " + this.oldLocation.toString() +
+                " New Location: " + this.newLocation.toString() +
+                " Removed Pieces: " + Arrays.asList(this.removed).toString();
+    }
 }
