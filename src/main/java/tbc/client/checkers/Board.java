@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import tbc.shared.Move;
+import tbc.util.ConsoleWrapper;
 
 public class Board implements Serializable {
     private Vector boardSize;
@@ -28,19 +29,19 @@ public class Board implements Serializable {
         this.board = new Space[boardSize.getY()][boardSize.getX()];
 
         // Start by creating a black space
-        Color color = Color.BLACK;
+        Color color = Color.WHITE;
 
         for (int row = 0; row < this.boardSize.getY(); ++row) {
             for (int col = 0; col < this.boardSize.getX(); ++col) {
                 this.board[row][col] = new Space(col, row, color);
                 // create a piece on that space if on the first or last 3 rows (where player pieces always start)
-                if (color == Color.BLACK) {
+                if (color == Color.WHITE) {
                     if (row < 3) {
-                        Piece p = new Piece(this, Color.BLACK, new Vector(col, row));
+                        Piece p = new Piece(this, Color.RED, new Vector(col, row));
                         this.board[row][col].setPiece(p);
                         registerPiece(p);
                     } else if (row >= this.boardSize.getY() - 3) {
-                        Piece p = new Piece(this, Color.RED, new Vector(col, row));
+                        Piece p = new Piece(this, Color.WHITE, new Vector(col, row));
                         this.board[row][col].setPiece(p);
                         registerPiece(p);
                     }
@@ -48,10 +49,10 @@ public class Board implements Serializable {
 
                 // Alternate colors for spaces
                 if (col < this.boardSize.getX() - 1) {
-                    if (color == Color.BLACK) {
+                    if (color == Color.WHITE) {
                         color = Color.RED;
                     } else {
-                        color = Color.BLACK;
+                        color = Color.WHITE;
                     }
                 }
             }
@@ -94,7 +95,7 @@ public class Board implements Serializable {
      * Get whether there is a piece at a specific x and y coordinate position
      */
     public boolean hasPiece(int _x, int _y) {
-        return this.board[_y][_x].isOccupied();
+        return this.getSpace(_x, _y).isOccupied();
     }
 
     /*
@@ -276,7 +277,7 @@ public class Board implements Serializable {
                 for (int col = x - 1; col <= x + 1; ++col) {
                     // First check that the space exists on the board and it is not the starting space
                     // Also is only valid if the space is black
-                    if (this.isValidSpace(col, row) && (x != col || y != row) && this.getSpace(col, row).getColor() == Color.BLACK) {
+                    if (this.isValidSpace(col, row) && (x != col || y != row) && this.getSpace(col, row).getColor() == Color.WHITE) {
                         // Next check that the space is unoccupied
                         if (!this.hasPiece(col, row)) {
                             Move newMove = new Move(_piece.getUUID(), _piece.getPos(), new Vector(col, row));
@@ -308,11 +309,11 @@ public class Board implements Serializable {
         }
         // The piece is not crowned, so it can only move up or down
         else {
-            // Black starts at the bottom of the board (highest y values) while red starts at the top (lowest red values)
-            // So, black pawns can only move - 1 on y while red pawns can only move + 1 on y
+            // White starts at the bottom of the board (highest y values) while red starts at the top (lowest red values)
+            // So, white pawns can only move - 1 on y while red pawns can only move + 1 on y
             int row = y;
 
-            if (_piece.getColor() == Color.BLACK) {
+            if (_piece.getColor() == Color.WHITE) {
                 --row;
             } else {
                 ++row;
@@ -320,8 +321,8 @@ public class Board implements Serializable {
 
             for (int col = x - 1; col <= x + 1; ++col) {
                 // First check that the space exists on the board and it is not the starting space
-                // Also only valid if the space is black
-                if (this.isValidSpace(col, row) && (x != col || y != row) && this.getSpace(col, row).getColor() == Color.BLACK) {
+                // Also only valid if the space is black (white)
+                if (this.isValidSpace(col, row) && (x != col || y != row) && this.getSpace(col, row).getColor() == Color.WHITE) {
                     // Next check that the space is unoccupied
                     if (!this.hasPiece(col, row)) {
                         Move newMove = new Move(_piece.getUUID(), _piece.getPos(), new Vector(col, row));

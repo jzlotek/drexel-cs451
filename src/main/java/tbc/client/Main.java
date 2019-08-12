@@ -68,6 +68,11 @@ public class Main {
                     boardDisplayComponent.renderBoard();
                     if (gs.yourTurn) {
                         PlayerUI.getInstance().setActive(true);
+                        // wait for board to update locally before continuing
+//                        while (lastBoard.equals(currentBoard)) {
+//                            currentBoard = (Board) ComponentStore.getInstance().get("board");
+//                            Thread.sleep(500);
+//                        }
 
                         // TODO: jcarfagno - calculate new move
                         while(PlayerUI.getInstance().getNextMove() == null)
