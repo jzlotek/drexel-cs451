@@ -28,6 +28,7 @@ public class Main {
         window = new GameScene();
         init(window);
         window.show();
+//        Board testBoard = new Board();
         Board currentBoard = null;
         Board lastBoard = null;
         JTextArea debug = (JTextArea) ComponentStore.getInstance().get("debug");
@@ -36,6 +37,9 @@ public class Main {
         GameState gs;
 
         BoardDisplayComponent boardDisplayComponent = new BoardDisplayComponent(window);
+
+//        ComponentStore.getInstance().put("board", testBoard);
+//        boardDisplayComponent.renderBoard();
 
         // begin game loop
         while (true) {

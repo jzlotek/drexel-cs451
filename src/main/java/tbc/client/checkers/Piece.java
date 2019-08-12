@@ -19,10 +19,10 @@ public class Piece extends Clickable implements Serializable, Renderable {
     private Vector position;
 
     // The file paths to the images of pieces of different colors, with and without a crown
-    private static final String blackPawnPath = "img/checkersPiece black.png";
-    private static final String blackKingPath = "img/checkersPiece black crowned.png";
-    private static final String redPawnPath = "img/checkersPiece red.png";
-    private static final String redKingPath = "img/checkersPiece red crowned.png";
+    private static final String blackPawnPath = "/img/checkersPiece black.png";
+    private static final String blackKingPath = "/img/checkersPiece black crowned.png";
+    private static final String redPawnPath = "/img/checkersPiece red.png";
+    private static final String redKingPath = "/img/checkersPiece red crowned.png";
 
     private transient EventHandler onPieceKilledHandler;
     private transient EventHandler onPieceCrownedHandler;
@@ -149,9 +149,7 @@ public class Piece extends Clickable implements Serializable, Renderable {
             }
         }
 
-        ImageIcon icon = new ImageIcon(Piece.class.getClassLoader().getResource(path));
-
-        SpriteLabel label = new SpriteLabel(icon, JLabel.CENTER);
+        SpriteLabel label = new SpriteLabel(path, JLabel.CENTER);
         label.addMouseListener(this);
         return label;
     }

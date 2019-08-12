@@ -1,7 +1,9 @@
 package tbc.client.components;
 
 import java.awt.*;
+import java.io.InputStream;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class SpritePanel extends JPanel
@@ -11,10 +13,10 @@ public class SpritePanel extends JPanel
     /*
      * Constructor for a panel displaying the given image
      */
-    public SpritePanel(ImageIcon _image)
+    public SpritePanel(String _path)
     {
         super();
-        setImage(_image);
+        setImage(_path);
     }
 
     /*
@@ -28,12 +30,23 @@ public class SpritePanel extends JPanel
     /*
      * Set the image to display
      */
-    public void setImage(ImageIcon _image)
+    public void setImage(String _path)
     {
-        image = _image;
+        InputStream stream = SpriteLabel.class.getResourceAsStream(_path);
 
-        //setSize(new Dimension(image.getIconWidth(), image.getIconHeight()));
-        setBounds(new Rectangle(image.getIconWidth(), image.getIconHeight()));
+        try
+        {
+            image = new ImageIcon(ImageIO.read(stream));
+
+            setBounds(new Rectangle(image.getIconWidth(), image.getIconHeight()));
+
+            System.out.println("Image Icon Dimensions: (" + image.getIconWidth() + ", " + image.getIconHeight() + ")");
+        }
+        catch (Exception e)
+        {
+            System.out.println("Encountered an error reading an image from file");
+            e.printStackTrace();
+        }
     }
 
     @Override

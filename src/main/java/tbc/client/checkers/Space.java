@@ -16,8 +16,8 @@ public class Space extends Clickable implements Serializable, Renderable {
     private Color color;
 
     // The paths to the image files for black and red spaces
-    private static final String blackPath = "resources/img/space black.png";
-    private static final String redPath = "resources/img/space red.png";
+    private static final String blackPath = "/img/space black.png";
+    private static final String redPath = "/img/space red.png";
 
     /*
      * Default empty constructor
@@ -87,9 +87,7 @@ public class Space extends Clickable implements Serializable, Renderable {
             path = redPath;
         }
 
-        ImageIcon icon = new ImageIcon(Space.class.getClassLoader().getResource(path));
-
-        SpritePanel panel = new SpritePanel(icon);
+        SpritePanel panel = new SpritePanel(path);
 
         panel.setLayout(new BorderLayout(2, 2));
 

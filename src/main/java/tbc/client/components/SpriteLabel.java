@@ -1,38 +1,54 @@
 package tbc.client.components;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.InputStream;
 
 public class SpriteLabel extends JLabel
 {
     /*
-     * Constructor for a SpriteLabel displaying a specific ImageIcon
+     * Constructor for a SpriteLabel displaying a specific image from a path
      */
-    public SpriteLabel(ImageIcon _image)
+    public SpriteLabel(String _path)
     {
-        super(_image);
-        setImage(_image);
+        super();
+        setImage(_path);
     }
 
     /*
-     * Constructor for a SpriteLabel displaying a specific ImageIcon and with the given alignment
+     * Constructor for a SpriteLabel displaying a specific image from a path and with a specific alignment
      */
-    public SpriteLabel(ImageIcon _image, int _align)
+    public SpriteLabel(String _path, int _align)
     {
-        super(_image, _align);
-        setImage(_image);
+        super();
+        setImage(_path);
+        setHorizontalAlignment(_align);
     }
 
     /*
      * Set the image to display
      */
-    public void setImage(ImageIcon _image)
+    public void setImage(String _path)
     {
-        setIcon(_image);
+        InputStream stream = SpriteLabel.class.getResourceAsStream(_path);
 
-        setMinimumSize(new Dimension(_image.getIconWidth(), _image.getIconHeight()));
-        setPreferredSize(new Dimension(_image.getIconWidth(), _image.getIconHeight()));
-        setMaximumSize(new Dimension(_image.getIconWidth(), _image.getIconHeight()));
+        try
+        {
+            ImageIcon icon = new ImageIcon(ImageIO.read(stream));
+            setIcon(icon);
+
+            setMinimumSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
+            setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
+            setMaximumSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
+
+            System.out.println("Image Icon Dimensions: (" + icon.getIconWidth() + ", " + icon.getIconHeight() + ")");
+        }
+        catch (Exception e)
+        {
+            System.out.println("Encountered an error reading an image from file");
+            e.printStackTrace();
+        }
     }
 
     /*
