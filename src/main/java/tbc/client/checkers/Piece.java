@@ -2,7 +2,6 @@ package tbc.client.checkers;
 
 import tbc.client.checkers.events.EventHandler;
 import tbc.client.components.SpriteLabel;
-import tbc.util.ConsoleWrapper;
 import tbc.util.UUIDUtil;
 
 import javax.swing.*;
@@ -12,7 +11,7 @@ import java.util.UUID;
 
 public class Piece extends Clickable implements Serializable, Renderable {
     private Board board;
-    private Color color = Color.BLACK;
+    private Color color = Color.WHITE;
     private boolean hasCrown = false;
     private UUID uuid;
 
@@ -138,7 +137,7 @@ public class Piece extends Clickable implements Serializable, Renderable {
     public JComponent getRenderObject() {
         String path = blackPawnPath;
 
-        if (color == Color.BLACK) {
+        if (color == Color.WHITE) {
             if (hasCrown) {
                 path = blackKingPath;
             }

@@ -11,6 +11,9 @@ public class PlayerUI
 {
     private static PlayerUI instance = null;
 
+    // The color assigned to this player
+    private Color color = Color.WHITE;
+
     // Whether the PlayerUI should be active right now
     // Ignore input from the player if not
     private boolean active = false;
@@ -35,6 +38,22 @@ public class PlayerUI
     }
 
     /*
+     * Get the color assigned to this player
+     */
+    public Color getColor()
+    {
+        return color;
+    }
+
+    /*
+     * Set the color of this player
+     */
+    public void setColor(Color _color)
+    {
+        color = _color;
+    }
+
+    /*
      * Get whether the UI is currently listening for input
      */
     public boolean getActive()
@@ -47,14 +66,14 @@ public class PlayerUI
      */
     public void setActive(boolean _active)
     {
-        active = _active;
-
-        if(!active)
+        if(!_active)
         {
             setSelectedPiece(null);
             setSelectedSpace(null);
             nextMove = null;
         }
+
+        active = _active;
     }
 
     /*
@@ -70,12 +89,14 @@ public class PlayerUI
      */
     public void setSelectedSpace(Space _selectedSpace)
     {
-        ConsoleWrapper.WriteLn("Clicked on a space at position " + _selectedSpace.getPos());
+        if(_selectedSpace != null) {
+            ConsoleWrapper.WriteLn("Clicked on a space at position " + _selectedSpace.getPos() + "\nActive UI: " + this.active);
+        }
 
         if(active) {
             selectedSpace = _selectedSpace;
 
-            if(selectedPiece != null)
+            if(selectedPiece != null && selectedSpace != null)
             {
                 Board board = (Board)ComponentStore.getInstance().get("board");
 
@@ -85,6 +106,7 @@ public class PlayerUI
                 {
                     if(move != null && move.getNewLocation().equals(selectedSpace.getPos()))
                     {
+                        ConsoleWrapper.WriteLn("Creating new move " + move);
                         nextMove = move;
                     }
                 }
@@ -105,10 +127,15 @@ public class PlayerUI
      */
     public void setSelectedPiece(Piece _selectedPiece)
     {
-        ConsoleWrapper.WriteLn("Clicked on piece at position " + _selectedPiece.getPos());
-        ConsoleWrapper.WriteLn("Valid Moves: " + Arrays.asList(_selectedPiece.getBoard().getValidMoves(_selectedPiece)).toString());
+        if(_selectedPiece != null) {
+            ConsoleWrapper.WriteLn("Clicked on piece at position " + _selectedPiece.getPos() + "\nActive UI: " + this.active);
+            ConsoleWrapper.WriteLn("Valid Moves: " + Arrays.asList(_selectedPiece.getBoard().getValidMoves(_selectedPiece)).toString());
+        }
         if(active) {
-            selectedPiece = _selectedPiece;
+            // Only allow the player to select a piece of their own color
+            if(_selectedPiece.getColor() == this.color) {
+                selectedPiece = _selectedPiece;
+            }
         }
     }
 

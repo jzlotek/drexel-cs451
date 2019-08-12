@@ -58,6 +58,7 @@ public class Lobby extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        gs.yourTurn = true;
         new Thread(() -> SocketUtil.sendGameState(gs, p2_socket)).run();
         ConsoleWrapper.WriteLn("Sent p2 board state " + p2_socket.toString());
 

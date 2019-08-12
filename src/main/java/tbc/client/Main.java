@@ -61,18 +61,18 @@ public class Main {
                     debug.append("\n" + currentBoard);
                     gameRunning = true;
                     boardDisplayComponent.renderBoard();
-                } else if (gameRunning) {
-                    boardDisplayComponent.renderBoard();
                     debug.append("\nGame is Running");
+                }
+
+                if (gameRunning) {
+                    boardDisplayComponent.renderBoard();
                     if (gs.yourTurn) {
-
-                        // wait for board to update locally before continuing
-                        while (lastBoard.equals(currentBoard)) {
-                            currentBoard = (Board) ComponentStore.getInstance().get("board");
-                            Thread.sleep(500);
-                        }
-
                         PlayerUI.getInstance().setActive(true);
+                        // wait for board to update locally before continuing
+//                        while (lastBoard.equals(currentBoard)) {
+//                            currentBoard = (Board) ComponentStore.getInstance().get("board");
+//                            Thread.sleep(500);
+//                        }
 
                         // TODO: jcarfagno - calculate new move
                         while(PlayerUI.getInstance().getNextMove() == null)
