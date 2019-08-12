@@ -53,11 +53,11 @@ public class Server {
             Lobby newGame = new Lobby(p1, p2);
             newGame.run(); // start the new game
             ConsoleWrapper.WriteLn("Lobby created. Starting health check process..");
-            while (newGame.lobbyStatus) {
+            while (newGame.gameRunning) {
                 try {
                     Thread.sleep(5000);
                     if (!heartbeat()) {
-                        newGame.lobbyStatus = false;
+                        newGame.gameRunning = false;
                     }
                 } catch (InterruptedException ex) {
                     throw ex;

@@ -20,7 +20,7 @@ import java.net.Socket;
 
 
 public class Main {
-    static Socket s = null;
+    static Socket serverSocket = null;
     static GameScene window = null;
 
     public static void main(String[] args) throws Exception {
@@ -41,7 +41,7 @@ public class Main {
         while (true) {
             // get serialized string from the server
             try {
-                json = SocketUtil.readFromSocket(s);
+                json = SocketUtil.readFromSocket(serverSocket);
                 gs = (GameState) SerializationUtilJSON.deserialize(json);
             } catch (Exception e) {
                 gs = null;
@@ -51,7 +51,6 @@ public class Main {
 
             if (gs != null) {
                 debug.append("\n" + gs.message);
-                debug.append("\nBoard: " + gs.board);
                 ConsoleWrapper.WriteLn("\nBoard: " + gs.board);
                 // if we do not have a board, set the board with UUID's to the current and last board state
                 if (gs.board != null && currentBoard == null) {
@@ -67,13 +66,8 @@ public class Main {
                 if (gameRunning) {
                     boardDisplayComponent.renderBoard();
                     if (gs.yourTurn) {
+                        debug.append("\nYour Turn");
                         PlayerUI.getInstance().setActive(true);
-                        // wait for board to update locally before continuing
-//                        while (lastBoard.equals(currentBoard)) {
-//                            currentBoard = (Board) ComponentStore.getInstance().get("board");
-//                            Thread.sleep(500);
-//                        }
-
                         // TODO: jcarfagno - calculate new move
                         while(PlayerUI.getInstance().getNextMove() == null)
                         {
@@ -85,11 +79,11 @@ public class Main {
 
                         PlayerUI.getInstance().setActive(false);
 
-                        SocketUtil.sendGameState(gs, s);
+                        SocketUtil.sendGameState(gs, serverSocket);
                         gs = null;
                         while (gs == null) {
                             try {
-                                json = SocketUtil.readFromSocket(s);
+                                json = SocketUtil.readFromSocket(serverSocket);
                                 gs = (GameState) SerializationUtilJSON.deserialize(json);
                             } catch (Exception e) {
                                 gs = null;
@@ -97,11 +91,12 @@ public class Main {
                         }
 
                         if (gs.message.equals("success")) {
-                            ConsoleWrapper.WriteLn("move accepted");
+                            debug.append("\nMove was accepted");
                             lastBoard = currentBoard;
                             ComponentStore.getInstance().put("board", currentBoard);
+                            boardDisplayComponent.renderBoard();
                         } else {
-                            ConsoleWrapper.WriteLn("move denied");
+                            debug.append("\nMove was denied");
                             currentBoard = lastBoard;
                         }
                     }
@@ -132,26 +127,26 @@ public class Main {
     }
 
     private static void connectToServer(ActionEvent e) {
-        if (s != null) {
+        if (serverSocket != null) {
             try {
-                s.close();
+                serverSocket.close();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
         try {
-            s = new Socket("localhost", Constants.PORT);
-            s.setKeepAlive(true);
+            serverSocket = new Socket("localhost", Constants.PORT);
+            serverSocket.setKeepAlive(true);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
         JTextArea debug = (JTextArea) ComponentStore.getInstance().get("debug");
 
-        if (s == null || !s.isConnected()) {
+        if (serverSocket == null || !serverSocket.isConnected()) {
             debug.setText("Failed to Join");
         } else {
-            debug.setText(debug.getText() + "\nConnected to: " + s.getInetAddress().getHostAddress());
+            debug.setText(debug.getText() + "\nConnected to: " + serverSocket.getInetAddress().getHostAddress());
         }
         ConsoleWrapper.WriteLn(e.toString());
     }
