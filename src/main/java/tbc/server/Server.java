@@ -35,13 +35,21 @@ public class Server {
 
 
         new Thread(Server::connectPlayer).start();
+        new Thread(() -> {
+            while (true) {
+                activePlayers.removeIf(player -> player.getSocket().isClosed());
+                try {
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                }
+            }
+        }).start();
         while (true) {
             // TODO: upon create lobby, add new lobby to list.
             // TODO: upon join lobby, add player to lobby.
             // lobby thread should handle the game from there.
             // Notes: will need to make a list of currently connected player
             // and iterate all of them for requests to join or make lobbies
-            activePlayers.removeIf(player -> player.getSocket().isClosed());
             for (Player p : activePlayers) {
                 if (!p.isInGame()) {
                     String string = SocketUtil.readFromSocket(p.getSocket());
@@ -67,41 +75,43 @@ public class Server {
                     }
                 }
             }
-            ConsoleWrapper.WriteLn("Max connections established. Creating Lobby.");
+//            ConsoleWrapper.WriteLn("Max connections established. Creating Lobby.");
 
-            Player p1 = activePlayers.get(0);
-            Player p2 = activePlayers.get(1);
-            Lobby newGame = new Lobby(p1, p2);
-            newGame.run(); // start the new game
-            ConsoleWrapper.WriteLn("Lobby created. Starting health check process..");
-            while (newGame.gameRunning) {
-                try {
-                    Thread.sleep(5000);
-                    if (!heartbeat()) {
-                        newGame.gameRunning = false;
-                    }
-                } catch (InterruptedException ex) {
-                    throw ex;
-                }
-            }
-            activePlayers.clear(); // clear the sockets for start of new game
+//            Player p1 = activePlayers.get(0);
+//            Player p2 = activePlayers.get(1);
+//            Lobby newGame = new Lobby(p1, p2);
+//            newGame.run(); // start the new game
+//            ConsoleWrapper.WriteLn("Lobby created. Starting health check process..");
+//            while (newGame.gameRunning) {
+//                try {
+//                    Thread.sleep(5000);
+//                    if (!heartbeat()) {
+//                        newGame.gameRunning = false;
+//                    }
+//                } catch (InterruptedException ex) {
+//                    throw ex;
+//                }
+//            }
+//            activePlayers.clear(); // clear the sockets for start of new game
         }
     }
 
     private static void connectPlayer() {
-        try {
-            Socket socket = serverSocket.accept(); // take in the new connection
-            socket.setKeepAlive(true);
-            ConsoleWrapper.WriteLn(socket.toString());
-            ConsoleWrapper.WriteLn("Ready to accept new connection...");
-            synchronized (Server.class) {
-                activePlayers.add(new Player(socket)); // add it to the list of active players
+        while (true) {
+            try {
+                Socket socket = serverSocket.accept(); // take in the new connection
+                socket.setKeepAlive(true);
+                ConsoleWrapper.WriteLn(socket.toString());
+                ConsoleWrapper.WriteLn("Ready to accept new connection...");
+                synchronized (Server.class) {
+                    activePlayers.add(new Player(socket)); // add it to the list of active players
+                }
+                GameState gs = new GameState("Connected! Waiting for " + (allowedClients - activePlayers.size()) + " players to join");
+                SocketUtil.sendGameState(gs, socket);
+                ConsoleWrapper.WriteLn("New connection established: " + socket);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            GameState gs = new GameState("Connected! Waiting for " + (allowedClients - activePlayers.size()) + " players to join");
-            SocketUtil.sendGameState(gs, socket);
-            ConsoleWrapper.WriteLn("New connection established: " + socket);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

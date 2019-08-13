@@ -40,7 +40,10 @@ public class Main {
     		ServerDownMenu menu = new ServerDownMenu();
     		menu.init();
     	}
-    	   	
+
+    	while(ComponentStore.getInstance().get("server_socket") == null) {
+    	    Thread.sleep(500);
+        }
     	
     	
         // set initial environment up including window and board state
@@ -66,7 +69,7 @@ public class Main {
                     gs = (GameState) SerializationUtilJSON.deserialize(json);
                 } catch (Exception e) {
                     gs = null;
-                    e.printStackTrace();
+//                    e.printStackTrace();
                     continue;
                 }
             }
