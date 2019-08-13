@@ -10,7 +10,7 @@
 \usepackage{url}
 \usepackage{graphicx}
 \usepackage{tabu}
-\usepackage{booktabs}
+
 
 \newenvironment{enum}
 {\begin{enumerate}[label*=\arabic*.][resume]}
@@ -18,8 +18,8 @@
 
 \hypersetup{
     bookmarks=false,    % show bookmarks bar?
-    pdftitle={Software Test Case Document},    % title
-    pdfauthor={John Zlotek},                     % author
+    pdftitle={Test Cases Document},    % title
+    pdfauthor={Preet Patel, John Zlotek},                     % author
     pdfsubject={TeX and LaTeX},                        % subject of the document
     pdfkeywords={TeX, LaTeX, graphics, images}, % list of keywords
     colorlinks=true,       % false: boxed links; true: colored links
@@ -40,13 +40,13 @@
 \begin{flushright}
     \rule{16cm}{5pt}\vskip1cm
     \begin{bfseries}
-        \Huge{SOFTWARE REQUIREMENTS\\ SPECIFICATION}\\
+        \Huge{TEST CASES\\ DOCUMENT}\\
         \vspace{1.0cm}
         for\\
         \vspace{1.0cm}
         Checkers\\
         \vspace{1.5cm}
-        \LARGE{Version \myversion approved}\\
+        \LARGE{Version \myversion}\\
         \vspace{1.5cm}
         Prepared by:\\
     John Zlotek\\
@@ -112,8 +112,7 @@ Prerequisit
   \item This game has GUI for interaction and for that at least Java 12.0 is needed on the system
   \item Just for testing purpose it can be test on single machine but for crossplatform Internet is needed
   \item Active Internet connection so it player can connet to server and play over Tux
-\
-{itemize}
+\end{itemize}
 
 \chapter{Test Cases}
 
@@ -218,9 +217,12 @@ Atleast one game running
 4 & Player 1 wants to quit & Once player 1 click on quit it should send him back to lobby page &  &  & \\ \hline
 5 & Player 1 left the game & Player 2 will be informed about it and send back to lobby page &  &  & \\ \hline
 6 & After game is fineshed if player 1 choose to rematch and Player 2 also do the same & If Player 2 also click on the rematch then new game should get going on same session &  &  & \\ \hline
-G7 & After game is fineshed if player 1 choose to rematch and Player 2 quit & if player 2 click on the quit then both player should be returned to lobby menu &  &  & \\ \hline
+7 & After game is fineshed if player 1 choose to rematch and Player 2 quit & if player 2 click on the quit then both player should be returned to lobby menu &  &  & \\ \hline
 \end{tabu}
 
+\chapter{Appendix}
+\section{Glossary}
+Tux - Place where server is hosted, Tux is offered by Drexel University.
 
 
 \begin{thebibliography}{9}
