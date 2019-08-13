@@ -86,6 +86,12 @@ public class Main {
                 }
 
                 if (gameRunning) {
+                    if(gs.board != null)
+                    {
+                        lastBoard = currentBoard;
+                        currentBoard = gs.board;
+                    }
+
                     boardDisplayComponent.renderBoard();
                     if (gs.yourTurn || retryMove) {
                         debug.append("\nYour Turn");
@@ -118,10 +124,12 @@ public class Main {
                                     move.getOldLocation(),
                                     move.getNewLocation()
                             );
+
+                            PlayerUI.getInstance().resetNextMove();
                             lastBoard = currentBoard;
                             ComponentStore.getInstance().put("board", currentBoard);
                             boardDisplayComponent.renderBoard();
-                            retryMove = false;
+                            retryMove = gs.yourTurn;
                         } else {
                             debug.append("\nMove was denied... Try again");
                             currentBoard = lastBoard;

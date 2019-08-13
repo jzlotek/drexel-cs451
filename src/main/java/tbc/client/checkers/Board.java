@@ -238,8 +238,6 @@ public class Board implements Serializable {
 
                 this.getSpace(attemptedMove).setPiece(_piece);
 
-                _piece.setPos(attemptedMove);
-
                 // TODO: Crown the piece if in the enemy home row
 
                 for(UUID id : validMove.getRemoved())

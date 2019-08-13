@@ -67,7 +67,11 @@ public class Space extends Clickable implements Serializable, Renderable {
      */
     public void setPiece(Piece _piece) {
         this.piece = _piece;
-        this.piece.setPos(this.pos);
+
+        if(this.piece != null)
+        {
+            this.piece.setPos(this.pos);
+        }
     }
 
     /*

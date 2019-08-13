@@ -23,6 +23,7 @@ public class BoardDisplayComponent {
         if (this.board == null) {
             return;
         }
+
         JPanel parent = new JPanel();
         parent.setBounds(0, 0, 400, 400);
         window.add(parent);

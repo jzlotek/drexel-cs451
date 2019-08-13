@@ -52,4 +52,33 @@ public class Move implements Serializable {
                 " New Location: " + this.newLocation.toString() +
                 " Removed Pieces: " + Arrays.asList(this.removed).toString();
     }
+
+    @Override
+    public boolean equals(Object _other)
+    {
+        if(!(_other instanceof Move))
+        {
+            return false;
+        }
+
+        Move other = (Move)_other;
+
+        if(this.getOldLocation().equals(other.getOldLocation()))
+        {
+            if(this.getNewLocation().equals(other.getNewLocation()))
+            {
+                for(UUID id : this.getRemoved())
+                {
+                    if(!other.getRemoved().contains(id))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
