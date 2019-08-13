@@ -82,6 +82,7 @@ public class Main {
                     debug.append("\n" + currentBoard);
                     gameRunning = true;
                     boardDisplayComponent.renderBoard();
+                    PlayerUI.getInstance().setColor(gs.yourColor);
                     debug.append("\nGame is Running");
                 }
 
