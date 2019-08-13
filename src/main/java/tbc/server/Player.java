@@ -13,11 +13,13 @@ public class Player extends Thread { // each player will be it's own thread
     private String address;
     public static final int PORT = Constants.PORT; // Using CS 451 as the port number
     public static final String HOST = Constants.HOST;
+    private boolean inGame;
     
     /*
      * Default Constructor
      */
     public Player(Socket clientSocket) {
+        this.inGame = false;
         this.socket = clientSocket;
         this.address = socket.getInetAddress().toString();
     }
@@ -51,5 +53,13 @@ public class Player extends Thread { // each player will be it's own thread
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isInGame() {
+        return this.inGame;
+    }
+
+    public void setInGame(boolean inGame) {
+        this.inGame = inGame;
     }
 }

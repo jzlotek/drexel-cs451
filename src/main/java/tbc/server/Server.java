@@ -3,6 +3,7 @@ package tbc.server;
 import tbc.Constants;
 import tbc.shared.GameState;
 import tbc.util.ConsoleWrapper;
+import tbc.util.SerializationUtilJSON;
 import tbc.util.SocketUtil;
 
 import java.io.DataOutputStream;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Server {
 
@@ -18,6 +20,7 @@ public class Server {
     protected static ServerSocket serverSocket = null;
     private static ArrayList<Player> activePlayers = new ArrayList<>();
     protected final static int allowedClients = 2;
+    private static ArrayList<Lobby> lobbies = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
         ConsoleWrapper.WriteLn("Booting Up Server Service...");
@@ -31,20 +34,38 @@ public class Server {
         }
 
 
+        new Thread(Server::connectPlayer).start();
         while (true) {
-            Socket socket = null;
-            while (activePlayers.size() < allowedClients) {
-                socket = serverSocket.accept(); // take in the new connection
-                socket.setKeepAlive(true);
-                ConsoleWrapper.WriteLn(socket.toString());
-                ConsoleWrapper.WriteLn("Ready to accept new connection...");
-                synchronized (Server.class) {
-                    activePlayers.add(new Player(socket)); // add it to the list of active players
+            // TODO: upon create lobby, add new lobby to list.
+            // TODO: upon join lobby, add player to lobby.
+            // lobby thread should handle the game from there.
+            // Notes: will need to make a list of currently connected player
+            // and iterate all of them for requests to join or make lobbies
+            activePlayers.removeIf(player -> player.getSocket().isClosed());
+            for (Player p : activePlayers) {
+                if (!p.isInGame()) {
+                    String string = SocketUtil.readFromSocket(p.getSocket());
+                    GameState state = (GameState) SerializationUtilJSON.deserialize(string);
+                    if (state != null && state.message != null) {
+                        if (state.message.equals("create")) {
+                            p.setInGame(true);
+                            Lobby newLobby = new Lobby();
+                            lobbies.add(newLobby);
+                            newLobby.run();
+                            SocketUtil.sendGameState(new GameState(newLobby.getUUID().toString()), p.getSocket());
+                        } else if (state.message.equals("lobbies")) { // return lobbies to user
+                            // TODO: implement
+                        } else { // assume it is a join
+                            lobbies.forEach(lobby -> {
+                                if (!lobby.isGameRunning() && lobby.getUUID().toString().equals(state.message)) {
+                                    p.setInGame(true);
+                                    lobby.addPlayer(p);
+                                }
+                            });
+
+                        }
+                    }
                 }
-                GameState gs = new GameState("Connected! Waiting for " + (allowedClients - activePlayers.size()) + " players to join");
-                SocketUtil.sendGameState(gs, socket);
-                ConsoleWrapper.WriteLn("New connection established: " + socket);
-                socket = null;
             }
             ConsoleWrapper.WriteLn("Max connections established. Creating Lobby.");
 
@@ -64,6 +85,23 @@ public class Server {
                 }
             }
             activePlayers.clear(); // clear the sockets for start of new game
+        }
+    }
+
+    private static void connectPlayer() {
+        try {
+            Socket socket = serverSocket.accept(); // take in the new connection
+            socket.setKeepAlive(true);
+            ConsoleWrapper.WriteLn(socket.toString());
+            ConsoleWrapper.WriteLn("Ready to accept new connection...");
+            synchronized (Server.class) {
+                activePlayers.add(new Player(socket)); // add it to the list of active players
+            }
+            GameState gs = new GameState("Connected! Waiting for " + (allowedClients - activePlayers.size()) + " players to join");
+            SocketUtil.sendGameState(gs, socket);
+            ConsoleWrapper.WriteLn("New connection established: " + socket);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -121,4 +159,13 @@ public class Server {
 
     }
 
+    public ArrayList<UUID> getLobbyUUIDs() {
+        ArrayList<UUID> uuids = new ArrayList<>();
+        lobbies.forEach(lobby -> {
+            if (!lobby.isGameRunning()) {
+                uuids.add(lobby.getUUID());
+            }
+        });
+        return uuids;
+    }
 }

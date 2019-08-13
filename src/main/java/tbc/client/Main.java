@@ -30,16 +30,16 @@ public class Main {
     	 * Need to ping static IP hosted on Drexel's TUX
     	 * If we are able to get network data back, then display the menu
     	 */
-//    	boolean isServerAlive = ServerStatus.pingServer(Constants.HOST);
-//    	if(isServerAlive) {
-//    		// if we can connect to the server, start the main menu
-//    		MainMenu menu = new MainMenu();
-//    		menu.init();
-//    	} else {
-//    		// else we have to throw our error menu, cancel the program
-//    		ServerDownMenu menu = new ServerDownMenu();
-//    		menu.init();
-//    	}
+    	boolean isServerAlive = ServerStatus.pingServer(Constants.HOST);
+    	if(isServerAlive) {
+    		// if we can connect to the server, start the main menu
+    		MainMenu menu = new MainMenu();
+    		menu.init();
+    	} else {
+    		// else we have to throw our error menu, cancel the program
+    		ServerDownMenu menu = new ServerDownMenu();
+    		menu.init();
+    	}
     	   	
     	
     	

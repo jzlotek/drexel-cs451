@@ -9,32 +9,43 @@ import tbc.shared.Move;
 import tbc.util.ConsoleWrapper;
 import tbc.util.SerializationUtilJSON;
 import tbc.util.SocketUtil;
+import tbc.util.UUIDUtil;
 
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.UUID;
 
 public class Lobby extends Thread {
     protected ArrayList<Player> players = new ArrayList<Player>();
     protected boolean gameRunning;
     protected final int maxPlayers = 2;
     protected Board gameBoard;
+    private UUID uuid;
 
     // generic constructor
     public Lobby() {
+        this.uuid = UUIDUtil.getUUID();
     }
 
     /*
      * Constructor that takes in two players, automatically starts the game
      */
     public Lobby(Player player1, Player player2) throws Exception {
+        this();
         this.addPlayer(player1);
         this.addPlayer(player2);
     }
 
     @Override
     public void run() {
+        while (this.players.size() < 2) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+            }
+        }
         this.gameBoard = new Board();
         String received;
         String response;
@@ -152,12 +163,17 @@ public class Lobby extends Thread {
     /*
      * Adds a player to the lobby if there is room, or else throws a message back to the player
      */
-    public void addPlayer(Player newPlayer) throws Exception {
-        if (this.players.size() > (this.maxPlayers - 1)) {
+    public void addPlayer(Player newPlayer) {
+
+        if (this.players.size() <= this.maxPlayers) {
             SocketUtil.sendGameState(new GameState("Unable to add " + newPlayer.getSocket() + " to lobby. Lobby full"), newPlayer.getSocket());
-            newPlayer.getSocket().close();
-        } else {
-            this.players.add(newPlayer);
+            synchronized (Server.class) {
+                if (this.players.size() < this.maxPlayers) {
+                    this.players.add(newPlayer);
+                } else {
+                    SocketUtil.sendGameState(new GameState("Unable to add " + newPlayer.getSocket() + " to lobby. Lobby full"), newPlayer.getSocket());
+                }
+            }
         }
     }
 
@@ -188,6 +204,10 @@ public class Lobby extends Thread {
         return false;
     }
 
+    public boolean isGameRunning() {
+        return this.gameRunning;
+    }
+
     private void checkSockets() {
         for (Player p : this.players) {
             if (p.getSocket().isClosed()) {
@@ -206,6 +226,10 @@ public class Lobby extends Thread {
                 ConsoleWrapper.WriteLn("Player 2 Has Disconnected");
             }
         }
+    }
+
+    public UUID getUUID() {
+        return this.uuid;
     }
 
 }
