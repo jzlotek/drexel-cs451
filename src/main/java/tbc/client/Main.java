@@ -40,16 +40,20 @@ public class Main {
 //    		ServerDownMenu menu = new ServerDownMenu();
 //    		menu.init();
 //    	}
-    	   	
-    	
-    	
+    	gameLoop();
+    }
+
+    /*
+    Main Game loop for the Client
+     */
+    public static void gameLoop() throws InterruptedException{
         // set initial environment up including window and board state
         window = new GameScene();
         init(window);
         window.show();
         Board currentBoard = null;
         Board lastBoard = null;
-        JTextArea debug = (JTextArea) ComponentStore.getInstance().get("debug");
+        JTextArea messageWindow = (JTextArea) ComponentStore.getInstance().get("debug");
         boolean gameRunning = false;
         String json;
         GameState gs = null;
@@ -59,6 +63,11 @@ public class Main {
 
         // begin game loop
         while (true) {
+            // Check to make sure socket is not closed
+            if (serverSocket != null && serverSocket.isClosed()) {
+                messageWindow.append("\nServer closed its connection");
+                break;
+            }
             // get serialized string from the server
             if (!retryMove) {
                 try {
@@ -72,18 +81,17 @@ public class Main {
             }
 
             if (retryMove || gs != null) {
-                debug.append("\n" + gs.message);
+                messageWindow.append("\n" + gs.message);
                 ConsoleWrapper.WriteLn("\nBoard: " + gs.board);
                 // if we do not have a board, set the board with UUID's to the current and last board state
                 if (gs.board != null && currentBoard == null) {
                     currentBoard = gs.board;
                     lastBoard = gs.board;
                     ComponentStore.getInstance().put("board", currentBoard);
-                    debug.append("\n" + currentBoard);
                     gameRunning = true;
                     boardDisplayComponent.renderBoard();
                     PlayerUI.getInstance().setColor(gs.yourColor);
-                    debug.append("\nGame is Running");
+                    messageWindow.append("\nGame is Running");
                 }
 
                 if (gameRunning) {
@@ -96,7 +104,7 @@ public class Main {
 
                     boardDisplayComponent.renderBoard();
                     if (gs.yourTurn || retryMove) {
-                        debug.append("\nYour Turn");
+                        messageWindow.append("\nYour Turn");
                         PlayerUI.getInstance().setActive(true);
                         while (PlayerUI.getInstance().getNextMove() == null) {
                             Thread.sleep(500);
@@ -119,7 +127,7 @@ public class Main {
                         }
 
                         if (gs.message.equals("success")) {
-                            debug.append("\nMove was accepted");
+                            messageWindow.append("\nMove was accepted");
                             Move move = PlayerUI.getInstance().getNextMove();
                             currentBoard.movePiece(
                                     currentBoard.getPiece(move.getOldLocation()),
@@ -133,7 +141,7 @@ public class Main {
                             boardDisplayComponent.renderBoard();
                             retryMove = gs.yourTurn;
                         } else {
-                            debug.append("\nMove was denied... Try again");
+                            messageWindow.append("\nMove was denied... Try again");
                             currentBoard = lastBoard;
                             retryMove = true;
                             PlayerUI.getInstance().setActive(false);
