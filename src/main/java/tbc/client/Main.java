@@ -7,7 +7,9 @@ import tbc.client.components.BoardDisplayComponent;
 import tbc.client.components.ComponentStore;
 import tbc.client.components.GameScene;
 import tbc.client.components.ServerStatus;
+import tbc.server.Player;
 import tbc.shared.GameState;
+import tbc.shared.Move;
 import tbc.util.ConsoleWrapper;
 import tbc.util.SerializationUtilJSON;
 import tbc.util.SocketUtil;
@@ -28,16 +30,16 @@ public class Main {
     	 * Need to ping static IP hosted on Drexel's TUX
     	 * If we are able to get network data back, then display the menu
     	 */
-    	boolean isServerAlive = ServerStatus.pingServer(Constants.HOST);
-    	if(isServerAlive) {
-    		// if we can connect to the server, start the main menu
-    		MainMenu menu = new MainMenu();
-    		menu.init();
-    	} else {
-    		// else we have to throw our error menu, cancel the program
-    		ServerDownMenu menu = new ServerDownMenu();
-    		menu.init();
-    	}
+//    	boolean isServerAlive = ServerStatus.pingServer(Constants.HOST);
+//    	if(isServerAlive) {
+//    		// if we can connect to the server, start the main menu
+//    		MainMenu menu = new MainMenu();
+//    		menu.init();
+//    	} else {
+//    		// else we have to throw our error menu, cancel the program
+//    		ServerDownMenu menu = new ServerDownMenu();
+//    		menu.init();
+//    	}
     	   	
     	
     	
@@ -50,23 +52,26 @@ public class Main {
         JTextArea debug = (JTextArea) ComponentStore.getInstance().get("debug");
         boolean gameRunning = false;
         String json;
-        GameState gs;
+        GameState gs = null;
+        boolean retryMove = false;
 
         BoardDisplayComponent boardDisplayComponent = new BoardDisplayComponent(window);
 
         // begin game loop
         while (true) {
             // get serialized string from the server
-            try {
-                json = SocketUtil.readFromSocket(serverSocket);
-                gs = (GameState) SerializationUtilJSON.deserialize(json);
-            } catch (Exception e) {
-                gs = null;
-                e.printStackTrace();
-                continue;
+            if (!retryMove) {
+                try {
+                    json = SocketUtil.readFromSocket(serverSocket);
+                    gs = (GameState) SerializationUtilJSON.deserialize(json);
+                } catch (Exception e) {
+                    gs = null;
+                    e.printStackTrace();
+                    continue;
+                }
             }
 
-            if (gs != null) {
+            if (retryMove || gs != null) {
                 debug.append("\n" + gs.message);
                 ConsoleWrapper.WriteLn("\nBoard: " + gs.board);
                 // if we do not have a board, set the board with UUID's to the current and last board state
@@ -82,7 +87,7 @@ public class Main {
 
                 if (gameRunning) {
                     boardDisplayComponent.renderBoard();
-                    if (gs.yourTurn) {
+                    if (gs.yourTurn || retryMove) {
                         debug.append("\nYour Turn");
                         PlayerUI.getInstance().setActive(true);
                         while (PlayerUI.getInstance().getNextMove() == null) {
@@ -107,12 +112,22 @@ public class Main {
 
                         if (gs.message.equals("success")) {
                             debug.append("\nMove was accepted");
+                            Move move = PlayerUI.getInstance().getNextMove();
+                            currentBoard.movePiece(
+                                    currentBoard.getPiece(move.getOldLocation()),
+                                    move.getOldLocation(),
+                                    move.getNewLocation()
+                            );
                             lastBoard = currentBoard;
                             ComponentStore.getInstance().put("board", currentBoard);
                             boardDisplayComponent.renderBoard();
+                            retryMove = false;
                         } else {
                             debug.append("\nMove was denied... Try again");
                             currentBoard = lastBoard;
+                            retryMove = true;
+                            PlayerUI.getInstance().setActive(false);
+                            PlayerUI.getInstance().setActive(true);
                         }
                     } else {
                         PlayerUI.getInstance().setActive(false);

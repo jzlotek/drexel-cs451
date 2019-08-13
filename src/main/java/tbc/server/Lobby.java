@@ -2,8 +2,10 @@ package tbc.server;
 
 import tbc.client.checkers.Board;
 import tbc.client.checkers.Color;
+import tbc.client.checkers.Piece;
 import tbc.client.components.ComponentStore;
 import tbc.shared.GameState;
+import tbc.shared.Move;
 import tbc.util.ConsoleWrapper;
 import tbc.util.SerializationUtilJSON;
 import tbc.util.SocketUtil;
@@ -17,6 +19,7 @@ public class Lobby extends Thread {
     protected ArrayList<Player> players = new ArrayList<Player>();
     protected boolean gameRunning;
     protected final int maxPlayers = 2;
+    protected Board gameBoard;
 
     // generic constructor
     public Lobby() {
@@ -32,16 +35,16 @@ public class Lobby extends Thread {
 
     @Override
     public void run() {
-        Board gameBoard = new Board();
+        this.gameBoard = new Board();
         String received;
         String response;
         Socket p1_socket = players.get(0).getSocket();
         Socket p2_socket = players.get(1).getSocket();
-        ConsoleWrapper.WriteLn(gameBoard.getPiece(0, 0).getColor());
+        ConsoleWrapper.WriteLn(this.gameBoard.getPiece(0, 0).getColor());
         Color[] randomize = new Color[]{Color.WHITE, Color.RED};
         Collections.shuffle(Arrays.asList(randomize));
 
-        GameState gs = new GameState("Initial Game State", gameBoard);
+        GameState gs = new GameState("Initial Game State", this.gameBoard);
         gs.yourTurn = false;
 
         Socket finalP1_socket = p1_socket;
@@ -51,7 +54,6 @@ public class Lobby extends Thread {
         }
         new Thread(() -> SocketUtil.sendGameState(gs, finalP1_socket)).run();
         ConsoleWrapper.WriteLn("Sent p1 board state" + p1_socket.toString());
-
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -60,6 +62,7 @@ public class Lobby extends Thread {
 
         Socket finalP2_socket = p2_socket;
         gs.yourColor = randomize[1];
+        gs.yourTurn = false;
         if (randomize[1] == Color.WHITE) {
             gs.yourTurn = true;
         }
@@ -94,8 +97,12 @@ public class Lobby extends Thread {
                 }
 
                 // if the move is valid, we must output to player two
+                // and we update the locally stored board in the stor
                 if (this.isLegalMove(userGameState)) {
                     isMoveValid = true;
+                    Move move = userGameState.moves.get(0);
+                    Piece p = this.gameBoard.getPiece(move.getOldLocation());
+                    this.gameBoard.movePiece(p, move.getOldLocation(), move.getNewLocation());
                 } else { // else we throw player one a warning and prompt for another move
                     response = "Move Invalid! Please make a valid move.";
                     SocketUtil.sendGameState(new GameState(response), p1_socket);
@@ -161,7 +168,11 @@ public class Lobby extends Thread {
         if (state == null) {
             return false;
         }
-        return true;
+        Move move = state.moves.get(0);
+        if (this.gameBoard.getValidMoves(this.gameBoard.getPiece(move.getOldLocation())).contains(move.getNewLocation())) {
+            return true;
+        }
+        return false;
     }
 
     /*

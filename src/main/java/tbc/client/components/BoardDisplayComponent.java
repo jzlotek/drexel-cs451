@@ -33,8 +33,6 @@ public class BoardDisplayComponent {
                 JPanel comp = (JPanel) board.getSpace(x, y).getRenderObject();
                 comp.setBounds(x * comp.getWidth(), y * comp.getHeight(), comp.getWidth(), comp.getHeight());
                 parent.add(comp);
-                comp.validate();
-                comp.repaint();
             }
         }
         parent.revalidate();
