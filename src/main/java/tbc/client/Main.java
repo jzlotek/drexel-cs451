@@ -90,6 +90,7 @@ public class Main {
                     {
                         lastBoard = currentBoard;
                         currentBoard = gs.board;
+                        ComponentStore.getInstance().put("board", currentBoard);
                     }
 
                     boardDisplayComponent.renderBoard();
