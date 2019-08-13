@@ -13,6 +13,8 @@ public class BoardDisplayComponent {
     private static GameScene window;
     private Board board;
 
+    JPanel boardPanel;
+
     public BoardDisplayComponent(GameScene scene) {
         this.board = (Board) ComponentStore.getInstance().get("board");
         window = scene;
@@ -36,6 +38,14 @@ public class BoardDisplayComponent {
                 parent.add(comp);
             }
         }
+
+        if(boardPanel != null)
+        {
+            window.remove(boardPanel);
+        }
+
+        boardPanel = parent;
+
         parent.revalidate();
         parent.repaint();
     }

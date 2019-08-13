@@ -26,6 +26,13 @@ public class GameScene {
         this.window.repaint();
     }
 
+    public void remove(JComponent component)
+    {
+        this.window.remove(component);
+        this.window.validate();
+        this.window.repaint();
+    }
+
     /*
     Adds to the window and registers the component with the key to the global object store
      */
