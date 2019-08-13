@@ -30,6 +30,13 @@ public class ComponentStore {
         }
     }
 
+    public void update(String key, Object newValue) {
+        synchronized (Object.class) {
+            components.remove(key);
+            components.put(key, newValue);
+        }
+    }
+
     // returns the Object stored at the key value
     public Object get(String key) {
         return components.get(key);

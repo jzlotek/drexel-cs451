@@ -7,14 +7,12 @@ import tbc.client.components.BoardDisplayComponent;
 import tbc.client.components.ComponentStore;
 import tbc.client.components.GameScene;
 import tbc.shared.GameState;
-import tbc.shared.Move;
 import tbc.util.ConsoleWrapper;
 import tbc.util.SerializationUtilJSON;
 import tbc.util.SocketUtil;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -28,7 +26,6 @@ public class Main {
         window = new GameScene();
         init(window);
         window.show();
-//        Board testBoard = new Board();
         Board currentBoard = null;
         Board lastBoard = null;
         JTextArea debug = (JTextArea) ComponentStore.getInstance().get("debug");
@@ -37,9 +34,6 @@ public class Main {
         GameState gs;
 
         BoardDisplayComponent boardDisplayComponent = new BoardDisplayComponent(window);
-
-//        ComponentStore.getInstance().put("board", testBoard);
-//        boardDisplayComponent.renderBoard();
 
         // begin game loop
         while (true) {
@@ -72,9 +66,7 @@ public class Main {
                     if (gs.yourTurn) {
                         debug.append("\nYour Turn");
                         PlayerUI.getInstance().setActive(true);
-                        // TODO: jcarfagno - calculate new move
-                        while(PlayerUI.getInstance().getNextMove() == null)
-                        {
+                        while (PlayerUI.getInstance().getNextMove() == null) {
                             Thread.sleep(500);
                         }
 
@@ -100,12 +92,10 @@ public class Main {
                             ComponentStore.getInstance().put("board", currentBoard);
                             boardDisplayComponent.renderBoard();
                         } else {
-                            debug.append("\nMove was denied");
+                            debug.append("\nMove was denied... Try again");
                             currentBoard = lastBoard;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         PlayerUI.getInstance().setActive(false);
                     }
                 }
@@ -119,12 +109,7 @@ public class Main {
         debug.setBounds(400, 0, 400, 400);
         JButton joinButton = new JButton("Join a Game");
         ComponentStore.getInstance().put("join_button", joinButton);
-        joinButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                connectToServer(e);
-            }
-        });
+        joinButton.addActionListener(Main::connectToServer);
         scene.add(joinButton);
         joinButton.setBounds(400, 400, 400, 100);
         scene.add(debug);
@@ -139,7 +124,7 @@ public class Main {
             }
         }
         try {
-            serverSocket = new Socket("localhost", Constants.PORT);
+            serverSocket = new Socket(Constants.HOST, Constants.PORT);
             serverSocket.setKeepAlive(true);
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -5,9 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/checkers.iml" filepath="$PROJECT_DIR$/.idea/modules/checkers.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/checkers.main.iml" filepath="$PROJECT_DIR$/.idea/modules/checkers.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/checkers.test.iml" filepath="$PROJECT_DIR$/.idea/modules/checkers.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tbc.checkers.iml" filepath="$PROJECT_DIR$/.idea/modules/tbc.checkers.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tbc.checkers.main.iml" filepath="$PROJECT_DIR$/.idea/modules/tbc.checkers.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tbc.checkers.test.iml" filepath="$PROJECT_DIR$/.idea/modules/tbc.checkers.test.iml" />
     </modules>
   </component>
 </project>

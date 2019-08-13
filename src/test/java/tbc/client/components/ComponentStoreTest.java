@@ -34,7 +34,7 @@ public class ComponentStoreTest {
         assertSame(component, store2.get("test"));
 
         JTextArea component2 = new JTextArea();
-        store1.put("test", component2);
+        store1.update("test", component2);
         assertSame(component2, store2.get("test"));
         assertNotSame(component, store2.get("test"));
     }
