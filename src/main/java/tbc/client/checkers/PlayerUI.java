@@ -129,6 +129,10 @@ public class PlayerUI {
             if(_selectedPiece == null || _selectedPiece.getColor() == this.color) {
                 selectedPiece = _selectedPiece;
             }
+            else
+            {
+                selectedPiece = null;
+            }
         }
     }
 

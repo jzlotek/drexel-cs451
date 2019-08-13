@@ -333,13 +333,14 @@ public class Board implements Serializable {
 
                         // The two pieces are different color, so check if the next space past is valid
                         if (otherPiece.getColor() != _piece.getColor()) {
-                            Vector diff = Vector.subtract(new Vector(x, y), new Vector(col, row));
+
+                            Vector diff = Vector.subtract(otherPiece.getPos(), _piece.getPos());
                             diff = Vector.multiply(diff, 2);
 
                             Vector newPos = Vector.add(new Vector(x, y), diff);
 
                             if (this.isValidSpace(newPos) && !this.hasPiece(newPos)) {
-                                Move newMove = new Move(_piece.getUUID(), _piece.getPos(), new Vector(col, row));
+                                Move newMove = new Move(_piece.getUUID(), _piece.getPos(), newPos);
                                 newMove.addRemoved(otherPiece.getUUID());
                                 jumpMoves.add(newMove);
                             }
