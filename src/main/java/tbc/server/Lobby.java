@@ -46,12 +46,15 @@ public class Lobby extends Thread {
             } catch (InterruptedException e) {
             }
         }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+        }
         this.gameBoard = new Board();
         String received;
         String response;
         Socket p1_socket = players.get(0).getSocket();
         Socket p2_socket = players.get(1).getSocket();
-        ConsoleWrapper.WriteLn(this.gameBoard.getPiece(0, 0).getColor());
         Color[] randomize = new Color[]{Color.WHITE, Color.RED};
         Collections.shuffle(Arrays.asList(randomize));
 
@@ -156,19 +159,21 @@ public class Lobby extends Thread {
         // after the game is over, send a closing message to the players and close the sockets
         SocketUtil.sendGameState(new GameState("Game Over! Thanks for playing."), p1_socket);
         SocketUtil.sendGameState(new GameState("Game Over! Thanks for playing."), p2_socket);
-        players.get(0).closeSocket();
-        players.get(1).closeSocket();
+        players.get(0).setInGame(false);
+        players.get(1).setInGame(false);
     }
 
     /*
      * Adds a player to the lobby if there is room, or else throws a message back to the player
      */
     public void addPlayer(Player newPlayer) {
+        ConsoleWrapper.WriteLn("Attempting to add player: " + newPlayer.getSocket() + " to lobby: " + this.getUUID().toString());
 
         if (this.players.size() <= this.maxPlayers) {
             SocketUtil.sendGameState(new GameState("Unable to add " + newPlayer.getSocket() + " to lobby. Lobby full"), newPlayer.getSocket());
             synchronized (Server.class) {
                 if (this.players.size() < this.maxPlayers) {
+                    ConsoleWrapper.WriteLn("Added player: " + newPlayer.getSocket() + " to lobby: " + this.getUUID().toString());
                     this.players.add(newPlayer);
                 } else {
                     SocketUtil.sendGameState(new GameState("Unable to add " + newPlayer.getSocket() + " to lobby. Lobby full"), newPlayer.getSocket());

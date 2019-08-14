@@ -6,6 +6,7 @@ import tbc.util.ConsoleWrapper;
 import tbc.util.SerializationUtilJSON;
 import tbc.util.SocketUtil;
 
+import java.io.Console;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -17,9 +18,9 @@ public class Server {
 
     public static final int PORT = Constants.PORT; // Using 4510
     public static final String HOST = Constants.HOST;    // Using Tux2 to host this service.
-    protected static ServerSocket serverSocket = null;
+    private static ServerSocket serverSocket = null;
     private static ArrayList<Player> activePlayers = new ArrayList<>();
-    protected final static int allowedClients = 2;
+    private final static int allowedClients = 2;
     private static ArrayList<Lobby> lobbies = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
@@ -34,10 +35,25 @@ public class Server {
         }
 
 
-        new Thread(Server::connectPlayer).start();
         new Thread(() -> {
             while (true) {
                 activePlayers.removeIf(player -> player.getSocket().isClosed());
+                try {
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                }
+            }
+        }).start();
+        new Thread(() -> {
+            while (true) {
+                lobbies.removeIf(lobby -> {
+                    boolean remove = false;
+                    if (lobby.players.size() == 0) {
+                        remove = true;
+                        ConsoleWrapper.WriteLn("Empty Lobby: " + lobby.getUUID().toString());
+                    }
+                    return remove;
+                });
                 try {
                     Thread.sleep(500);
                 } catch (Exception e) {
@@ -50,28 +66,41 @@ public class Server {
             // lobby thread should handle the game from there.
             // Notes: will need to make a list of currently connected player
             // and iterate all of them for requests to join or make lobbies
+            connectPlayer();
+
             for (Player p : activePlayers) {
+                ConsoleWrapper.WriteLn(p.getSocket());
                 if (!p.isInGame()) {
                     String string = SocketUtil.readFromSocket(p.getSocket());
                     GameState state = (GameState) SerializationUtilJSON.deserialize(string);
                     if (state != null && state.message != null) {
+                        ConsoleWrapper.WriteLn(state.message);
                         if (state.message.equals("create")) {
-                            p.setInGame(true);
                             Lobby newLobby = new Lobby();
-                            lobbies.add(newLobby);
-                            newLobby.run();
+                            newLobby.addPlayer(p);
                             SocketUtil.sendGameState(new GameState(newLobby.getUUID().toString()), p.getSocket());
                         } else if (state.message.equals("lobbies")) { // return lobbies to user
                             // TODO: implement
+                            String serializedList = SerializationUtilJSON.serialize(getLobbyUUIDs());
+                            SocketUtil.sendToSocket(serializedList, p.getSocket());
                         } else { // assume it is a join
+                            ConsoleWrapper.WriteLn(state.message);
                             lobbies.forEach(lobby -> {
                                 if (!lobby.isGameRunning() && lobby.getUUID().toString().equals(state.message)) {
-                                    p.setInGame(true);
                                     lobby.addPlayer(p);
                                 }
                             });
-
                         }
+                    }
+                }
+            }
+
+            // spin up lobby if max players is achieved
+            for (Lobby l : lobbies) {
+                if (!l.isGameRunning() && (l.players.size() == l.maxPlayers)) {
+                    l.start();
+                    for (Player p : l.players) {
+                        p.setInGame(true);
                     }
                 }
             }
@@ -97,21 +126,19 @@ public class Server {
     }
 
     private static void connectPlayer() {
-        while (true) {
-            try {
-                Socket socket = serverSocket.accept(); // take in the new connection
-                socket.setKeepAlive(true);
-                ConsoleWrapper.WriteLn(socket.toString());
-                ConsoleWrapper.WriteLn("Ready to accept new connection...");
-                synchronized (Server.class) {
-                    activePlayers.add(new Player(socket)); // add it to the list of active players
-                }
-                GameState gs = new GameState("Connected! Waiting for " + (allowedClients - activePlayers.size()) + " players to join");
-                SocketUtil.sendGameState(gs, socket);
-                ConsoleWrapper.WriteLn("New connection established: " + socket);
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            Socket socket = serverSocket.accept(); // take in the new connection
+            socket.setKeepAlive(true);
+            ConsoleWrapper.WriteLn(socket.toString());
+            ConsoleWrapper.WriteLn("Ready to accept new connection...");
+            synchronized (Server.class) {
+                activePlayers.add(new Player(socket)); // add it to the list of active players
             }
+            GameState gs = new GameState("Connected!");
+            SocketUtil.sendGameState(gs, socket);
+            ConsoleWrapper.WriteLn("New connection established: " + socket);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -169,7 +196,7 @@ public class Server {
 
     }
 
-    public ArrayList<UUID> getLobbyUUIDs() {
+    public static ArrayList<UUID> getLobbyUUIDs() {
         ArrayList<UUID> uuids = new ArrayList<>();
         lobbies.forEach(lobby -> {
             if (!lobby.isGameRunning()) {
