@@ -6,8 +6,6 @@ import tbc.client.checkers.PlayerUI;
 import tbc.client.components.BoardDisplayComponent;
 import tbc.client.components.ComponentStore;
 import tbc.client.components.GameScene;
-import tbc.client.components.ServerStatus;
-import tbc.server.Player;
 import tbc.shared.GameState;
 import tbc.shared.Move;
 import tbc.util.ConsoleWrapper;
@@ -19,17 +17,15 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.Socket;
 
-import tbc.client.menus.*;
-
 public class Main {
     static Socket serverSocket = null;
     static GameScene window = null;
 
     public static void main(String[] args) throws Exception {
-    	/*
-    	 * Need to ping static IP hosted on Drexel's TUX
-    	 * If we are able to get network data back, then display the menu
-    	 */
+        /*
+         * Need to ping static IP hosted on Drexel's TUX
+         * If we are able to get network data back, then display the menu
+         */
 //    	boolean isServerAlive = ServerStatus.pingServer(Constants.HOST);
 //    	if(isServerAlive) {
 //    		// if we can connect to the server, start the main menu
@@ -40,13 +36,13 @@ public class Main {
 //    		ServerDownMenu menu = new ServerDownMenu();
 //    		menu.init();
 //    	}
-    	gameLoop();
+        gameLoop();
     }
 
     /*
     Main Game loop for the Client
      */
-    public static void gameLoop() throws InterruptedException{
+    public static void gameLoop() throws InterruptedException {
         // set initial environment up including window and board state
         window = new GameScene();
         init(window);
@@ -59,7 +55,7 @@ public class Main {
         GameState gs = null;
         boolean retryMove = false;
 
-        BoardDisplayComponent boardDisplayComponent = new BoardDisplayComponent(window);
+        BoardDisplayComponent boardDisplayComponent = null;
 
         // begin game loop
         while (true) {
@@ -89,20 +85,22 @@ public class Main {
                     lastBoard = gs.board;
                     ComponentStore.getInstance().put("board", currentBoard);
                     gameRunning = true;
-                    boardDisplayComponent.renderBoard();
                     PlayerUI.getInstance().setColor(gs.yourColor);
                     messageWindow.append("\nGame is Running");
+                    boardDisplayComponent = new BoardDisplayComponent(window, gs.yourColor);
+                    boardDisplayComponent.renderBoard();
                 }
 
                 if (gameRunning) {
-                    if(gs.board != null)
-                    {
+                    if (gs.board != null) {
                         lastBoard = currentBoard;
                         currentBoard = gs.board;
                         ComponentStore.getInstance().put("board", currentBoard);
                     }
 
-                    boardDisplayComponent.renderBoard();
+                    if (boardDisplayComponent != null) {
+                        boardDisplayComponent.renderBoard();
+                    }
                     if (gs.yourTurn || retryMove) {
                         messageWindow.append("\nYour Turn");
                         PlayerUI.getInstance().setActive(true);

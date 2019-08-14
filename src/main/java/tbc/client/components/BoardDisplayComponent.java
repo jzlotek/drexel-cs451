@@ -1,23 +1,22 @@
 package tbc.client.components;
 
 import tbc.client.checkers.Board;
-import tbc.client.checkers.Space;
-import tbc.shared.GameState;
-import tbc.util.ConsoleWrapper;
+import tbc.client.checkers.Color;
 
 import javax.swing.*;
-import java.util.ArrayList;
 
 public class BoardDisplayComponent {
 
     private static GameScene window;
     private Board board;
+    private Color color;
 
     JPanel boardPanel;
 
-    public BoardDisplayComponent(GameScene scene) {
+    public BoardDisplayComponent(GameScene scene, Color color) {
         this.board = (Board) ComponentStore.getInstance().get("board");
         window = scene;
+        this.color = color;
     }
 
     public void renderBoard() {
@@ -34,13 +33,16 @@ public class BoardDisplayComponent {
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 JPanel comp = (JPanel) board.getSpace(x, y).getRenderObject();
-                comp.setBounds(x * comp.getWidth(), y * comp.getHeight(), comp.getWidth(), comp.getHeight());
+                if (this.color == Color.WHITE) {
+                    comp.setBounds(x * comp.getWidth(), y * comp.getHeight(), comp.getWidth(), comp.getHeight());
+                } else {
+                    comp.setBounds((7 - x) * comp.getWidth(), (7 - y) * comp.getHeight(), comp.getWidth(), comp.getHeight());
+                }
                 parent.add(comp);
             }
         }
 
-        if(boardPanel != null)
-        {
+        if (boardPanel != null) {
             window.remove(boardPanel);
         }
 
