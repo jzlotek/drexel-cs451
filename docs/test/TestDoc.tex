@@ -19,7 +19,7 @@
 \hypersetup{
     bookmarks=false,    % show bookmarks bar?
     pdftitle={Test Cases Document},    % title
-    pdfauthor={Preet Patel, John Zlotek},                     % author
+    pdfauthor={Preet Patel, Matt Horger, John Zlotek},                     % author
     pdfsubject={TeX and LaTeX},                        % subject of the document
     pdfkeywords={TeX, LaTeX, graphics, images}, % list of keywords
     colorlinks=true,       % false: boxed links; true: colored links
@@ -29,7 +29,7 @@
     urlcolor=purple,        % color of external links
     linktoc=page            % only page is linked
 }%
-\def\myversion{1.0.0 }
+\def\myversion{2.0.0 }
 \date{}
 %\title{%
 
@@ -40,7 +40,7 @@
 \begin{flushright}
     \rule{16cm}{5pt}\vskip1cm
     \begin{bfseries}
-        \Huge{TEST CASES\\ DOCUMENT}\\
+        \Huge{Software Validation \& Test Cases\\Document}\\
         \vspace{1.0cm}
         for\\
         \vspace{1.0cm}
@@ -70,7 +70,8 @@
         Name & Date & Reason For Changes & Version\\
         \hline
         1.0.0 & \formatdate{12}{8}{19} & Initial Draft & pp534\\
- 
+       \hline
+        2.0.0 & \formatdate{14}{8}{19} & Final Draft and Revisions & mh3294\\
         \hline
     \end{tabular}
 \end{center}
@@ -78,60 +79,66 @@
 \chapter{Introduction}
 
 \section{Purpose of Document}
-The purpose of this document to demonstrate that the Checkers game design and functionality
-aligns with the requirements outlined in the requirement document. This document includes testing
-of all possible scenarios by defining acceptation and noting the actual outcome of the case.
+The purpose of this document to document and demonstrate that our Checkers game design and functionality
+aligns with the requirements outlined in the referenced requirement document. This document includes validation and testing
+of all possible scenarios by defining accepting states and noting the actual outcome of each respective case.
 
-\section{Definitions, Acronyms and Abbreviations}
-If any then it would be mention in Appendix and Glossary sections
+\section{Scope of Document}
+The scope of this document encompasses the three phases that are each unique parts in our overall game procedure. We chose to separate our tests into three phases because they are each independent in that they encapsulate similar tests, yet are dependent on each other via a linking action or procedure.
+This document will try to justify that our design has been tested and meets the entire specifications of our requirements, and will report any bug that exists within our testing suite.  
 
-\section{Refrences}
-All though required references are can be found in the preceding document but any new reference 
-will be noted under reference section.
+\section{References}
+All required references can be found in the preceding document at the terminal end. Most of these references will point towards are design and requirements document, which have been previously submitted.
 
 \chapter{Testing Environment}
-This section has brief information about the environment where the test was performed and the 
+This section has brief information about the system environment where the test suite was performed and the 
 information of the tester.
 
-\section{Environment 1}
+\section{Developer's Environments}
 
 \begin{center}
 	\begin{tabular}{|l|l|l|l|l|l|}
 	\hline
-	\begin{tabular}[c]{@{}l@{}}Machine \\ Name\end{tabular} &  & \begin{tabular}[c]{@{}l@{}}Database\\ Directory\end{tabular} & 			    	\multicolumn{3}{l|}{} \\ \hline
-	\begin{tabular}[c]{@{}l@{}}OS/\\ Version\end{tabular} &  & \begin{tabular}[c]{@{}l@{}}Interpreter \\ Platform\end{tabular} &  & 			  	\begin{tabular}[c]{@{}l@{}}Client\\ Server\end{tabular} &  \\ \hline
-	\begin{tabular}[c]{@{}l@{}}Tester \\ Name\end{tabular} & \multicolumn{2}{l|}{} & \begin{tabular}[c]{@{}l@{}}Test\\ Date\end{tabular} & 		\multicolumn{2}{l|}{} \\ \hline
-	Comment & \multicolumn{3}{l|}{} & State &  \\ \hline
+  	Machine Name & OS & Client/Server & JRE & Person & Date \\
+ 	\hline
+          patel_laptop & Windows 10 & Client & Java 12 & Patel,P & \formatdate{12}{8}{19}\\
+          \hline
+          horger_desktop & Windows 10 & Server & Java 12 & Horger,M & \formatdate{14}{8}{19}\\
+          \hline
+          zlotek_laptop & Linux Distro & Server & Java 12 & Zlotek,J & \formatdate{19}{8}{19}\\
+          \hline
+          carfagno_desktop & Windows 10 & Client & Java 12 & Carfagno, J & \formatdate{19}{8}{19}\\
+         \hline
+
 	\end{tabular}
 \end{center}
 
 \chapter{Testing Environment Setup and Prerequisites}
 
-Prerequisit
+Prerequisite
 \begin{itemize}
-  \item This game has GUI for interaction and for that at least Java 12.0 is needed on the system
-  \item Just for testing purpose it can be test on single machine but for crossplatform Internet is needed
-  \item Active Internet connection so it player can connet to server and play over Tux
+  \item This game has implemented a Java Swing GUI for interaction. Java 12.0 is needed on the target system in order for the user to properly see the UI without any issues.
+  \item Just for testing purpose, our program can be tested on a single, localhost machine. For multiplayer games with other devices, a stable Internet connection is needed.
+  \item A Drexel Account is required to interact with the lobby structure to satisfy the tests conditions.
 \end{itemize}
 
 \chapter{Test Cases}
 
-This section is divided into four sections where it tests the game into four phases, the first phase include the launching phase of the game,
-second phase test the validation of gameplay, third small phase test the functionality of multiple session of game and the last phase of testing includes the end of the game. 
+This chapter is divided into four sections, each respective to each phase of the game. The first phase includes the launching portion of the game, as well as interacting with the key menus to launch lobbies. The second phase tests the validation and logic of gameplay. The Third phase, while small, tests the functionality of multiple sessions running concurrently. Finally, the fourth phase tests win conditions and outlying cases.
 
 \section{Test Phase 1: Starting Game}
 
 \subsection{Description}
-This section covers the testing of the initial phase of launching a game, creating a session and starting a new game.
+This section covers the testing of the initial phase of launching the program, creating a lobby, joining a lobby and starting a new game. This section relies heavily on UI interaction with our Swing menus.
 
 \subsection{Prerequisites for this test case}
-An internet connection regardless of testing between multiple entities, or single in order to connect to server.
+An internet connection with a firewall rule allowing traffic on all ports, to be certain, is required to this phase. Localhost also works just fine, as long as two sessions are able to run on the target machine with no drawbacks. 
 
 \subsection{Scenario}
 
 \begin{tabu} to \textwidth {| c | X | X | X | X | X |}
 \hline
-\textbf{Number} & \textbf{Case} & \textbf{Expectation} & \textbf{Actual Outcome} & \textbf{Steps} & \textbf{Requrienment Refrence}\\ \hline
+\textbf{Number} & \textbf{Case} & \textbf{Expectation} & \textbf{Actual Outcome} & \textbf{Steps} & \textbf{Requirement Refrence}\\ \hline
 1 & Launch the game & GUI of Lobby menu should be launched &  &  & \\ \hline
 2 & Create a session & Create a session ID &  &  &R4.1 \\ \hline
 3 & Join new game & Once lobby selected from loby menu, player should be able to join that session &  &  &R4.2 \\ \hline
