@@ -66,7 +66,6 @@ public class PlayerUI {
         {
             setSelectedPiece(null);
             setSelectedSpace(null);
-            nextMove = null;
         }
 
         active = _active;
@@ -130,6 +129,10 @@ public class PlayerUI {
             if(_selectedPiece == null || _selectedPiece.getColor() == this.color) {
                 selectedPiece = _selectedPiece;
             }
+            else
+            {
+                selectedPiece = null;
+            }
         }
     }
 
@@ -138,5 +141,10 @@ public class PlayerUI {
      */
     public Move getNextMove() {
         return nextMove;
+    }
+
+    public void resetNextMove()
+    {
+        nextMove = null;
     }
 }

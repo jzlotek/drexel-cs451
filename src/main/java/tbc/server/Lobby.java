@@ -132,6 +132,7 @@ public class Lobby extends Thread {
             // accept game state and send confirmation to p1_socket
             GameState newState = new GameState("success");
             newState.yourTurn = false;
+            newState.board = this.gameBoard;
             SocketUtil.sendGameState(newState, p1_socket);
 
             try {
@@ -143,6 +144,7 @@ public class Lobby extends Thread {
             newState = new GameState("New Move");
             newState.yourTurn = true;
             newState.moves = userGameState.moves;
+            newState.board = this.gameBoard;
             SocketUtil.sendGameState(newState, p2_socket);
 
             // check for winner
@@ -189,9 +191,17 @@ public class Lobby extends Thread {
             return false;
         }
         Move move = state.moves.get(0);
-        if (this.gameBoard.getValidMoves(this.gameBoard.getPiece(move.getOldLocation())).contains(move.getNewLocation())) {
-            return true;
+
+        ArrayList<Move> validMoves = gameBoard.getValidMoves((this.gameBoard.getPiece(move.getOldLocation())));
+
+        for(Move validMove : validMoves)
+        {
+            if(validMove.equals(move))
+            {
+                return true;
+            }
         }
+
         return false;
     }
 

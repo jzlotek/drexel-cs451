@@ -22,6 +22,15 @@ public class GameScene {
      */
     public void add(JComponent component) {
         this.window.add(component);
+        this.window.validate();
+        this.window.repaint();
+    }
+
+    public void remove(JComponent component)
+    {
+        this.window.remove(component);
+        this.window.validate();
+        this.window.repaint();
     }
 
     /*
