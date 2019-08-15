@@ -1,20 +1,20 @@
 package tbc.client.menus;
 
-import java.awt.event.*;
-import java.awt.*;
-import java.io.IOException;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.UUID;
-import javax.swing.*;
-
 import tbc.Constants;
-import tbc.client.components.*;
+import tbc.client.components.ComponentStore;
 import tbc.shared.GameState;
+import tbc.shared.UUIDContainer;
 import tbc.util.ConsoleWrapper;
 import tbc.util.SerializationUtilJSON;
 import tbc.util.SocketUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.Serializable;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.UUID;
 
 public class MainMenu extends JFrame {
     static JFrame mainMenu;
@@ -43,20 +43,31 @@ public class MainMenu extends JFrame {
     }
 
     public static void getLobbies(ActionEvent e) {
-        ConsoleWrapper.WriteLn("Attempting to Connect to the Server and get a lobby");
-        Socket serverSocket = connectToServer(e);
-        SocketUtil.sendGameState(new GameState("lobbies"), serverSocket);
         String string = null;
-        ArrayList<UUID> uuids;
+        UUIDContainer uuids;
         while (string == null) {
             try {
-                string = SocketUtil.readFromSocket(serverSocket);
-                uuids = (ArrayList<UUID>) SerializationUtilJSON.deserialize(string);
-                ConsoleWrapper.WriteLn(uuids.get(0).toString());
-                GameState gs = new GameState(uuids.get(0).toString());
+                ConsoleWrapper.WriteLn("Attempting to Connect to the Server and get a lobby");
+                Socket serverSocket = connectToServer(e);
+                SocketUtil.sendGameState(new GameState("lobbies"), serverSocket);
+                while (string == null) {
+                    string = SocketUtil.readFromSocket(serverSocket);
+                    Thread.sleep(500);
+                }
+                ConsoleWrapper.WriteLn(string);
+                GameState gs = (GameState) SerializationUtilJSON.deserialize(string);
+                ConsoleWrapper.WriteLn(gs.message);
+                string = null;
+                while (string == null) {
+                    string = SocketUtil.readFromSocket(serverSocket);
+                    Thread.sleep(500);
+                }
+                uuids = (UUIDContainer) SerializationUtilJSON.deserialize(string);
+                gs = new GameState(uuids.getUUIDS().get(0).toString());
                 SocketUtil.sendGameState(gs, serverSocket);
                 ComponentStore.getInstance().put("server_socket", serverSocket);
             } catch (Exception ex) {
+                ex.printStackTrace();
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException exc) {

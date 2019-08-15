@@ -7,7 +7,8 @@ import tbc.client.components.BoardDisplayComponent;
 import tbc.client.components.ComponentStore;
 import tbc.client.components.GameScene;
 import tbc.client.components.ServerStatus;
-import tbc.server.Player;
+import tbc.client.menus.MainMenu;
+import tbc.client.menus.ServerDownMenu;
 import tbc.shared.GameState;
 import tbc.shared.Move;
 import tbc.util.ConsoleWrapper;
@@ -19,33 +20,34 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.Socket;
 
-import tbc.client.menus.*;
-
 public class Main {
     static Socket serverSocket = null;
     static GameScene window = null;
 
     public static void main(String[] args) throws Exception {
-    	/*
-    	 * Need to ping static IP hosted on Drexel's TUX
-    	 * If we are able to get network data back, then display the menu
-    	 */
-    	boolean isServerAlive = ServerStatus.pingServer(Constants.HOST);
-    	if(isServerAlive) {
-    		// if we can connect to the server, start the main menu
-    		MainMenu menu = new MainMenu();
-    		menu.init();
-    	} else {
-    		// else we have to throw our error menu, cancel the program
-    		ServerDownMenu menu = new ServerDownMenu();
-    		menu.init();
-    	}
-
-    	while(ComponentStore.getInstance().get("server_socket") == null) {
-    	    Thread.sleep(500);
+        /*
+         * Need to ping static IP hosted on Drexel's TUX
+         * If we are able to get network data back, then display the menu
+         */
+        boolean isServerAlive = ServerStatus.pingServer(Constants.HOST);
+        if (isServerAlive) {
+            // if we can connect to the server, start the main menu
+            MainMenu menu = new MainMenu();
+            menu.init();
+        } else {
+            // else we have to throw our error menu, cancel the program
+            ServerDownMenu menu = new ServerDownMenu();
+            menu.init();
         }
-    	
-    	
+
+        while (serverSocket == null) {
+            serverSocket = (Socket) ComponentStore.getInstance().get("server_socket");
+            if (serverSocket == null) {
+                Thread.sleep(500);
+            }
+        }
+
+
         // set initial environment up including window and board state
         window = new GameScene();
         init(window);
@@ -54,7 +56,7 @@ public class Main {
         Board lastBoard = null;
         JTextArea debug = (JTextArea) ComponentStore.getInstance().get("debug");
         boolean gameRunning = false;
-        String json;
+        String json = null;
         GameState gs = null;
         boolean retryMove = false;
 

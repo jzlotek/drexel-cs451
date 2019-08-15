@@ -42,12 +42,12 @@ public class Lobby extends Thread {
     public void run() {
         while (this.players.size() < 2) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
             }
         }
         try {
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
         }
         this.gameBoard = new Board();
@@ -169,8 +169,7 @@ public class Lobby extends Thread {
     public void addPlayer(Player newPlayer) {
         ConsoleWrapper.WriteLn("Attempting to add player: " + newPlayer.getSocket() + " to lobby: " + this.getUUID().toString());
 
-        if (this.players.size() <= this.maxPlayers) {
-            SocketUtil.sendGameState(new GameState("Unable to add " + newPlayer.getSocket() + " to lobby. Lobby full"), newPlayer.getSocket());
+        if (this.players.size() < this.maxPlayers) {
             synchronized (Server.class) {
                 if (this.players.size() < this.maxPlayers) {
                     ConsoleWrapper.WriteLn("Added player: " + newPlayer.getSocket() + " to lobby: " + this.getUUID().toString());
