@@ -238,7 +238,22 @@ public class Board implements Serializable {
 
                 this.getSpace(attemptedMove).setPiece(_piece);
 
-                // TODO: Crown the piece if in the enemy home row
+                // Red spawns at top of the board (row < 3)
+                // White spawns at bottom of board (row >= board.height - 3)
+                if(_piece.getColor() == Color.RED)
+                {
+                    if(_yNew == this.boardSize.getY() - 1)
+                    {
+                        _piece.setHasCrown(true);
+                    }
+                }
+                else
+                {
+                    if(_yNew == 0)
+                    {
+                        _piece.setHasCrown(true);
+                    }
+                }
 
                 for(UUID id : validMove.getRemoved())
                 {
@@ -289,13 +304,13 @@ public class Board implements Serializable {
 
                             // The two pieces are different color, so check if the next space past is valid
                             if (otherPiece.getColor() != _piece.getColor()) {
-                                Vector diff = Vector.subtract(new Vector(x, y), new Vector(col, row));
+                                Vector diff = Vector.subtract(otherPiece.getPos(), _piece.getPos());
                                 diff = Vector.multiply(diff, 2);
 
-                                Vector newPos = Vector.add(new Vector(x, y), diff);
+                                Vector newPos = Vector.add(_piece.getPos(), diff);
 
                                 if (this.isValidSpace(newPos) && !this.hasPiece(newPos)) {
-                                    Move newMove = new Move(_piece.getUUID(), _piece.getPos(), new Vector(col, row));
+                                    Move newMove = new Move(_piece.getUUID(), _piece.getPos(), newPos);
                                     newMove.addRemoved(otherPiece.getUUID());
                                     jumpMoves.add(newMove);
                                 }

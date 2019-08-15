@@ -1,10 +1,16 @@
 package tbc.client.checkers.events;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 
-public class EventHandler
+public class EventHandler implements Serializable
 {
-	private ArrayList<EventListener> listeners = new ArrayList<EventListener>();
+	private ArrayList<EventListener> listeners;
+
+	public EventHandler()
+	{
+		listeners = new ArrayList<EventListener>();
+	}
 	
 	public void InvokeEvent(Object[] _args)
 	{
