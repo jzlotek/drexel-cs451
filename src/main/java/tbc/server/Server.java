@@ -67,11 +67,6 @@ public class Server {
         }).start();
         new Thread(Server::connectPlayer).start();
         while (true) {
-            // TODO: upon create lobby, add new lobby to list.
-            // TODO: upon join lobby, add player to lobby.
-            // lobby thread should handle the game from there.
-            // Notes: will need to make a list of currently connected player
-            // and iterate all of them for requests to join or make lobbies
             String string = "";
             GameState state = null;
 
@@ -132,24 +127,6 @@ public class Server {
                     }
                 }
             }
-//            ConsoleWrapper.WriteLn("Max connections established. Creating Lobby.");
-
-//            Player p1 = activePlayers.get(0);
-//            Player p2 = activePlayers.get(1);
-//            Lobby newGame = new Lobby(p1, p2);
-//            newGame.run(); // start the new game
-//            ConsoleWrapper.WriteLn("Lobby created. Starting health check process..");
-//            while (newGame.gameRunning) {
-//                try {
-//                    Thread.sleep(5000);
-//                    if (!heartbeat()) {
-//                        newGame.gameRunning = false;
-//                    }
-//                } catch (InterruptedException ex) {
-//                    throw ex;
-//                }
-//            }
-//            activePlayers.clear(); // clear the sockets for start of new game
         }
     }
 
