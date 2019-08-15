@@ -358,6 +358,32 @@ public class Board implements Serializable {
     }
 
     /*
+     * Get a list of all the pieces that are able to jump right now
+     */
+    public ArrayList<Piece> getPiecesThatCanJump(Color _color)
+    {
+        ArrayList<Piece> pieces = new ArrayList<Piece>();
+
+        for(Piece piece : playerPieces.get(_color))
+        {
+            ArrayList<Move> moves = getValidMoves(piece);
+
+            // First check that there are moves for this piece to take
+            if(moves.size() > 0)
+            {
+                // If there is a jumping move for the piece to make, then only jumping moves will be returned
+                // So check if the first move is a jump and, if so, add the piece to the list
+                if(moves.get(0).getRemoved().size() > 0)
+                {
+                    pieces.add(piece);
+                }
+            }
+        }
+
+        return pieces;
+    }
+
+    /*
      * Check that a given Vector position is valid on the board
      */
     public boolean isValidSpace(Vector _pos) {
