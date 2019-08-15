@@ -1,6 +1,7 @@
 package tbc.client;
 
 import tbc.Constants;
+import tbc.client.checkers.Board;
 import tbc.client.components.ComponentStore;
 import tbc.client.components.GameScene;
 import tbc.shared.GameState;
@@ -18,57 +19,61 @@ import java.net.Socket;
 public class Main {
     static Socket s = null;
     static GameScene window = null;
-    static SerializationUtilJSON serializer = new SerializationUtilJSON();
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         window = new GameScene();
         init(window);
         window.show();
+        Board board = null;
+        JTextArea debug = (JTextArea) ComponentStore.getInstance().get("debug");
+        boolean gameRunning = false;
+        String json;
+        GameState gs = null;
         while (true) {
             try {
-                String string = SocketUtil.readFromSocket(s);
-                GameState gs = (GameState) serializer.deserialize(string, GameState.class);
-                JTextArea debug = (JTextArea) ComponentStore.getInstance().get("debug");
-                debug.append("\n" + gs.message);
+                json = SocketUtil.readFromSocket(s);
             } catch (Exception e) {
+                gs = null;
+                json = "";
                 e.printStackTrace();
+                continue;
             }
-            Thread.sleep(1000);
+
+            if (json != null && !json.equals("")) {
+
+                try {
+                    gs = (GameState) SerializationUtilJSON.deserialize(json);
+                } catch (Exception e) {
+                    gs = null;
+                    e.printStackTrace();
+                    continue;
+                }
+                json = "";
+                if (gs != null) {
+                    debug.append("\n" + gs.message);
+                    if (gs.board != null && board == null) {
+                        board = gs.board;
+                        debug.append("\n" + board);
+                        ConsoleWrapper.WriteLn(board.getPiece(0,0).getColor());
+                        gameRunning = true;
+                    } else if (gameRunning) {
+                        debug.append("\nGame is Running");
+                    }
+                }
+            }
         }
     }
 
     public static void init(GameScene scene) {
-        SerializationUtilJSON serializer = new SerializationUtilJSON();
         JTextArea debug = new JTextArea();
         ComponentStore.getInstance().put("debug", debug);
-        debug.setBounds(400, 0, 200, 100);
+        debug.setBounds(400, 0, 400, 100);
         JButton joinButton = new JButton("Join a Game");
         ComponentStore.getInstance().put("join_button", joinButton);
         joinButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 connectToServer(e);
-                if (e.getActionCommand().equals("click")) {
-                    if (s != null) {
-                        try {
-                            s.close();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                    try {
-                        s = new Socket("localhost", Constants.PORT);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-
-                    if (s == null) {
-                        debug.setText("Failed to Join");
-                    } else {
-                        debug.setText(debug.getText() + "\nConnected to: " + s.getInetAddress().getHostAddress());
-                    }
-                }
-                ConsoleWrapper.WriteLn(e.toString());
             }
         });
         joinButton.setBounds(0, 0, 100, 100);
@@ -86,6 +91,7 @@ public class Main {
         }
         try {
             s = new Socket("localhost", Constants.PORT);
+            s.setKeepAlive(true);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
