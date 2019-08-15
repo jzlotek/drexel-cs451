@@ -133,12 +133,12 @@ An internet connection regardless of testing between multiple entities, or singl
 \hline
 \textbf{Number} & \textbf{Case} & \textbf{Expectation} & \textbf{Actual Outcome} & \textbf{Steps} & \textbf{Requrienment Refrence}\\ \hline
 1 & Launch the game & GUI of Lobby menu should be launched &  &  & \\ \hline
-2 & Create a session & Create a session ID with &  &  & \\ \hline
-3 & Join new game & Once lobby selected from loby menu, player should that session &  &  & \\ \hline
-4 & Create multiple session Max 5 & No more then 5 session should be allowed &  &  & \\ \hline
-5 & Start 5 game succeffuly with 10 player & There should be 5 gameplay going on a same time on a server &  &  & \\ \hline
-6 & Start 5 game succeffuly with 11 player & Eleventh player should not able to join any session. &  &  & \\ \hline
-7 & After starting game with two player & GUI should have 10X10 board with randomly assigned color &  &  & \\ \hline
+2 & Create a session & Create a session ID &  &  &R4.1 \\ \hline
+3 & Join new game & Once lobby selected from loby menu, player should be able to join that session &  &  &R4.2 \\ \hline
+4 & Create multiple session Max 5 & No more then 10 session should be allowed &  &  &L2.2\\ \hline
+5 & Start 5 game succeffuly with 10 player & There should be 10 gameplay going on a same time on a server &  &  &L2.3\\ \hline
+6 & Start 5 game succeffuly with 11 player & 21th player should not able to join any session. &  &  &L2.3\\ \hline
+7 & After starting game with two player & GUI should have 8X8 board with randomly assigned color &  &  &G1 \\ \hline
 \end{tabu}
 \newpage
 
@@ -155,33 +155,33 @@ A valid game session running - single session at least.
 \begin{tabu} to \textwidth {| c | X | X | X | X | X |}
 \hline
 \textbf{Number} & \textbf{Case} & \textbf{Expectation} & \textbf{Actual Outcome} & \textbf{Steps} & \textbf{Requrienment Refrence}\\ \hline
-1 & Black piece first move & Only player with black piece should make move &  &  & \\ \hline
-2 & White piece invalid first move & If Player with white piece makes the move then it should be discarded and the piece should come back to the original position &  &  & \\ \hline
-3 & Valid Move - Non crowned Piece & Can move diagonally in either direction and peice stays in new square &  &  & \\ \hline
-4 & Valid single jump to capture - Non crowned Piece & Only jump and capture the opponent piece if there is an empty square above that targeted piece. &  &  & \\ \hline
+1 & Black piece first move & Only player with black piece should make move &  &  &G2\\ \hline
+2 & White piece invalid first move & If Player with white piece makes the move then it should be discarded and the piece should come back to the original position &  &  &G2\\ \hline
+3 & Valid Move - Non crowned Piece & Can move diagonally in either direction and peice stays in new square &  &  &G5\\ \hline
+4 & Valid single jump to capture - Non crowned Piece & Only jump and capture the opponent piece if there is an empty square above that targeted piece. &  &  &G5 \\ \hline
 \end{tabu}
 \newpage
 \begin{tabu} to \textwidth {| c | X | X | X | X | X |}
 \hline
 \textbf{Number} & \textbf{Case} & \textbf{Expectation} & \textbf{Actual Outcome} & \textbf{Steps} & \textbf{Requrienment Refrence}\\ \hline
-5 & Valid Multiple jump to capture - Non crowned Piece & If jump made over multiple piece of opponent considering test case 4 then it should be valid. &  &  & \\ \hline
-6 & Invalid Move - Non crowned Piece & If piece move in horizontal or vertical direction then it should come back to original position &  &  & \\ \hline
-7 & Invalid Move - Non crowned Piece & If tried move backward diagonally then it should be discarded and  it should come back to original position &  &  & \\ \hline
-8 & Invalid single jump to capture - Non crowned Piece & if there is not space to place the piece after the jump to capture then it should come back to original position &  &  & \\ \hline
-9 & Invalid single jump to capture - Non crowned Piece & If jump made over players own piece then  &  &  & \\ \hline
+5 & Valid Multiple jump to capture - Non crowned Piece & If jump made over multiple piece of opponent considering test case 4 then it should be valid. &  &  &G5 \\ \hline
+6 & Invalid Move - Non crowned Piece & If piece move in horizontal or vertical direction then it should come back to original position &  &  &G5 \\ \hline
+7 & Invalid Move - Non crowned Piece & If tried move backward diagonally then it should be discarded and  it should come back to original position &  &  &G5 \\ \hline
+8 & Invalid single jump to capture - Non crowned Piece & if there is not space to place the piece after the jump to capture then it should come back to original position &  &  &G5 \\ \hline
+9 & Invalid single jump to capture - Non crowned Piece & If jump made over players own piece then  &  &  &G5 \\ \hline
 \end{tabu}
 \newpage
 \begin{tabu} to \textwidth {| c | X | X | X | X | X |}
 \hline
 \textbf{Number} & \textbf{Case} & \textbf{Expectation} & \textbf{Actual Outcome} & \textbf{Steps} & \textbf{Requrienment Refrence}\\ \hline
 
-10 & Turning into crown piece & If either player piece reaches to the 10th row from player direction then, piece should turn into a crowned piece &  &  & \\ \hline
-11 & Valid Move - Crowned Piece & It can move in any four diagonal direction &  &  & \\ \hline
-12 & Valid single jump to capture - Crowned Piece & It can jump in any direction considering the test case 4 is valid with each jump &  &  & \\ \hline
-13 & Valid Multiple jump to capture - Crowned Piece & it can jump in any direction considering the test case 12 is valid with each jump &  &  & \\ \hline
-14 & Invalid Move - Crowned Piece & If moved in horizontal or vertical then piece should return in original direction &  &  & \\ \hline
-15 & Invalid single jump to capture - Crowned Piece & If jumped is made over own piece then it discards it and peice should return in original direction &  &  & \\ \hline
-16 & If crowned piece placed in the 10th row again & The crown piece state should not be affected in any way &  &  & \\ \hline
+10 & Turning into crown piece & If either player piece reaches to the 10th row from player direction then, piece should turn into a crowned piece &  &  &G6 \\ \hline
+11 & Valid Move - Crowned Piece & It can move in any four diagonal direction &  &  &G6 \\ \hline
+12 & Valid single jump to capture - Crowned Piece & It can jump in any direction considering the test case 4 is valid with each jump &  &  &G6 \\ \hline
+13 & Valid Multiple jump to capture - Crowned Piece & it can jump in any direction considering the test case 12 is valid with each jump &  &  &G6 \\ \hline
+14 & Invalid Move - Crowned Piece & If moved in horizontal or vertical then piece should return in original direction &  &  &G6 \\ \hline
+15 & Invalid single jump to capture - Crowned Piece & If jumped is made over own piece then it discards it and peice should return in original direction &  &  &G6 \\ \hline
+16 & If crowned piece placed in the 10th row again & The crown piece state should not be affected in any way &  &  & G6\\ \hline
 \end{tabu}
 
 
@@ -197,7 +197,7 @@ More than one game session running to test this.
 \begin{tabu} to \textwidth {| c | X | X | X | X | X |}
 \hline
 \textbf{Number} & \textbf{Case} & \textbf{Expectation} & \textbf{Actual Outcome} & \textbf{Steps} & \textbf{Requrienment Refrence}\\ \hline
-1 & Session activity only between two connected player & Only changes should be done and seen between two connected player, it should not interfier other session game play &  &  & \\ \hline
+1 & Session activity only between two connected player & Only changes should be done and seen between two connected player, it should not interfier other session game play &  &  &1.1 \\ \hline
 \end{tabu}
 
 \section{Test Phase 4: Ending the game}
@@ -211,13 +211,13 @@ Atleast one game running
 \subsection{Scenario}
 \begin{tabu} to \textwidth {| c | X | X | X | X | X |}
 \textbf{Number} & \textbf{Case} & \textbf{Expectation} & \textbf{Actual Outcome} & \textbf{Steps} & \textbf{Requrienment Refrence}\\ \hline
-1 & Winning Jump & If the valid jump is made over the last piece of the opponet then player should be decalred winner &  &  & \\ \hline
-2 & Winning Player Screen & Player should be informed with the message  &  &  & \\ \hline
-3 & Lossing Player Screen & Player should be informed with the message  &  &  & \\ \hline
-4 & Player 1 wants to quit & Once player 1 click on quit it should send him back to lobby page &  &  & \\ \hline
-5 & Player 1 left the game & Player 2 will be informed about it and send back to lobby page &  &  & \\ \hline
-6 & After game is fineshed if player 1 choose to rematch and Player 2 also do the same & If Player 2 also click on the rematch then new game should get going on same session &  &  & \\ \hline
-7 & After game is fineshed if player 1 choose to rematch and Player 2 quit & if player 2 click on the quit then both player should be returned to lobby menu &  &  & \\ \hline
+1 & Winning Jump & If the valid jump is made over the last piece of the opponet then player should be decalred winner &  &  &6.2.1.1 \\ \hline
+2 & Winning Player Screen & Player should be informed with the message  &  &  &6.2.1.1 \\ \hline
+3 & Lossing Player Screen & Player should be informed with the message  &  &  &6.2.1.1 \\ \hline
+4 & Player 1 wants to quit & Once player 1 click on quit it should send him back to lobby page &  &  &6.2.1.2 \\ \hline
+5 & Player 1 left the game & Player 2 will be informed that he/she won the game and send back to lobby page &  &  &6.2.1.2 \\ \hline
+6 & After game is fineshed if player 1 choose to rematch and Player 2 also do the same & If Player 2 also click on the rematch then new game should get going on same session &  &  &6.2.1.2 \\ \hline
+7 & After game is fineshed if player 1 choose to rematch and Player 2 quit & if player 2 click on the quit then both player should be returned to lobby menu &  &  &6.2.1.2 \\ \hline
 \end{tabu}
 
 \chapter{Appendix}
