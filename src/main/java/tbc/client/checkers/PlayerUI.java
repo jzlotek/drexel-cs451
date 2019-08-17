@@ -127,7 +127,15 @@ public class PlayerUI {
         if(active) {
             // Only allow the player to select a piece of their own color
             if(_selectedPiece == null || _selectedPiece.getColor() == this.color) {
-                selectedPiece = _selectedPiece;
+                // Also make sure this piece can jump or no pieces can jump
+                Board board = (Board)ComponentStore.getInstance().get("board");
+
+                ArrayList<Piece> jumpPieces = board.getPiecesThatCanJump(this.color);
+
+                if(jumpPieces.size() == 0 || jumpPieces.contains(_selectedPiece))
+                {
+                    selectedPiece = _selectedPiece;
+                }
             }
             else
             {

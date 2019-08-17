@@ -24,13 +24,15 @@ public class Piece extends Clickable implements Serializable, Renderable {
     private static final String redPawnPath = "/img/checkersPiece red.png";
     private static final String redKingPath = "/img/checkersPiece red crowned.png";
 
-    private transient EventHandler onPieceKilledHandler;
-    private transient EventHandler onPieceCrownedHandler;
+    private EventHandler onPieceKilledHandler;
+    private EventHandler onPieceCrownedHandler;
 
     /*
      * Default, empty constructor
      */
     private Piece() {
+        this.onPieceKilledHandler = new EventHandler();
+        this.onPieceCrownedHandler = new EventHandler();
     }
 
     /*

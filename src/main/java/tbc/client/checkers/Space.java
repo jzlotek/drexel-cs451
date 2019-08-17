@@ -68,8 +68,7 @@ public class Space extends Clickable implements Serializable, Renderable {
     public void setPiece(Piece _piece) {
         this.piece = _piece;
 
-        if(this.piece != null)
-        {
+        if (this.piece != null) {
             this.piece.setPos(this.pos);
         }
     }
@@ -82,12 +81,10 @@ public class Space extends Clickable implements Serializable, Renderable {
     }
 
     @Override
-    public JComponent getRenderObject()
-    {
+    public JComponent getRenderObject() {
         String path = blackPath;
 
-        if(color == Color.RED)
-        {
+        if (color == Color.RED) {
             path = redPath;
         }
 
@@ -97,8 +94,7 @@ public class Space extends Clickable implements Serializable, Renderable {
 
         panel.addMouseListener(this);
 
-        if(isOccupied())
-        {
+        if (isOccupied()) {
             panel.add(piece.getRenderObject());
         }
 
