@@ -44,6 +44,10 @@ sourceSets {
         java {
             srcDir 'tbc'
         }
+        resources {
+            srcDirs "main/resources"
+            include "**/*"
+        }
     }
 }
 
@@ -78,6 +82,9 @@ task client(type: Jar) {
         baseName('client')
         manifest {
             attributes 'Main-Class': 'tbc.client.Main'
+        }
+        from('src/main') {
+            include 'resources/**/*'
         }
         from {
             configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
