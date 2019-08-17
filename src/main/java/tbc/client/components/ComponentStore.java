@@ -26,7 +26,21 @@ public class ComponentStore {
     // syncronize put function across threads
     public void put(String key, Object value) {
         synchronized (Object.class) {
-            components.put(key, value);
+            if(components.containsKey(key))
+            {
+                update(key, value);
+            }
+            else
+            {
+                components.put(key, value);
+            }
+        }
+    }
+
+    public void update(String key, Object newValue) {
+        synchronized (Object.class) {
+            components.remove(key);
+            components.put(key, newValue);
         }
     }
 

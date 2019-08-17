@@ -19,7 +19,7 @@ public class SerializationUtilJSONTest {
         assertNotNull(s);
         Board c = (Board) SerializationUtilJSON.deserializeJSON(s, Board.class);
         assertEquals(c.getPiece(0, 1), null);
-        assertEquals(c.getPiece(0, 0).getColor(), Color.BLACK);
+        assertEquals(c.getPiece(0, 0).getColor(), Color.RED);
     }
 
     @Test(expected = IOException.class)
@@ -36,13 +36,13 @@ public class SerializationUtilJSONTest {
         assertNotNull(s);
         Board c = (Board) SerializationUtilJSON.deserialize(s);
         assertEquals(c.getPiece(0, 1), null);
-        assertEquals(c.getPiece(0, 0).getColor(), Color.BLACK);
+        assertEquals(c.getPiece(0, 0).getColor(), Color.RED);
     }
 
     @Test(expected = IOException.class)
     public void test_serializeFail() throws Exception {
         Board b = new Board();
         String s = SerializationUtilJSON.serialize(b);
-        Board c = (Board) SerializationUtilJSON.deserialize(s.substring(0, s.length() - 2));
+        Board c = (Board) SerializationUtilJSON.deserialize(s.substring(0, s.length() - 100));
     }
 }

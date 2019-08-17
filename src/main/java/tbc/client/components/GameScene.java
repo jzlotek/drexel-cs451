@@ -4,24 +4,33 @@ import javax.swing.*;
 
 public class GameScene {
 
-    private static JFrame window;
+    private JFrame window;
 
     public GameScene() {
-        window = new JFrame();
-        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        window.setSize(800, 800);
+        this.window = new JFrame();
+        this.window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.window.setSize(800, 800);
     }
 
     public void show() {
-        window.setLayout(null);
-        window.setVisible(true);
+        this.window.setLayout(null);
+        this.window.setVisible(true);
     }
 
     /*
     Adds the component to the window
      */
     public void add(JComponent component) {
-        window.add(component);
+        this.window.add(component);
+        this.window.validate();
+        this.window.repaint();
+    }
+
+    public void remove(JComponent component)
+    {
+        this.window.remove(component);
+        this.window.validate();
+        this.window.repaint();
     }
 
     /*
@@ -35,7 +44,7 @@ public class GameScene {
     /*
     Returns window instance
      */
-    public static JFrame getWindow() {
-        return window;
+    public JFrame getWindow() {
+        return this.window;
     }
 }
