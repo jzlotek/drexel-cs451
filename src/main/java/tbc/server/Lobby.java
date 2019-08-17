@@ -9,38 +9,52 @@ import tbc.shared.Move;
 import tbc.util.ConsoleWrapper;
 import tbc.util.SerializationUtilJSON;
 import tbc.util.SocketUtil;
+import tbc.util.UUIDUtil;
 
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.UUID;
 
 public class Lobby extends Thread {
     protected ArrayList<Player> players = new ArrayList<Player>();
     protected boolean gameRunning;
     protected final int maxPlayers = 2;
     protected Board gameBoard;
+    private UUID uuid;
 
     // generic constructor
     public Lobby() {
+        this.uuid = UUIDUtil.getUUID();
     }
 
     /*
      * Constructor that takes in two players, automatically starts the game
      */
     public Lobby(Player player1, Player player2) throws Exception {
+        this();
         this.addPlayer(player1);
         this.addPlayer(player2);
     }
 
     @Override
     public void run() {
+        while (this.players.size() < 2) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+            }
+        }
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+        }
         this.gameBoard = new Board();
         String received;
         String response;
         Socket p1_socket = players.get(0).getSocket();
         Socket p2_socket = players.get(1).getSocket();
-        ConsoleWrapper.WriteLn(this.gameBoard.getPiece(0, 0).getColor());
         Color[] randomize = new Color[]{Color.WHITE, Color.RED};
         Collections.shuffle(Arrays.asList(randomize));
 
@@ -98,15 +112,28 @@ public class Lobby extends Thread {
 
                 // if the move is valid, we must output to player two
                 // and we update the locally stored board in the stor
-                if (this.isLegalMove(userGameState)) {
-                    isMoveValid = true;
-                    Move move = userGameState.moves.get(0);
-                    Piece p = this.gameBoard.getPiece(move.getOldLocation());
-                    this.gameBoard.movePiece(p, move.getOldLocation(), move.getNewLocation());
-                } else { // else we throw player one a warning and prompt for another move
-                    response = "Move Invalid! Please make a valid move.";
-                    SocketUtil.sendGameState(new GameState(response), p1_socket);
-                    isMoveValid = false;
+                String backup = "";
+                try {
+                    backup = SerializationUtilJSON.serialize(this.gameBoard);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                for (Move move : userGameState.moves) {
+                    if (this.isLegalMove(move)) {
+                        isMoveValid = true;
+                        Piece p = this.gameBoard.getPiece(move.getOldLocation());
+                        this.gameBoard.movePiece(p, move.getOldLocation(), move.getNewLocation());
+                    } else { // else we throw player one a warning and prompt for another move
+                        response = "Move Invalid! Please make a valid move.";
+                        SocketUtil.sendGameState(new GameState(response), p1_socket);
+                        isMoveValid = false;
+                        try {
+                            this.gameBoard = (Board) SerializationUtilJSON.deserialize(backup);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    }
                 }
             }
 
@@ -147,37 +174,40 @@ public class Lobby extends Thread {
         // after the game is over, send a closing message to the players and close the sockets
         SocketUtil.sendGameState(new GameState("Game Over! Thanks for playing."), p1_socket);
         SocketUtil.sendGameState(new GameState("Game Over! Thanks for playing."), p2_socket);
-        players.get(0).closeSocket();
-        players.get(1).closeSocket();
+        players.get(0).setInGame(false);
+        players.get(1).setInGame(false);
     }
 
     /*
      * Adds a player to the lobby if there is room, or else throws a message back to the player
      */
-    public void addPlayer(Player newPlayer) throws Exception {
-        if (this.players.size() > (this.maxPlayers - 1)) {
-            SocketUtil.sendGameState(new GameState("Unable to add " + newPlayer.getSocket() + " to lobby. Lobby full"), newPlayer.getSocket());
-            newPlayer.getSocket().close();
-        } else {
-            this.players.add(newPlayer);
+    public void addPlayer(Player newPlayer) {
+        ConsoleWrapper.WriteLn("Attempting to add player: " + newPlayer.getSocket() + " to lobby: " + this.getUUID().toString());
+
+        if (this.players.size() < this.maxPlayers) {
+            synchronized (Server.class) {
+                if (this.players.size() < this.maxPlayers) {
+                    ConsoleWrapper.WriteLn("Added player: " + newPlayer.getSocket() + " to lobby: " + this.getUUID().toString());
+                    this.players.add(newPlayer);
+                } else {
+                    SocketUtil.sendGameState(new GameState("Unable to add " + newPlayer.getSocket() + " to lobby. Lobby full"), newPlayer.getSocket());
+                }
+            }
         }
     }
 
     /*
      * Function that validates if a move in the form of a message is valid
      */
-    private boolean isLegalMove(GameState state) {
-        if (state == null) {
+    private boolean isLegalMove(Move move) {
+        if (move == null) {
             return false;
         }
-        Move move = state.moves.get(0);
 
         ArrayList<Move> validMoves = gameBoard.getValidMoves((this.gameBoard.getPiece(move.getOldLocation())));
 
-        for(Move validMove : validMoves)
-        {
-            if(validMove.equals(move))
-            {
+        for (Move validMove : validMoves) {
+            if (validMove.equals(move)) {
                 return true;
             }
         }
@@ -198,6 +228,10 @@ public class Lobby extends Thread {
         return false;
     }
 
+    public boolean isGameRunning() {
+        return this.gameRunning;
+    }
+
     private void checkSockets() {
         for (Player p : this.players) {
             if (p.getSocket().isClosed()) {
@@ -216,6 +250,10 @@ public class Lobby extends Thread {
                 ConsoleWrapper.WriteLn("Player 2 Has Disconnected");
             }
         }
+    }
+
+    public UUID getUUID() {
+        return this.uuid;
     }
 
 }
