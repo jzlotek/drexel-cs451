@@ -100,6 +100,7 @@ public class Main {
                     messageWindow.append("\nGame is Running");
                     boardDisplayComponent = new BoardDisplayComponent(window, gs.yourColor);
                     boardDisplayComponent.renderBoard();
+                    ComponentStore.getInstance().put("boardDisplayComponent", boardDisplayComponent);
                 }
 
                 if (gameRunning) {
@@ -114,15 +115,16 @@ public class Main {
                     }
                     if (gs.yourTurn || retryMove) {
                         messageWindow.append("\nYour Turn");
-                        PlayerUI.getInstance().setActive(true);
-                        while (PlayerUI.getInstance().getNextMove() == null) {
+                        PlayerUI.getInstance().setEnabled(true);
+
+                        while (PlayerUI.getInstance().getActive()) {
                             Thread.sleep(500);
                         }
 
                         gs = new GameState("New Move");
-                        gs.moves.add(PlayerUI.getInstance().getNextMove());
+                        gs.moves.addAll(PlayerUI.getInstance().getNextMoves());
 
-                        PlayerUI.getInstance().setActive(false);
+                        PlayerUI.getInstance().setEnabled(false);
 
                         SocketUtil.sendGameState(gs, serverSocket);
                         gs = null;
@@ -137,27 +139,30 @@ public class Main {
 
                         if (gs.message.equals("success")) {
                             messageWindow.append("\nMove was accepted");
-                            Move move = PlayerUI.getInstance().getNextMove();
-                            currentBoard.movePiece(
-                                    currentBoard.getPiece(move.getOldLocation()),
-                                    move.getOldLocation(),
-                                    move.getNewLocation()
-                            );
+                            //Move move = PlayerUI.getInstance().getNextMoves();
 
-                            PlayerUI.getInstance().resetNextMove();
+//                            for(Move move : gs.moves)
+//                            {
+//                                currentBoard.movePiece(
+//                                        currentBoard.getPiece(move.getOldLocation()),
+//                                        move.getOldLocation(),
+//                                        move.getNewLocation()
+//                                );
+//                            }
+                            PlayerUI.getInstance().resetNextMoves();
                             lastBoard = currentBoard;
-                            ComponentStore.getInstance().put("board", currentBoard);
+//                            ComponentStore.getInstance().put("board", currentBoard);
                             boardDisplayComponent.renderBoard();
                             retryMove = gs.yourTurn;
                         } else {
                             messageWindow.append("\nMove was denied... Try again");
                             currentBoard = lastBoard;
                             retryMove = true;
-                            PlayerUI.getInstance().setActive(false);
-                            PlayerUI.getInstance().setActive(true);
+                            PlayerUI.getInstance().setEnabled(false);
+                            PlayerUI.getInstance().setEnabled(true);
                         }
                     } else {
-                        PlayerUI.getInstance().setActive(false);
+                        PlayerUI.getInstance().setEnabled(false);
                     }
                 }
             }
