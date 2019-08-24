@@ -272,6 +272,11 @@ public class Board implements Serializable {
      * Get an ArrayList of all moves a piece can make from its current position
      */
     public ArrayList<Move> getValidMoves(Piece _piece) {
+        if(_piece == null)
+        {
+            return new ArrayList<Move>();
+        }
+
         int x = _piece.getPos().getX();
         int y = _piece.getPos().getY();
 

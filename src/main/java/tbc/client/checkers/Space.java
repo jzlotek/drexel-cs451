@@ -1,6 +1,8 @@
 package tbc.client.checkers;
 
+import tbc.client.components.ComponentStore;
 import tbc.client.components.SpritePanel;
+import tbc.shared.Move;
 import tbc.util.ConsoleWrapper;
 
 import javax.swing.*;
@@ -8,6 +10,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Space extends Clickable implements Serializable, Renderable {
     private Vector pos;
@@ -18,6 +21,7 @@ public class Space extends Clickable implements Serializable, Renderable {
     // The paths to the image files for black and red spaces
     private static final String blackPath = "/img/space black.png";
     private static final String redPath = "/img/space red.png";
+    private static final String highlightedPath = "/img/space black highlighted.png";
 
     /*
      * Default empty constructor
@@ -86,6 +90,21 @@ public class Space extends Clickable implements Serializable, Renderable {
 
         if (color == Color.RED) {
             path = redPath;
+        }
+
+        if(PlayerUI.getInstance().getEnabled() && PlayerUI.getInstance().getActive())
+        {
+            Board board = (Board) ComponentStore.getInstance().get("board");
+
+            ArrayList<Move> validMoves = board.getValidMoves(PlayerUI.getInstance().getSelectedPiece());
+
+            for(Move move : validMoves)
+            {
+                if(move.getNewLocation().equals(pos))
+                {
+                    path = highlightedPath;
+                }
+            }
         }
 
         SpritePanel panel = new SpritePanel(path);

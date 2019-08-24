@@ -125,8 +125,6 @@ public class PlayerUI {
 
                         board.movePiece(selectedPiece, selectedPiece.getPos(), selectedSpace.getPos());
                         ComponentStore.getInstance().update("board", board);
-                        // Update the board display
-                        ((BoardDisplayComponent)ComponentStore.getInstance().get("boardDisplayComponent")).renderBoard();
 
                         // If the last move was a jump, check if more jumps can be made with the same piece
                         // If not, then end the player's turn
@@ -134,6 +132,9 @@ public class PlayerUI {
                         {
                             active = false;
                         }
+
+                        // Update the board display
+                        ((BoardDisplayComponent)ComponentStore.getInstance().get("boardDisplayComponent")).renderBoard();
                     }
                 }
             }
@@ -170,6 +171,8 @@ public class PlayerUI {
                 if(jumpPieces.size() == 0 || jumpPieces.contains(_selectedPiece))
                 {
                     selectedPiece = _selectedPiece;
+
+                    ((BoardDisplayComponent)ComponentStore.getInstance().get("boardDisplayComponent")).renderBoard();
                 }
             }
             else
