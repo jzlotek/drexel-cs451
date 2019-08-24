@@ -2,6 +2,7 @@ package tbc.client;
 
 import tbc.Constants;
 import tbc.client.checkers.Board;
+import tbc.client.checkers.Piece;
 import tbc.client.checkers.PlayerUI;
 import tbc.client.components.BoardDisplayComponent;
 import tbc.client.components.ComponentStore;
@@ -104,7 +105,26 @@ public class Main {
                 }
 
                 if (gameRunning) {
-                    if (gs.board != null) {
+                    if(gs.moves != null && gs.moves.size() > 0)
+                    {
+                        for(int i = 0; i < gs.moves.size(); ++i)
+                        {
+                            Move move = gs.moves.get(i);
+                            Piece targetPiece = currentBoard.getPiece(move.getOldLocation());
+                            currentBoard.movePiece(targetPiece,
+                                    move.getOldLocation(), move.getNewLocation());
+
+                            boardDisplayComponent.renderBoard();
+
+                            // Pause for some time before showing the next move, if there is another move to show
+                            if(i < gs.moves.size() - 1)
+                            {
+                                // Change the parameter here to add a longer pause
+                                Thread.sleep(1000);
+                            }
+                        }
+                    }
+                    else if (gs.board != null) {
                         lastBoard = currentBoard;
                         currentBoard = gs.board;
                         ComponentStore.getInstance().put("board", currentBoard);
