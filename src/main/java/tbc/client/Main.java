@@ -159,19 +159,8 @@ public class Main {
 
                         if (gs.message.equals("success")) {
                             messageWindow.append("\nMove was accepted");
-                            //Move move = PlayerUI.getInstance().getNextMoves();
-
-//                            for(Move move : gs.moves)
-//                            {
-//                                currentBoard.movePiece(
-//                                        currentBoard.getPiece(move.getOldLocation()),
-//                                        move.getOldLocation(),
-//                                        move.getNewLocation()
-//                                );
-//                            }
                             PlayerUI.getInstance().resetNextMoves();
                             lastBoard = currentBoard;
-//                            ComponentStore.getInstance().put("board", currentBoard);
                             boardDisplayComponent.renderBoard();
                             retryMove = gs.yourTurn;
                         } else {
