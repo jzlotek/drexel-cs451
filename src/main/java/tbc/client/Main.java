@@ -18,6 +18,8 @@ import tbc.util.SocketUtil;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -179,8 +181,15 @@ public class Main {
     }
 
     public static void init(GameScene scene) {
-        JTextArea debug = new JTextArea();
-        ComponentStore.getInstance().put("debug", debug);
+        JTextArea debug_textarea = new JTextArea();
+        JScrollPane debug = new JScrollPane(debug_textarea);
+        debug.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        debug.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+                e.getAdjustable().setValue(e.getAdjustable().getMaximum());
+            }
+        });
+        ComponentStore.getInstance().put("debug", debug_textarea);
         debug.setBounds(400, 0, 400, 400);
         JButton joinButton = new JButton("Join a Game");
         ComponentStore.getInstance().put("join_button", joinButton);
