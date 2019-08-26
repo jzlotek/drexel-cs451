@@ -2,6 +2,7 @@ package tbc.client;
 
 import tbc.Constants;
 import tbc.client.checkers.Board;
+import tbc.client.checkers.Piece;
 import tbc.client.checkers.PlayerUI;
 import tbc.client.components.BoardDisplayComponent;
 import tbc.client.components.ComponentStore;
@@ -100,10 +101,30 @@ public class Main {
                     messageWindow.append("\nGame is Running");
                     boardDisplayComponent = new BoardDisplayComponent(window, gs.yourColor);
                     boardDisplayComponent.renderBoard();
+                    ComponentStore.getInstance().put("boardDisplayComponent", boardDisplayComponent);
                 }
 
                 if (gameRunning) {
-                    if (gs.board != null) {
+                    if(gs.moves != null && gs.moves.size() > 0)
+                    {
+                        for(int i = 0; i < gs.moves.size(); ++i)
+                        {
+                            Move move = gs.moves.get(i);
+                            Piece targetPiece = currentBoard.getPiece(move.getOldLocation());
+                            currentBoard.movePiece(targetPiece,
+                                    move.getOldLocation(), move.getNewLocation());
+
+                            boardDisplayComponent.renderBoard();
+
+                            // Pause for some time before showing the next move, if there is another move to show
+                            if(i < gs.moves.size() - 1)
+                            {
+                                // Change the parameter here to add a longer pause
+                                Thread.sleep(1000);
+                            }
+                        }
+                    }
+                    else if (gs.board != null) {
                         lastBoard = currentBoard;
                         currentBoard = gs.board;
                         ComponentStore.getInstance().put("board", currentBoard);
@@ -114,15 +135,16 @@ public class Main {
                     }
                     if (gs.yourTurn || retryMove) {
                         messageWindow.append("\nYour Turn");
-                        PlayerUI.getInstance().setActive(true);
-                        while (PlayerUI.getInstance().getNextMove() == null) {
+                        PlayerUI.getInstance().setEnabled(true);
+
+                        while (PlayerUI.getInstance().getActive()) {
                             Thread.sleep(500);
                         }
 
                         gs = new GameState("New Move");
-                        gs.moves.add(PlayerUI.getInstance().getNextMove());
+                        gs.moves.addAll(PlayerUI.getInstance().getNextMoves());
 
-                        PlayerUI.getInstance().setActive(false);
+                        PlayerUI.getInstance().setEnabled(false);
 
                         SocketUtil.sendGameState(gs, serverSocket);
                         gs = null;
@@ -137,27 +159,19 @@ public class Main {
 
                         if (gs.message.equals("success")) {
                             messageWindow.append("\nMove was accepted");
-                            Move move = PlayerUI.getInstance().getNextMove();
-                            currentBoard.movePiece(
-                                    currentBoard.getPiece(move.getOldLocation()),
-                                    move.getOldLocation(),
-                                    move.getNewLocation()
-                            );
-
-                            PlayerUI.getInstance().resetNextMove();
+                            PlayerUI.getInstance().resetNextMoves();
                             lastBoard = currentBoard;
-                            ComponentStore.getInstance().put("board", currentBoard);
                             boardDisplayComponent.renderBoard();
                             retryMove = gs.yourTurn;
                         } else {
                             messageWindow.append("\nMove was denied... Try again");
                             currentBoard = lastBoard;
                             retryMove = true;
-                            PlayerUI.getInstance().setActive(false);
-                            PlayerUI.getInstance().setActive(true);
+                            PlayerUI.getInstance().setEnabled(false);
+                            PlayerUI.getInstance().setEnabled(true);
                         }
                     } else {
-                        PlayerUI.getInstance().setActive(false);
+                        PlayerUI.getInstance().setEnabled(false);
                     }
                 }
             }
