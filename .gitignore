@@ -1,4 +1,6 @@
 ### Java ###
+*.synctex.gz
+.DS_Store
 # Compiled class file
 *.class
 
@@ -43,3 +45,4 @@ gradle-app.setting
 **/build/
 
 # End of https://www.gitignore.io/api/java,gradle
+/bin/

@@ -1,10 +1,10 @@
 package tbc.client.components;
 
-import javax.swing.*;
 import java.util.HashMap;
 
 public class ComponentStore {
-    private static HashMap<String, JComponent> components;
+
+    private static HashMap<String, Object> components;
     private static ComponentStore instance = null;
 
     private ComponentStore() {
@@ -23,13 +23,29 @@ public class ComponentStore {
         return instance;
     }
 
-    public void put(String key, JComponent value) {
-        synchronized (ComponentStore.class) {
-            components.put(key, value);
+    // syncronize put function across threads
+    public void put(String key, Object value) {
+        synchronized (Object.class) {
+            if(components.containsKey(key))
+            {
+                update(key, value);
+            }
+            else
+            {
+                components.put(key, value);
+            }
         }
     }
 
-    public JComponent get(String key) {
+    public void update(String key, Object newValue) {
+        synchronized (Object.class) {
+            components.remove(key);
+            components.put(key, newValue);
+        }
+    }
+
+    // returns the Object stored at the key value
+    public Object get(String key) {
         return components.get(key);
     }
 }
