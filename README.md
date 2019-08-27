@@ -5,6 +5,9 @@
 [![codecov](https://codecov.io/gh/jzlotek/drexel-cs451/branch/master/graph/badge.svg)](https://codecov.io/gh/jzlotek/drexel-cs451)
 [![CircleCI](https://circleci.com/gh/jzlotek/drexel-cs451.svg?style=svg)](https://circleci.com/gh/jzlotek/drexel-cs451)
 ---
+## Instructions
+
+	Instructions and final documentation is located in docs/finalSubmission
 
 ## Setup
 
