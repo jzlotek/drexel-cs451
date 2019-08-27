@@ -1,6 +1,6 @@
 Instructions on how to install, run, and test our project submission
 CS451 Checkers Project
-Jake Carfagno, Matthew Horger, Preet Patel, John Zlotek
+Jake Carfagno, John Zlotek, Matthew Horger, Preet Patel
 
 \************************
 INSTALLATION INSTRUCTIONS
