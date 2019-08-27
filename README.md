@@ -7,7 +7,8 @@
 ---
 ## Instructions
 
-	Instructions and final documentation is located in docs/finalSubmission
+	Instructions and final documentation is located in docs/finalSubmission.
+	Short and sweet: First, run the server jar on tux2. Then, run the client jar to connect to the server running.
 
 ## Setup
 
