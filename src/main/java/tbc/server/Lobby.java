@@ -215,7 +215,7 @@ public class Lobby extends Thread {
     /*
      * Function that validates if a move in the form of a message is valid
      */
-    private boolean isLegalMove(Move move) {
+    public boolean isLegalMove(Move move) {
         if (move == null) {
             return false;
         }
@@ -234,7 +234,7 @@ public class Lobby extends Thread {
     /*
      * Function that checks if we have a winner after a specific move has been made
      */
-    private boolean hasWinner() {
+    public boolean hasWinner() {
         Board board = (Board) ComponentStore.getInstance().get("board");
 
         if (board != null) {
@@ -248,7 +248,7 @@ public class Lobby extends Thread {
         return this.gameRunning;
     }
 
-    private void checkSockets() {
+    public void checkSockets() {
         for (Player p : this.players) {
             if (p.getSocket().isClosed()) {
                 this.gameRunning = false;
