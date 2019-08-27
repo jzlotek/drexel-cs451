@@ -162,6 +162,15 @@ public class Lobby extends Thread {
 
             // check for winner
             if (this.hasWinner()) {
+                if(this.gameBoard.getPiecesForColor(randomize[0]).size() == 0){
+                    // player 2 wins
+                    SocketUtil.sendGameState(new GameState("You've won!"), players.get(1).getSocket());
+                    SocketUtil.sendGameState(new GameState("You've lost!"), players.get(0).getSocket());
+                } else {
+                    // player 1 wins
+                    SocketUtil.sendGameState(new GameState("You've won!"), players.get(0).getSocket());
+                    SocketUtil.sendGameState(new GameState("You've lost!"), players.get(1).getSocket());
+                }
                 break;
             }
 
@@ -176,6 +185,13 @@ public class Lobby extends Thread {
         SocketUtil.sendGameState(new GameState("Game Over! Thanks for playing."), p2_socket);
         players.get(0).setInGame(false);
         players.get(1).setInGame(false);
+
+        try {
+            players.get(0).socket.close();
+            players.get(1).socket.close();
+        } catch (Exception ex){
+            // ignore error
+        }
     }
 
     /*
